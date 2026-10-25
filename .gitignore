@@ -1,0 +1,27 @@
+work/
+dist/
+.build-deps/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+tmp/
+output/
+node_modules/
+.env
+.env.*
+*.pem
+*.key
+*.pfx
+*.p12
+*.log
+*.zip
+*.exe
+backups/
+exports/
+# Local reference material and historic screenshots are not public source.
+docs/*
+!docs/USER-GUIDE.md
+!docs/NODE-LICENSE.txt
+!docs/PUBLISHING.md
+scripts/import-narratives.py
+scripts/extract-narratives.ps1

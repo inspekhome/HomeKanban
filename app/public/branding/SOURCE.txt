@@ -1,0 +1,2 @@
+Full wordmark: supplied by the user on 2026-10-24; framed in SVG without changing source pixels. House PNG: isolated from the supplied mark using the built-in imagegen tool with transparency; preserve navy roof/chimney, blue/teal/yellow columns, white checkmark, no text. ICO: format conversion for Windows at 16, 24, 32, 48, 64, 128, and 256 pixels.
+On 2026-10-25 the project owner confirmed the right to publicly use and distribute this logo. Included under the project MIT License to the extent of the owner's rights; no trademark endorsement is granted.
