@@ -68,6 +68,10 @@ test('clearing statuses reopens a finalized report and section NI selections sti
 test('headers expose enabled named buttons for every populated section and reflect mixed states',async()=>{
  const c=client(),s=c.r.sections[0];
  let html=c.h.html();assert.equal((html.match(/data-section-rating=/g)||[]).length,c.r.sections.length*4);
+ assert.equal((html.match(/class="checklist-columns"><b>COMPONENT \/ INSPECTION NOTES<\/b><div class="status-columns"/g)||[]).length,c.r.sections.length);
+ const rows=html.split('<div class="check-row ').slice(1);
+ assert.equal(rows.length,c.r.sections.reduce((count,section)=>count+section.items.length,0));
+ for(const row of rows){assert.ok(row.indexOf('class="component-body"')<row.indexOf('class="rating-group"'));assert.match(row,/<\/div><div class="rating-group" role="group"/);}
  assert.match(html,/aria-label="Structure: clear all I = Inspected selections" aria-pressed="true"/);
  assert.ok(!html.includes('class="checklist-columns" aria-hidden="true"'));
  await c.click({rating:'D',item:s.items[0].id});html=c.h.html();

@@ -42,7 +42,7 @@ async function selectSystemTheme(id){
 }
 const progress=r=>{const items=r.sections.flatMap(s=>s.items);return items.length?Math.round(items.filter(i=>i.rating).length/items.length*100):0;};
 function modal(html){$('#dialog-content').innerHTML=html;$('#dialog').showModal();}
-function closeModal(){$('#dialog').close();}
+function closeModal(){stopChoicePointer();$('#dialog').close();choiceDraft=null;}
 function render(){
  if(typeof ReportPhotos!=='undefined')ReportPhotos.closeWithin($('#main'));
  $('#nav').querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.nav===(route==='editor'?'reports':route==='template-editor'?'templates':route)));
@@ -53,8 +53,28 @@ function render(){
 function renderReports(){const reports=state.reports.filter(r=>(r.address+' '+r.client).toLowerCase().includes(search.toLowerCase())).sort((a,b)=>(b.updated||'').localeCompare(a.updated||''));return head('LOCAL-FIRST INSPECTION','Clear findings. Confident reports.','Your entire inspection workflow, from field notes to a finished report.',action('backup','Back up data')+action('new-report','＋ Create report','','primary'))+(!state.profile.name?`<div class="welcome"><div><h2>Your independent inspection workspace</h2><p>Add your inspector details, choose a template, and start your first report.</p><div class="actions" style="margin-top:16px">${action('go-profile','Set up your profile')}${action('demo','Create demo report','','quiet')}</div></div><div class="welcome-mark">⌂</div></div>`:'')+`<div class="stats"><div class="stat"><div class="label">TOTAL REPORTS</div><strong>${state.reports.length.toString().padStart(2,'0')}</strong><span>Stored on this computer</span></div><div class="stat"><div class="label">IN PROGRESS</div><strong>${state.reports.filter(r=>r.status==='draft').length.toString().padStart(2,'0')}</strong><span>Ready to pick up where you left off</span></div><div class="stat"><div class="label">FINALIZED</div><strong>${state.reports.filter(r=>r.status==='final').length.toString().padStart(2,'0')}</strong><span>Completeness checks passed</span></div></div><div class="card"><div class="card-title"><h2>Report library</h2><input class="search" id="report-search" placeholder="Search property or client…" value="${e(search)}"></div>${reports.length?`<div class="table-wrap"><table class="table library-table"><thead><tr><th>PROPERTY</th><th>CLIENT</th><th>DATE</th><th>STATUS</th><th>ACTIONS</th></tr></thead><tbody>${reports.map(r=>`<tr data-report-id="${r.id}"><td data-label="Property"><b class="address">${e(r.address||'Address not entered')}</b><span class="muted tiny">${r.isDemo?'Demo · ':''}${r.sections.length} sections · ${r.findings.length} ${r.findings.length===1?'finding':'findings'}</span></td><td data-label="Client">${e(r.client||'Not entered')}</td><td data-label="Date">${e(r.date)}</td><td data-label="Status"><span class="badge ${r.status==='final'?'final':''}">${r.status==='final'?'Finalized':'In progress'}</span><div class="progress"><div style="width:${progress(r)}%"></div></div><span class="tiny muted">${progress(r)}% recorded</span></td><td class="library-actions-cell"><div class="actions library-actions" role="group" aria-label="Actions for ${e(r.address||'this report')}">${action('open-report','Open',`data-id="${r.id}"`,'small')}${action('preview','PDF Preview',`data-id="${r.id}" title="Open the printable report preview"`,'small')}${action('pdf','Export PDF',`data-id="${r.id}" title="Download this report as a PDF"`,'small')}${action('html','Export to Web Hosting',`data-id="${r.id}" title="Download index.html for upload to your web host"`,'small')}${action('duplicate-report','Copy',`data-id="${r.id}"`,'small quiet')}${action('delete-report','Delete',`data-id="${r.id}"`,'small quiet danger')}</div></td></tr>`).join('')}</tbody></table></div>`:`<div class="empty"><div class="empty-icon">▤</div><h2>${search?'No matching reports':'Your first report starts here'}</h2><p>Start with a reusable template. Complete the checklist, add findings and photos, then export a PDF or web report.</p>${action('new-report','＋ Create report','','primary')}</div>`}</div><p class="help">PDF Preview opens the printable report. Export to Web Hosting downloads an index.html file with embedded photos, ready to upload to your web host. Exporting does not publish the report.</p><p class="help">Saved locally. No online sign-in required. Keep a regular backup on a separate drive.</p>`;}
 function renderTemplates(){return head('YOUR INSPECTION SYSTEM','Your experience, built into every inspection.','Customize your scope, limitations, sections, and components. Template changes apply to new reports.')+`<div class="grid">${state.templates.map(t=>`<div class="card template-card"><div class="template-art">▦ &nbsp; ${t.sections.length.toString().padStart(2,'0')}</div><h2>${e(t.name)}</h2><p class="help">${t.sections.length} sections · ${t.sections.reduce((n,s)=>n+s.items.length,0)} components<br>Reusable template · Fully editable</p><div class="actions">${action('open-template','Edit template',`data-id="${t.id}"`,'primary')}${action('duplicate-template','Duplicate',`data-id="${t.id}"`)}${action('delete-template','Delete',`data-id="${t.id}"`,'quiet danger')}</div></div>`).join('')}</div><div class="callout">Templates provide your scope, limitations, report notice, and checklist structure. Inspection statuses and findings start blank for each property.</div>`;}
 function renderProfile(){const p=state.profile;return head('ONE INSPECTOR · ONE WORKSPACE','Your name. Your business. Your report.','One inspector profile for your independent business.',action('save','Save profile','','primary'))+`<div class="card"><div class="card-title"><h2>Inspector & business details</h2></div><div class="grid">${field('Inspector name','name',p.name,{scope:'profile'})}${field('Business name','business',p.business,{scope:'profile'})}${field('License number','license',p.license,{scope:'profile'})}${field('Email','email',p.email,{scope:'profile',type:'email'})}${field('Phone','phone',p.phone,{scope:'profile'})}${field('Website','website',p.website,{scope:'profile'})}${field('Business address','address',p.address,{scope:'profile',full:true})}</div></div><div class="card"><div class="card-title"><h2>Report logo</h2></div>${p.logo?`<img class="logo-preview" src="${e(p.logo)}" alt="Business logo">`:''}<div class="actions">${action('upload-logo','Choose logo')}${action('remove-logo','Remove logo','','quiet')}</div><p class="help">JPG, PNG, and WebP supported. Each report keeps a snapshot of your profile at creation. Update an existing report explicitly when needed.</p></div>`+renderSystemThemes();}
-function renderSettings(){return head('WRITING ASSISTANT','Your judgment. A little help with the words.','Connect only when you send a note. Review every draft before adding it to your report.')+`<div class="callout">Only the selected finding text is sent to your AI provider. The full report, contact fields, and photos stay local. API charges may apply. Review the draft before using it.</div><div class="card"><div class="card-title"><h2>AI provider · OpenAI-compatible</h2><span class="badge" id="key-status">Loading…</span></div><div class="grid"><label class="field full"><span>Full HTTPS endpoint</span><input id="api-endpoint" placeholder="https://api.openai.com/v1/chat/completions"></label><label class="field"><span>Model ID</span><input id="api-model" placeholder="Enter a model ID supported by your provider"></label><label class="field"><span>API key · Leave blank to keep the saved key</span><input id="api-key" type="password" autocomplete="new-password" placeholder="Encrypted locally for your Windows account"></label></div><div class="actions" style="margin-top:22px">${action('save-api','Save API settings','','primary')}${action('clear-key','Remove saved key','','quiet danger')}</div><p class="help">Uses the Chat Completions protocol. Your key is encrypted for your Windows account and excluded from reports and backups. Enter a new key when changing providers.</p></div><div class="card"><div class="card-title"><h2>Local data & backups</h2></div><p class="help code">${e(dataDir)}</p><div class="actions">${action('save','Save now')}${action('backup','Export backup')}${action('restore','Restore backup')}</div><p class="help">Backups include your profile, templates, reports, and photos, but no API key. A recovery snapshot is retained before every save. Snapshots are not automatically removed in this version.</p></div><div class="card"><h2>Publish a web report</h2><p class="help">In Reports, use Export to Web Hosting beside the report to download index.html, then upload it to a static host such as Cloudflare Pages. Publishing requires internet access and your own hosting account. The file includes the report and photos. Public hosting does not include password protection by default.</p><a href="https://developers.cloudflare.com/pages/get-started/direct-upload/" target="_blank" rel="noreferrer">Read the Cloudflare upload guide ↗</a></div>`;}
-async function loadSettings(){try{const s=await api('/api/settings');if(route!=='settings')return;$('#api-endpoint').value=s.endpoint;$('#api-model').value=s.model;$('#key-status').textContent=s.hasKey?'Key encrypted & saved':'No key configured';}catch(err){toast(err.message,true);}}
+function renderSettings(){return head('WRITING ASSISTANT','Your judgment. A little help with the words.','Connect only when you send a note. Review every draft before adding it to your report.')+`<div class="callout">AI Revise sends all text in the current note to your AI provider to improve spelling, grammar, and clarity. Separate contact fields, photos, and other notes are not sent. API charges may apply. Review the revised wording before saving.</div><div class="card"><div class="card-title"><h2>AI provider · OpenAI-compatible</h2><span class="badge" id="key-status">Loading…</span></div><div class="grid"><label class="field full"><span>Full HTTPS endpoint</span><input id="api-endpoint" placeholder="https://api.openai.com/v1/chat/completions"></label><label class="field"><span>Model ID</span><input id="api-model" placeholder="Enter a model ID supported by your provider"></label><label class="field"><span>API key · Leave blank to keep the saved key</span><input id="api-key" type="password" autocomplete="new-password" placeholder="Encrypted locally for your Windows account"></label></div><div class="actions" style="margin-top:22px">${action('save-api','Save API settings','','primary')}${action('clear-key','Remove saved key','','quiet danger')}</div><p class="help">Uses the Chat Completions protocol. Your key is encrypted for your Windows account and excluded from reports and backups. Enter a new key when changing providers.</p></div><div class="card" aria-labelledby="ai-instructions-title"><div class="card-title"><h2 id="ai-instructions-title">AI Instructions</h2></div><p class="help">Set your own writing style, level of detail, and word count. Every AI Revise uses your saved instructions for all reports.</p><label class="field full"><span>Your instructions for AI Revise</span><textarea id="ai-instructions" rows="6" maxlength="10000" aria-describedby="ai-instructions-help ai-instructions-status" placeholder="Loading your instructions…" disabled></textarea></label><p class="help" id="ai-instructions-help">Write in English or Chinese. Examples: “Keep the wording concise and correct spelling and grammar.” or “Use more than 50 English words, with clear, precise wording.” AI is instructed to preserve inspection facts and meaning, including when meeting a length target. Leave blank to restore the default instructions.</p><div class="actions">${action('save-ai-instructions','Save AI instructions','disabled','primary')}</div><p class="help" id="ai-instructions-status" role="status">Loading…</p></div><div class="card"><div class="card-title"><h2>Local data & backups</h2></div><p class="help code">${e(dataDir)}</p><div class="actions">${action('save','Save now')}${action('backup','Export backup')}${action('restore','Restore backup')}</div><p class="help">Backups include your profile, templates, reports, and photos, but no API key. A recovery snapshot is retained before every save. Snapshots are not automatically removed in this version.</p></div><div class="card"><h2>Publish a web report</h2><p class="help">In Reports, use Export to Web Hosting beside the report to download index.html, then upload it to a static host such as Cloudflare Pages. Publishing requires internet access and your own hosting account. The file includes the report and photos. Public hosting does not include password protection by default.</p><a href="https://developers.cloudflare.com/pages/get-started/direct-upload/" target="_blank" rel="noreferrer">Read the Cloudflare upload guide ↗</a></div>`;}
+async function loadSettings(){
+ const box=$('#ai-instructions');
+ try{
+  const s=await api('/api/settings');if(route!=='settings'||$('#ai-instructions')!==box)return;
+  $('#api-endpoint').value=s.endpoint;$('#api-model').value=s.model;$('#key-status').textContent=s.hasKey?'Key encrypted & saved':'No key configured';
+  const supported=s.aiRevision==='polish-v2';box.disabled=!supported;box.value=s.instructions||'';box.placeholder=supported?'Enter your instructions for every AI revision.':'Restart HomeKanban to activate AI Instructions.';
+  $('[data-action="save-ai-instructions"]').disabled=!supported;
+  $('#ai-instructions-status').textContent=supported?'Saved instructions are used automatically each time you click AI Revise.':'Save your work, then exit and reopen HomeKanban to activate AI Instructions.';
+ }catch(err){if(route==='settings'&&$('#ai-instructions')===box)$('#ai-instructions-status').textContent='Unable to load instructions. Reopen AI & settings to try again.';toast(err.message,true);}
+}
+async function saveAIInstructions(){
+ const box=$('#ai-instructions'),instructions=box.value,statusBox=$('#ai-instructions-status');
+ statusBox.textContent='Saving instructions…';
+ try{
+  const result=await api('/api/ai-instructions','PUT',{instructions});
+  if(route!=='settings'||$('#ai-instructions')!==box)return;
+  if(box.value===instructions){box.value=result.instructions;statusBox.textContent='Saved. Your next AI Revise will use these instructions.';}
+  else statusBox.textContent='Previous instructions saved. Your latest edits are not saved yet.';
+ }catch(error){if(route==='settings'&&$('#ai-instructions')===box)statusBox.textContent='Instructions were not saved. '+error.message;throw error;}
+}
+
 function findingComponent(r,f){const section=r.sections.find(s=>s.id===f.sectionId),item=section?.items.find(i=>i.id===f.itemId);return item?{section,item}:null;}
 function reportItem(id){return report().sections.flatMap(s=>s.items).find(i=>i.id===id);}
 function toggleSectionRating(id,rating){
@@ -154,17 +174,123 @@ document.addEventListener('click',ev=>{
 function renderFindingEditor(r,f){
  return `<article class="finding source-finding" id="check-finding-${e(f.id)}" tabindex="-1"><div class="finding-head"><h4>Note #${findingNumber(r,f)} · ${e(f.location||findingContext(r,f))}</h4>${renderNoteActions(f,findingNumber(r,f))}</div><span class="badge">${e(f.category)}</span><p class="narrative">${f.text?Wording.render(f):'Photo documentation · narrative not yet entered.'}</p>${f.photos.length?`<div class="source-note-photos">${f.photos.map((ph,index)=>renderReportPhoto(f,ph,index)).join('')}</div>`:''}<div class="finding-links">${f.includeInSummary!==false?`<a href="#summary-${e(f.id)}">↑ Text summary</a><a href="#finding-${e(f.id)}">↑ Summary and pictures</a>`:'<span class="help">System checks only · not included in summaries</span>'}</div></article>`;
 }
+// Choice colors describe purpose, independently of the inspection status.
+// Keep the stored "normal" key compatible with existing workspaces; its display category is now Others.
+const choiceKinds={description:'Material / description',concern:'Issue / concern',normal:'Others'};
+let choiceDraft=null;
+const removedReportComponents=new Map();
+function choiceKind(item,label){const kind=Object.hasOwn(item.choiceTypes||{},label)?item.choiceTypes[label]:'';return Object.hasOwn(choiceKinds,kind)?kind:'description';}
+function choiceBadge(item,label,selected=false){return `<span class="chip choice-chip ${selected?'selected':''}" data-choice-type="${choiceKind(item,label)}"><span class="choice-mark" aria-hidden="true">${selected?'✓':''}</span>${e(label)}</span>`;}
+function renderTemplateComponent(i){return `<div class="template-component" data-component-editor="${e(i.id)}"><div class="template-component-heading"><label class="field"><span>Component name</span><input aria-label="Component name" data-template-item="${e(i.id)}" data-template-field="name" value="${e(i.name)}"></label><div class="section-controls">${action('move-item',controlIcon('up'),`aria-label="Move ${e(i.name)} up" data-id="${e(i.id)}" data-delta="-1"`)}${action('move-item',controlIcon('down'),`aria-label="Move ${e(i.name)} down" data-id="${e(i.id)}" data-delta="1"`)}${action('delete-item',controlIcon('remove'),`aria-label="Delete ${e(i.name)} from template" data-id="${e(i.id)}"`,'danger')}</div></div><div class="template-choice-preview chips" aria-label="Choices for ${e(i.name)}">${i.options.map(v=>choiceBadge(i,v)).join('')||'<span class="help">No choices yet.</span>'}</div>${action('edit-choices','Edit choices & colors',`data-id="${e(i.id)}" aria-label="Edit choices and colors for ${e(i.name)}"`,'tiny')}</div>`;}
+function editChoices(id){
+ const item=selectedSection()?.items.find(i=>i.id===id);if(!item)return;
+ choiceDraft={templateId:currentId,sectionId,itemId:id,name:item.name,choices:item.options.map(text=>({text,kind:choiceKind(item,text)}))};
+ modal(`<h2>Edit choices & colors</h2><p>${e(item.name)}</p><p class="help">Drag the square dots or use the arrows to reorder choices. Select a color for each purpose. Reports allow multiple selections and show every choice; only checked choices apply. Colors do not set I, NI, NP, or D.</p><div id="choice-rows" role="list" aria-label="Choice order"></div><p id="choice-order-status" class="sr-only" role="status" aria-live="polite"></p><p id="choice-error" class="error" role="alert"></p><div class="actions">${action('add-choice','＋ Add choice')}${action('close-dialog','Cancel')}${action('save-choices','Save choices','','primary')}</div>`);renderChoiceRows();
+}
+function renderChoiceRows(){
+ $('#choice-rows').innerHTML=choiceDraft.choices.map((v,n)=>`<div class="choice-edit-row" data-choice-row="${n}" role="listitem"><button type="button" class="choice-drag-handle" data-choice-reorder="${n}" aria-label="Reorder choice ${n+1}" title="Drag to reorder. Alt+Up or Alt+Down also moves this choice.">${squareGrip()}</button><label class="field choice-text-field"><span>Choice ${n+1}</span><input data-choice-label="${n}" aria-label="Choice ${n+1} text" maxlength="500" value="${e(v.text)}"></label><label class="field choice-purpose-field"><span>Purpose / color</span><select data-choice-kind="${n}" aria-label="Choice ${n+1} purpose">${Object.entries(choiceKinds).map(([k,label])=>`<option value="${k}" ${k===v.kind?'selected':''}>${label}</option>`).join('')}</select></label><span class="choice-swatch" data-choice-type="${v.kind}" aria-hidden="true"></span><div class="choice-row-actions">${action('move-choice',controlIcon('up'),`data-index="${n}" data-delta="-1" aria-label="Move choice ${n+1} up" ${n===0?'disabled':''}`)}${action('move-choice',controlIcon('down'),`data-index="${n}" data-delta="1" aria-label="Move choice ${n+1} down" ${n===choiceDraft.choices.length-1?'disabled':''}`)}${action('remove-choice',controlIcon('remove'),`data-index="${n}" aria-label="Remove choice ${n+1}"`,'danger')}</div></div>`).join('');
+ $('[data-action="add-choice"]').disabled=choiceDraft.choices.length>=100;
+}
+function controlIcon(kind){const paths={up:'M12 19V5m-5 5 5-5 5 5',down:'M12 5v14m-5-5 5 5 5-5',remove:'m6 6 12 12M18 6 6 18'};return `<svg class="control-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="${paths[kind]}"/></svg>`;}
+function squareGrip(){return '<svg class="square-grip-icon" viewBox="0 0 8 12" aria-hidden="true" focusable="false"><rect x="0" y="0" width="3" height="3"/><rect x="5" y="0" width="3" height="3"/><rect x="0" y="4.5" width="3" height="3"/><rect x="5" y="4.5" width="3" height="3"/><rect x="0" y="9" width="3" height="3"/><rect x="5" y="9" width="3" height="3"/></svg>';}
+function activeChoiceDraft(){return choiceDraft&&route==='template-editor'&&choiceDraft.templateId===currentId;}
+function moveChoice(from,to,delta){
+ if(!activeChoiceDraft()||!Number.isInteger(from)||!Number.isInteger(to)||from<0||from>=choiceDraft.choices.length||to<0||to>=choiceDraft.choices.length||from===to)return false;
+ const dialog=$('#dialog'),scrollTop=dialog.scrollTop;
+ choiceDraft.choices.splice(to,0,choiceDraft.choices.splice(from,1)[0]);renderChoiceRows();dialog.scrollTop=scrollTop;
+ const arrow=delta&&$(`[data-action="move-choice"][data-index="${to}"][data-delta="${delta}"]`),handle=$(`[data-choice-reorder="${to}"]`);
+ (arrow&&!arrow.disabled?arrow:handle)?.focus({preventScroll:true});
+ $('#choice-order-status').textContent=`Choice moved to position ${to+1}. Select Save choices to keep this order.`;
+ return true;
+}
+let choicePointer=null,choiceScrollFrame=null;
+function markChoiceDrop(){
+ const drag=choicePointer;
+ document.querySelectorAll('.choice-edit-row').forEach(row=>row.classList.remove('drop-before','drop-after'));
+ if(!drag?.active||!activeChoiceDraft()||drag.draft!==choiceDraft)return null;
+ const row=document.elementFromPoint(drag.clientX,drag.clientY)?.closest('.choice-edit-row');
+ if(!row||!row.closest('#choice-rows'))return null;
+ const rect=row.getBoundingClientRect();row.classList.add(drag.clientY<rect.top+rect.height/2?'drop-before':'drop-after');return row;
+}
+function scrollChoicePointer(){
+ choiceScrollFrame=null;const drag=choicePointer;if(!drag?.active||!activeChoiceDraft()||drag.draft!==choiceDraft)return;
+ const dialog=$('#dialog'),rect=dialog.getBoundingClientRect();
+ if(drag.clientX<rect.left||drag.clientX>rect.right)return;
+ const step=drag.clientY<rect.top+36?-14:drag.clientY>rect.bottom-36?14:0;
+ if(step){dialog.scrollTop+=step;markChoiceDrop();choiceScrollFrame=requestAnimationFrame(scrollChoicePointer);}
+}
+function stopChoicePointer(){
+ const drag=choicePointer;if(!drag)return;choicePointer=null;
+ if(choiceScrollFrame!==null){cancelAnimationFrame(choiceScrollFrame);choiceScrollFrame=null;}
+ if(drag.handle.hasPointerCapture?.(drag.pointerId))drag.handle.releasePointerCapture(drag.pointerId);
+ document.querySelectorAll('.choice-edit-row').forEach(row=>row.classList.remove('dragging','drop-before','drop-after'));
+}
+function choicePointerDown(ev){
+ const handle=ev.target.closest('[data-choice-reorder]');if(!handle||!activeChoiceDraft()||ev.button!==0)return false;
+ if(choicePointer)return true;
+ const index=Number(handle.dataset.choiceReorder);if(!Number.isInteger(index)||!choiceDraft.choices[index])return false;
+ ev.preventDefault();handle.focus({preventScroll:true});
+ choicePointer={draft:choiceDraft,index,handle,row:handle.closest('.choice-edit-row'),pointerId:ev.pointerId,x:ev.clientX,y:ev.clientY,clientX:ev.clientX,clientY:ev.clientY,active:false};handle.setPointerCapture(ev.pointerId);return true;
+}
+function choicePointerMove(ev){
+ const drag=choicePointer;if(!drag||ev.pointerId!==drag.pointerId)return false;
+ drag.clientX=ev.clientX;drag.clientY=ev.clientY;if(!drag.active&&Math.hypot(drag.clientX-drag.x,drag.clientY-drag.y)<5)return true;
+ drag.active=true;drag.row.classList.add('dragging');ev.preventDefault();markChoiceDrop();
+ if(choiceScrollFrame===null)choiceScrollFrame=requestAnimationFrame(scrollChoicePointer);return true;
+}
+function choicePointerUp(ev){
+ const drag=choicePointer;if(!drag||ev.pointerId!==drag.pointerId)return false;
+ drag.clientX=ev.clientX;drag.clientY=ev.clientY;const row=markChoiceDrop();stopChoicePointer();
+ if(row&&drag.draft===choiceDraft&&activeChoiceDraft()){
+  const target=Number(row.dataset.choiceRow),rect=row.getBoundingClientRect(),insertion=target+(ev.clientY>=rect.top+rect.height/2?1:0);
+  moveChoice(drag.index,insertion-(drag.index<insertion?1:0));
+ }
+ return true;
+}
+function choiceReorderKey(ev){
+ if(ev.key==='Escape'&&choicePointer){ev.preventDefault();stopChoicePointer();return true;}
+ const handle=ev.target?.closest('[data-choice-reorder]');if(!handle||!activeChoiceDraft()||!ev.altKey||!['ArrowUp','ArrowDown'].includes(ev.key))return false;
+ ev.preventDefault();const index=Number(handle.dataset.choiceReorder);moveChoice(index,index+(ev.key==='ArrowUp'?-1:1));return true;
+}
+$('#dialog').addEventListener('cancel',()=>{stopChoicePointer();choiceDraft=null;});
+function saveChoices(){
+ if(!choiceDraft||route!=='template-editor'||currentId!==choiceDraft.templateId)return;
+ const section=template().sections.find(s=>s.id===choiceDraft.sectionId),item=section?.items.find(i=>i.id===choiceDraft.itemId);if(!item)return;
+ const choices=choiceDraft.choices.map(c=>({...c,text:c.text.trim()}));
+ if(choices.some(c=>!c.text||c.text.length>500||!Object.hasOwn(choiceKinds,c.kind))){$('#choice-error').textContent='Enter text for every choice (up to 500 characters), or remove the empty row.';return;}
+ if(new Set(choices.map(c=>c.text)).size!==choices.length){$('#choice-error').textContent='Each choice needs a different label.';return;}
+ item.options=choices.map(c=>c.text);item.choiceTypes=Object.fromEntries(choices.map(c=>[c.text,c.kind]));
+ item.selected=item.selected.filter(v=>item.options.includes(v));choiceDraft=null;changed();closeModal();render();toast('Template choices updated. New reports will use these choices and colors.');
+}
+function removeReportComponent(sectionId,itemId){
+ if(route!=='editor')return false;
+ const r=report(),section=r?.sections.find(s=>s.id===sectionId),index=section?.items.findIndex(i=>i.id===itemId);if(index===undefined||index<0)return false;
+ const [item]=section.items.splice(index,1),linked=r.findings.filter(f=>f.sectionId===sectionId&&f.itemId===itemId);
+ const stack=removedReportComponents.get(r.id)||[];stack.push({sectionId,index,item,linkedIds:linked.map(f=>f.id)});removedReportComponents.set(r.id,stack);
+ for(const f of linked){delete f.sectionId;delete f.itemId;}
+ changed();return true;
+}
+function restoreReportComponent(){
+ if(route!=='editor')return false;
+ const r=report(),stack=removedReportComponents.get(r.id),entry=stack?.at(-1);if(!entry)return false;
+ const section=r.sections.find(s=>s.id===entry.sectionId);if(!section||section.items.some(i=>i.id===entry.item.id))return false;
+ section.items.splice(Math.min(entry.index,section.items.length),0,entry.item);
+ for(const id of entry.linkedIds){const f=r.findings.find(f=>f.id===id);if(f&&f.origin!=='summary'&&f.sectionId===undefined&&f.itemId===undefined){f.sectionId=entry.sectionId;f.itemId=entry.item.id;}}
+ stack.pop();changed();return true;
+}
+function renderRemovedComponentUndo(r){const entry=removedReportComponents.get(r.id)?.at(-1);return entry?`<div class="component-undo" role="status"><span>Removed ${e(entry.item.name)} from this report. Linked notes and photos are kept in Other observations.</span>${action('undo-remove-component','Undo removal')}</div>`:'';}
+
 function renderCheckComponent(r,s,i,si,ii){
- return `<div class="check-row ${i.legacyRating&&!i.rating?'needs-review':''}" id="check-item-${si}-${ii}" tabindex="-1"><div class="rating-group" role="group" aria-label="${e(i.name)} inspection status">${Object.entries(ratings).map(([k,v])=>`<button class="rating ${k} ${i.rating===k?'active':''}" data-rating="${k}" data-item="${e(i.id)}" title="${k} = ${e(v)}" aria-label="${e(i.name)}: ${k} = ${e(v)}" aria-pressed="${i.rating===k}"><span class="status-box" aria-hidden="true">${i.rating===k?'✓':k}</span></button>`).join('')}</div><div class="component-body"><div class="component-heading"><div class="check-name">${e(i.name)}</div>${action('component-finding','<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 3H5v18h14V8l-5-5Z"/><path d="M14 3v5h5M8 14h8M12 10v8"/></svg>',`type="button" aria-label="Add note" data-tooltip="Add note" data-section-id="${e(s.id)}" data-item-id="${e(i.id)}"`,'report-tool component-add-note')}</div>${i.legacyRating&&!i.rating?`<p class="review-note">Previous classification: ${e(i.legacyRating.label)}. Select a new status to confirm.</p>`:''}<div class="chips">${i.options.map((v,n)=>`<button class="chip ${i.selected.includes(v)?'selected':''}" data-option="${n}" data-item="${e(i.id)}" aria-pressed="${i.selected.includes(v)}">${i.selected.includes(v)?'✓ ':''}${e(v)}</button>`).join('')}</div><div class="check-notes"><input aria-label="Additional notes / materials" title="Additional notes / materials" data-item-field="note" data-item="${e(i.id)}" value="${e(i.note)}" placeholder="Additional notes / materials"><input aria-label="Limitation" title="Limitation" class="${i.rating==='NI'&&!i.limitation.trim()?'required':''}" ${i.rating==='NI'?'aria-required="true"':''} data-item-field="limitation" data-item="${e(i.id)}" value="${e(i.limitation)}" placeholder="Limitation"></div><div class="component-findings">${r.findings.filter(f=>f.sectionId===s.id&&f.itemId===i.id).map(f=>renderFindingEditor(r,f)).join('')}</div></div></div>`;
+ return `<div class="check-row ${i.legacyRating&&!i.rating?'needs-review':''}" id="check-item-${si}-${ii}" tabindex="-1"><div class="component-body"><div class="component-heading"><div class="check-name">${action('remove-report-component','×',`type="button" aria-label="Remove ${e(i.name)} from this report" title="Remove component from this report" data-section-id="${e(s.id)}" data-item-id="${e(i.id)}"`,'component-remove')}${e(i.name)}</div></div>${i.legacyRating&&!i.rating?`<p class="review-note">Previous classification: ${e(i.legacyRating.label)}. Select a new status to confirm.</p>`:''}<div class="chips">${i.options.map((v,n)=>`<button class="chip choice-chip ${i.selected.includes(v)?'selected':''}" data-choice-type="${choiceKind(i,v)}" data-option="${n}" data-item="${e(i.id)}" aria-pressed="${i.selected.includes(v)}" title="${e(choiceKinds[choiceKind(i,v)])}"><span class="choice-mark" aria-hidden="true">${i.selected.includes(v)?'✓':''}</span>${e(v)}</button>`).join('')}</div></div><div class="rating-group" role="group" aria-label="${e(i.name)} inspection status">${Object.entries(ratings).map(([k,v])=>`<button class="rating ${k} ${i.rating===k?'active':''}" data-rating="${k}" data-item="${e(i.id)}" title="${k} = ${e(v)}" aria-label="${e(i.name)}: ${k} = ${e(v)}" aria-pressed="${i.rating===k}"><span class="status-box" aria-hidden="true">${i.rating===k?'✓':k}</span></button>`).join('')}</div><div class="component-input-row"><div class="check-notes"><input aria-label="Additional notes / materials" title="Additional notes / materials" data-item-field="note" data-item="${e(i.id)}" value="${e(i.note)}" placeholder="Additional notes / materials"><input aria-label="Limitation" title="Limitation" class="${i.rating==='NI'&&!i.limitation.trim()?'required':''}" ${i.rating==='NI'?'aria-required="true"':''} data-item-field="limitation" data-item="${e(i.id)}" value="${e(i.limitation)}" placeholder="Limitation"></div>${action('component-finding','<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 3H5v18h14V8l-5-5Z"/><path d="M14 3v5h5M8 14h8M12 10v8"/></svg>',`type="button" aria-label="Add note" data-tooltip="Add note" data-section-id="${e(s.id)}" data-item-id="${e(i.id)}"`,'report-tool component-add-note')}</div><div class="component-findings">${r.findings.filter(f=>f.sectionId===s.id&&f.itemId===i.id).map(f=>renderFindingEditor(r,f)).join('')}</div></div>`;
 }
 function sectionNavName(name){if(/^Attic\s*&\s*Insulation$/i.test(name.trim()))return 'Attic';if(/^Basement\s*(?:&|and)\s*Crawl\s*space$/i.test(name.trim()))return 'BSMT & Crawl';return name;}
 function renderSystemSectionLink(s,si){
  const total=s.items.length,recorded=s.items.filter(i=>Object.hasOwn(ratings,i.rating)).length,complete=total>0&&recorded===total;
  const label=`${s.name}: ${recorded}/${total} statuses selected. ${complete?'All statuses selected':total?'Statuses incomplete':'No checklist components'}.`;
- return `<a class="system-link" href="#check-section-${si}" title="${e(label)}" aria-label="${e(label)}"><span class="section-progress ${complete?'is-complete':'is-incomplete'}" aria-hidden="true"></span><span class="system-number">${String(si+1).padStart(2,'0')}</span><span class="system-label">${e(sectionNavName(s.name))}</span><span class="count">${recorded}/${total}</span></a>`;
+ return `<div class="report-section-row" data-report-section="${e(s.id)}" draggable="true" role="listitem"><button type="button" class="report-section-handle ${complete?'is-complete':'is-incomplete'}" id="report-reorder-${e(s.id)}" data-report-reorder="${e(s.id)}" aria-label="${e('Reorder '+s.name)}" title="${e('Drag to reorder '+s.name+'. Alt+Up or Alt+Down also moves this section. '+label)}">${squareGrip()}</button><a class="system-link" href="#check-section-${si}" draggable="false" title="${e(label)}" aria-label="${e(label)}"><span class="system-label">${e(sectionNavName(s.name))}</span></a></div>`;
 }
 function renderSystemChecks(r){
- return `<section id="system-checks" class="report-block" tabindex="-1"><div class="block-heading"><div class="eyebrow">SYSTEM INSPECTION</div><h2>System checks</h2><p class="help">Click I, NI, NP, or D at the top of a section to set all its components, then adjust individual items as needed. Click the highlighted status again to clear the section. Use Add note to document an observed problem.</p></div><div class="legend">${Object.entries(ratings).map(([k,v])=>`<span><b>${k}</b> = ${e(v)}</span>`).join('')}</div>${r.sections.some(s=>s.items.some(i=>i.legacyRating&&!i.rating))?'<div class="callout">Previous checklist classifications need review. Your notes, choices, and photos have been kept. Select I, NI, NP, or D for each highlighted component.</div>':''}<div class="editor-layout"><aside class="section-nav system-nav" aria-label="System sections"><a href="#findings-photos">Summaries</a>${r.sections.map(renderSystemSectionLink).join('')}<a href="#other-observations">Other observations</a></aside><div class="system-sections">${r.sections.map((s,si)=>`<section class="card checklist-card" id="check-section-${si}" tabindex="-1"><div class="section-title"><h3>${e(s.name)}</h3><a class="tiny" href="#findings-photos">↑ Summaries</a></div><div class="checklist-columns">${renderSectionRatings(s,si)}<b>COMPONENT / INSPECTION NOTES</b></div>${s.items.map((i,ii)=>renderCheckComponent(r,s,i,si,ii)).join('')}${s.disclaimer?`<div class="callout" style="margin-top:20px">${e(s.disclaimer)}</div>`:''}</section>`).join('')}<section class="card" id="other-observations" tabindex="-1"><div class="card-title"><h3>Other observations</h3>${action('add-finding','<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 3H5v18h14V8l-5-5Z"/><path d="M14 3v5h5M8 14h8M12 10v8"/></svg>','type="button" aria-label="Add note" data-tooltip="Add note"','report-tool component-add-note')}</div><p class="help">Checklist notes without a component link are kept here.</p>${r.findings.filter(f=>f.origin!=='summary'&&!findingComponent(r,f)).map(f=>renderFindingEditor(r,f)).join('')}</section><p class="help">Choose one status per component. I records that the component was inspected; use D when a deficiency is observed. NI requires a reason. NP means the component is not present. Selecting a material does not record an inspection status.</p></div></div></section>`;
+ return `<section id="system-checks" class="report-block" tabindex="-1"><div class="block-heading"><div class="eyebrow">SYSTEM INSPECTION</div><h2>System checks</h2><p class="help">Click I, NI, NP, or D at the top of a section to set all its components, then adjust individual items as needed. Click the highlighted status again to clear the section. Use Add note to document an observed problem.</p></div><div class="legend">${Object.entries(ratings).map(([k,v])=>`<span><b>${k}</b> = ${e(v)}</span>`).join('')}</div>${r.sections.some(s=>s.items.some(i=>i.legacyRating&&!i.rating))?'<div class="callout">Previous checklist classifications need review. Your notes, choices, and photos have been kept. Select I, NI, NP, or D for each highlighted component.</div>':''}<div class="editor-layout"><aside class="section-nav system-nav" aria-label="System sections"><a href="#findings-photos">Summaries</a><div class="report-section-list" role="list" aria-label="Report section order">${r.sections.map(renderSystemSectionLink).join('')}</div><span id="report-order-status" class="visually-hidden" role="status" aria-live="polite"></span><a href="#other-observations">Other observations</a></aside><div class="system-sections">${renderRemovedComponentUndo(r)}${r.sections.map((s,si)=>`<section class="card checklist-card" data-report-section-block="${e(s.id)}" id="check-section-${si}" tabindex="-1"><div class="section-title"><h3>${e(s.name)}</h3><a class="tiny" href="#findings-photos">↑ Summaries</a></div><div class="checklist-columns"><b>COMPONENT / INSPECTION NOTES</b>${renderSectionRatings(s,si)}<span class="component-action-spacer" aria-hidden="true"></span></div>${s.items.map((i,ii)=>renderCheckComponent(r,s,i,si,ii)).join('')}${s.disclaimer?`<div class="callout" style="margin-top:20px">${e(s.disclaimer)}</div>`:''}</section>`).join('')}<section class="card" id="other-observations" tabindex="-1"><div class="card-title"><h3>Other observations</h3>${action('add-finding','<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 3H5v18h14V8l-5-5Z"/><path d="M14 3v5h5M8 14h8M12 10v8"/></svg>','type="button" aria-label="Add note" data-tooltip="Add note"','report-tool component-add-note')}</div><p class="help">Checklist notes without a component link are kept here.</p>${r.findings.filter(f=>f.origin!=='summary'&&!findingComponent(r,f)).map(f=>renderFindingEditor(r,f)).join('')}</section><p class="help">Choose one status per component. I records that the component was inspected; use D when a deficiency is observed. NI requires a reason. NP means the component is not present. Selecting a material does not record an inspection status.</p></div></div></section>`;
 }
 function renderReportTools(){
  const svg=paths=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${paths}</svg>`;
@@ -181,9 +307,9 @@ function renderEditor(){
  ${renderSystemChecks(r)}`;
 }
 
-function renderTemplate(){const t=template();const sec=t.sections.find(s=>s.id===sectionId)||t.sections[0];sectionId=sec.id;return `<button class="back" data-nav="templates">← Back to templates</button>`+head('TEMPLATE EDITOR',e(t.name),'Reorder sections and edit components and choices. Existing reports keep their own template snapshot.',action('save','Save template','','primary'))+`<div class="card"><div class="grid">${field('Template name','name',t.name,{scope:'template'})}${field('Scope & limitations','scope',t.scope,{scope:'template',textarea:true,full:true})}<p class="help full template-scope-help">Saved with this template and automatically filled in when you create a report from it. You can edit the text for each property in Property details. Existing reports keep their saved wording.</p>${field('Report notice','notice',t.notice,{scope:'template',textarea:true,full:true})}</div></div><div class="editor-layout template-layout">${renderTemplateSections(t)}<div class="card"><div class="section-title"><h2>Edit section</h2><div class="section-controls">${action('delete-section','Delete section','','danger')}</div></div><div class="grid" style="margin-top:20px">${field('Section name','name',sec.name,{scope:'section',full:true})}${field('Section notice / limitations','disclaimer',sec.disclaimer,{scope:'section',textarea:true,full:true})}</div><p class="help">Separate choices with |, for example: Operated | Not tested in summer. A choice does not replace an inspection status or the actual reason for NI (Not Inspected).</p>${sec.items.map((i,n)=>`<div class="section-edit-row"><input aria-label="Component name" data-template-item="${i.id}" data-template-field="name" value="${e(i.name)}"><input aria-label="Component choices" data-template-item="${i.id}" data-template-field="options" value="${e(i.options.join(' | '))}" placeholder="Choice one | Choice two"><div class="section-controls">${action('move-item','↑',`data-id="${i.id}" data-delta="-1"`)}${action('move-item','↓',`data-id="${i.id}" data-delta="1"`)}${action('delete-item','×',`data-id="${i.id}"`,'danger')}</div></div>`).join('')}<div class="actions" style="margin-top:20px">${action('add-item','＋ Add component')}</div></div></div>`;}
+function renderTemplate(){const t=template();const sec=t.sections.find(s=>s.id===sectionId)||t.sections[0];sectionId=sec.id;return `<button class="back" data-nav="templates">← Back to templates</button>`+head('TEMPLATE EDITOR',e(t.name),'Reorder sections and edit components and choices. Existing reports keep their own template snapshot.',action('save','Save template','','primary'))+`<div class="card"><div class="grid">${field('Template name','name',t.name,{scope:'template'})}${field('Scope & limitations','scope',t.scope,{scope:'template',textarea:true,full:true})}<p class="help full template-scope-help">Saved with this template and automatically filled in when you create a report from it. You can edit the text for each property in Property details. Existing reports keep their saved wording.</p>${field('Report notice','notice',t.notice,{scope:'template',textarea:true,full:true})}</div></div><div class="editor-layout template-layout">${renderTemplateSections(t)}<div class="card"><div class="section-title"><h2>Edit section</h2><div class="section-controls">${action('delete-section','Delete section','','danger')}</div></div><div class="grid" style="margin-top:20px">${field('Section name','name',sec.name,{scope:'section',full:true})}${field('Section notice / limitations','disclaimer',sec.disclaimer,{scope:'section',textarea:true,full:true})}</div><p class="help">Use Edit choices & colors for each component. Green is for materials or descriptions, amber for issues or concerns, and gray for others. All choices appear in the editor, PDF and Web Report; only checked choices apply. Multiple selections are allowed. Inspection status checkboxes stay on the right.</p>${sec.items.map(renderTemplateComponent).join('')}<div class="actions" style="margin-top:20px">${action('add-item','＋ Add component')}</div></div></div>`;}
 function renderTemplateSections(t){
- return `<aside class="section-nav template-section-nav" aria-label="Template sections"><h3>Section order</h3><p class="help">Drag a section up or down, or use its arrows.</p><div id="template-section-list" role="list" aria-label="Template section order">${t.sections.map((s,i)=>`<div class="template-section-row ${s.id===sectionId?'active':''}" data-template-section="${e(s.id)}" draggable="true" role="listitem"><span class="section-drag-handle" aria-hidden="true" title="Drag to reorder">⠿</span><button class="template-section-select" data-section="${e(s.id)}" id="template-select-${e(s.id)}" ${s.id===sectionId?'aria-current="true"':''} title="${e(s.name)}"><span class="section-position">${i+1}.</span><span>${e(s.name)}</span></button><div class="template-row-arrows">${action('move-section','↑',`id="template-up-${e(s.id)}" data-id="${e(s.id)}" data-delta="-1" title="Move ${e(s.name)} up" aria-label="Move ${e(s.name)} up" ${i===0?'disabled':''}`,'template-section-move')}${action('move-section','↓',`id="template-down-${e(s.id)}" data-id="${e(s.id)}" data-delta="1" title="Move ${e(s.name)} down" aria-label="Move ${e(s.name)} down" ${i===t.sections.length-1?'disabled':''}`,'template-section-move')}</div></div>`).join('')}</div>${action('add-section','＋ Add section','','small template-add-section')}</aside>`;
+ return `<aside class="section-nav template-section-nav" aria-label="Template sections"><h3>Section order</h3><p class="help">Drag a section up or down, or use its arrows.</p><div id="template-section-list" role="list" aria-label="Template section order">${t.sections.map((s,i)=>`<div class="template-section-row ${s.id===sectionId?'active':''}" data-template-section="${e(s.id)}" draggable="true" role="listitem"><span class="section-drag-handle" aria-hidden="true" title="Drag to reorder">${squareGrip()}</span><button class="template-section-select" data-section="${e(s.id)}" id="template-select-${e(s.id)}" ${s.id===sectionId?'aria-current="true"':''} title="${e(s.name)}"><span class="section-position">${i+1}.</span><span>${e(s.name)}</span></button><div class="template-row-arrows">${action('move-section',controlIcon('up'),`id="template-up-${e(s.id)}" data-id="${e(s.id)}" data-delta="-1" title="Move ${e(s.name)} up" aria-label="Move ${e(s.name)} up" ${i===0?'disabled':''}`,'template-section-move')}${action('move-section',controlIcon('down'),`id="template-down-${e(s.id)}" data-id="${e(s.id)}" data-delta="1" title="Move ${e(s.name)} down" aria-label="Move ${e(s.name)} down" ${i===t.sections.length-1?'disabled':''}`,'template-section-move')}</div></div>`).join('')}</div>${action('add-section','＋ Add section','','small template-add-section')}</aside>`;
 }
 function moveTemplateSection(id,to,focusId){
  if(route!=='template-editor')return false;
@@ -196,6 +322,102 @@ function moveTemplateSection(id,to,focusId){
  focus?.focus({preventScroll:true});focus?.scrollIntoView({block:'nearest'});
  return true;
 }
+function moveReportSection(id,to){
+ if(route!=='editor')return false;
+ const r=report(),rows=r?.sections,from=rows?.findIndex(s=>s.id===id);
+ if(from===undefined||from<0||!Number.isInteger(to)||to<0||to>=rows.length||from===to)return false;
+ const nav=$('.system-nav'),scrollTop=nav?.scrollTop||0;
+ const visible=[...document.querySelectorAll('[data-report-section-block]')].find(el=>el.getBoundingClientRect().bottom>24);
+ const anchor=visible?{id:visible.dataset.reportSectionBlock,top:visible.getBoundingClientRect().top}:null;
+ const hash=window.location?.hash?.match(/^#check-(section|item)-(\d+)(-\d+)?$/),hashSection=hash&&rows[Number(hash[2])]?.id;
+ rows.splice(to,0,rows.splice(from,1)[0]);changed();render();
+ const newNav=$('.system-nav');if(newNav)newNav.scrollTop=scrollTop;
+ if(anchor){const block=[...document.querySelectorAll('[data-report-section-block]')].find(el=>el.dataset.reportSectionBlock===anchor.id);if(block)window.scrollBy({top:block.getBoundingClientRect().top-anchor.top,left:0,behavior:'instant'});}
+ if(hashSection)window.history.replaceState(null,'',`#check-${hash[1]}-${rows.findIndex(s=>s.id===hashSection)}${hash[3]||''}`);
+ document.getElementById('report-reorder-'+id)?.focus({preventScroll:true});
+ const message=$('#report-order-status');if(message)message.textContent=`${rows[to].name} moved ${from>to?'up':'down'}. Report section order updated.`;
+ return true;
+}
+let reportSectionDrag=null,reportSectionPointer=null,reportSectionScrollFrame=null;
+function clearReportSectionDrag(){
+ reportSectionDrag=null;
+ document.querySelectorAll('.report-section-row').forEach(row=>row.classList.remove('dragging','drop-before','drop-after'));
+}
+function reportSectionTarget(ev){
+ if(route!=='editor'||reportSectionDrag?.reportId!==currentId)return null;
+ return ev.target.closest('.report-section-row');
+}
+function markReportSectionDrop(row,y){
+ document.querySelectorAll('.report-section-row').forEach(el=>el.classList.remove('drop-before','drop-after'));
+ if(!row)return;
+ const bounds=row.getBoundingClientRect();row.classList.add(y<bounds.top+bounds.height/2?'drop-before':'drop-after');
+}
+function dropReportSection(id,row,y){
+ if(route!=='editor'||!row)return false;
+ const rows=report().sections,from=rows.findIndex(s=>s.id===id),target=rows.findIndex(s=>s.id===row.dataset.reportSection),rect=row.getBoundingClientRect();
+ if(from<0||target<0)return false;
+ const insertion=target+(y>=rect.top+rect.height/2?1:0),to=insertion-(from<insertion?1:0);
+ return moveReportSection(id,to);
+}
+function reportSectionDragStart(ev){
+ const row=ev.target.closest('.report-section-row');if(!row)return;
+ if(reportSectionPointer||!ev.dataTransfer){ev.preventDefault();return;}
+ reportSectionDrag={reportId:currentId,sectionId:row.dataset.reportSection};
+ ev.dataTransfer.effectAllowed='move';ev.dataTransfer.setData('text/plain',row.dataset.reportSection);row.classList.add('dragging');
+}
+function reportSectionDragOver(ev){
+ const row=reportSectionTarget(ev);if(!row)return;ev.preventDefault();ev.dataTransfer.dropEffect='move';markReportSectionDrop(row,ev.clientY);
+ const nav=row.closest('.system-nav'),bounds=nav.getBoundingClientRect();if(ev.clientY<bounds.top+28)nav.scrollTop-=16;else if(ev.clientY>bounds.bottom-28)nav.scrollTop+=16;
+}
+function reportSectionDrop(ev){
+ const row=reportSectionTarget(ev),drag=reportSectionDrag;clearReportSectionDrag();if(!row||!drag)return;
+ ev.preventDefault();dropReportSection(drag.sectionId,row,ev.clientY);
+}
+// Pointer dragging supports embedded Windows browsers as well as standard HTML dragging.
+function reportPointerTarget(){
+ const drag=reportSectionPointer;if(!drag?.active||route!=='editor'||drag.reportId!==currentId)return null;
+ const row=document.elementFromPoint(drag.clientX,drag.clientY)?.closest('.report-section-row');markReportSectionDrop(row,drag.clientY);return row;
+}
+function scrollReportSectionPointer(){
+ reportSectionScrollFrame=null;const drag=reportSectionPointer;if(!drag?.active||route!=='editor'||drag.reportId!==currentId)return;
+ const nav=$('.system-nav'),bounds=nav.getBoundingClientRect();
+ const step=drag.clientY<bounds.top+28?-16:drag.clientY>bounds.bottom-28?16:0;
+ if(step){nav.scrollTop+=step;reportPointerTarget();reportSectionScrollFrame=requestAnimationFrame(scrollReportSectionPointer);}
+}
+function stopReportSectionPointer(){
+ const drag=reportSectionPointer;reportSectionPointer=null;
+ if(reportSectionScrollFrame!==null){cancelAnimationFrame(reportSectionScrollFrame);reportSectionScrollFrame=null;}
+ if(drag?.handle.hasPointerCapture?.(drag.pointerId))drag.handle.releasePointerCapture(drag.pointerId);
+ clearReportSectionDrag();
+}
+document.addEventListener('pointerdown',ev=>{
+ if(choicePointerDown(ev))return;
+ const handle=ev.target.closest('[data-report-reorder]');if(!handle||route!=='editor'||ev.button!==0||reportSectionPointer)return;
+ const row=handle.closest('.report-section-row');ev.preventDefault();handle.focus({preventScroll:true});
+ reportSectionPointer={reportId:currentId,id:handle.dataset.reportReorder,row,handle,pointerId:ev.pointerId,x:ev.clientX,y:ev.clientY,clientX:ev.clientX,clientY:ev.clientY,active:false};handle.setPointerCapture(ev.pointerId);
+});
+document.addEventListener('pointermove',ev=>{
+ if(choicePointerMove(ev))return;
+ const drag=reportSectionPointer;if(!drag||ev.pointerId!==drag.pointerId)return;
+ drag.clientX=ev.clientX;drag.clientY=ev.clientY;if(!drag.active&&Math.hypot(ev.clientX-drag.x,ev.clientY-drag.y)<5)return;
+ drag.active=true;drag.row.classList.add('dragging');ev.preventDefault();reportPointerTarget();
+ if(reportSectionScrollFrame===null)reportSectionScrollFrame=requestAnimationFrame(scrollReportSectionPointer);
+});
+document.addEventListener('pointerup',ev=>{
+ if(choicePointerUp(ev))return;
+ const drag=reportSectionPointer;if(!drag||ev.pointerId!==drag.pointerId)return;
+ drag.clientX=ev.clientX;drag.clientY=ev.clientY;const row=reportPointerTarget();stopReportSectionPointer();
+ if(drag.active&&drag.reportId===currentId)dropReportSection(drag.id,row,ev.clientY);
+});
+document.addEventListener('pointercancel',ev=>{if(ev.pointerId===choicePointer?.pointerId)stopChoicePointer();if(ev.pointerId===reportSectionPointer?.pointerId)stopReportSectionPointer();});
+document.addEventListener('lostpointercapture',ev=>{if(ev.pointerId===choicePointer?.pointerId)stopChoicePointer();if(ev.pointerId===reportSectionPointer?.pointerId)stopReportSectionPointer();});
+document.addEventListener('keydown',ev=>{
+ if(choiceReorderKey(ev))return;
+ if(ev.key==='Escape'&&(reportSectionPointer||reportSectionDrag)){ev.preventDefault();stopReportSectionPointer();return;}
+ const handle=ev.target.closest('[data-report-reorder]');if(!handle||route!=='editor'||!ev.altKey||!['ArrowUp','ArrowDown'].includes(ev.key))return;
+ ev.preventDefault();const id=handle.dataset.reportReorder,index=report().sections.findIndex(s=>s.id===id);moveReportSection(id,index+(ev.key==='ArrowUp'?-1:1));
+});
+
 let templateSectionDrag=null;
 function clearTemplateDrag(){
  templateSectionDrag=null;
@@ -206,13 +428,15 @@ function templateDropTarget(ev){
  return ev.target.closest('.template-section-row');
 }
 document.addEventListener('dragstart',ev=>{
+ if(route==='editor'){reportSectionDragStart(ev);return;}
  const row=ev.target.closest('.template-section-row');if(!row||route!=='template-editor')return;
  if(ev.target.closest('.template-row-arrows')){ev.preventDefault();return;}
  templateSectionDrag={templateId:currentId,sectionId:row.dataset.templateSection};
  ev.dataTransfer.effectAllowed='move';ev.dataTransfer.setData('text/plain',row.dataset.templateSection);row.classList.add('dragging');
 });
-document.addEventListener('dragenter',ev=>{if(templateDropTarget(ev)){ev.preventDefault();ev.dataTransfer.dropEffect='move';}});
+document.addEventListener('dragenter',ev=>{if(reportSectionTarget(ev)||templateDropTarget(ev)){ev.preventDefault();ev.dataTransfer.dropEffect='move';}});
 document.addEventListener('dragover',ev=>{
+ if(route==='editor'){reportSectionDragOver(ev);return;}
  const row=templateDropTarget(ev);if(!row)return;
  ev.preventDefault();ev.dataTransfer.dropEffect='move';
  document.querySelectorAll('.template-section-row').forEach(el=>el.classList.remove('drop-before','drop-after'));
@@ -221,12 +445,13 @@ document.addEventListener('dragover',ev=>{
  if(ev.clientY<bounds.top+36)nav.scrollTop-=16;else if(ev.clientY>bounds.bottom-36)nav.scrollTop+=16;
 });
 document.addEventListener('drop',ev=>{
+ if(route==='editor'){reportSectionDrop(ev);return;}
  const row=templateDropTarget(ev);if(!row)return;
  ev.preventDefault();const id=templateSectionDrag.sectionId,rows=template().sections,from=rows.findIndex(s=>s.id===id),target=rows.findIndex(s=>s.id===row.dataset.templateSection),rect=row.getBoundingClientRect();
  const insertion=target+(ev.clientY>=rect.top+rect.height/2?1:0),to=insertion-(from<insertion?1:0);
  clearTemplateDrag();if(from>=0&&target>=0)moveTemplateSection(id,to);
 });
-document.addEventListener('dragend',clearTemplateDrag);
+document.addEventListener('dragend',()=>{clearTemplateDrag();clearReportSectionDrag();});
 function dateToday(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 function blankReport(t,values={}){return {id:uid(),templateName:t.name,client:'',address:'',email:'',phone:'',date:dateToday(),time:'',weather:'',notes:'',notice:t.notice,scope:t.scope??'',includeContact:false,inspector:clone(state.profile),sections:clone(t.sections).map(s=>({...s,items:s.items.map(i=>{const {legacyRating,...component}=i;return {...component,selected:[],rating:'',note:'',limitation:''};})})),findings:[],status:'draft',updated:new Date().toISOString(),...values};}
 function openReport(id){route='editor';currentId=id;sectionId=null;render();window.scrollTo(0,0);}
@@ -255,7 +480,8 @@ function newFinding(location='',sectionId,itemId){openNote(null,sectionId,itemId
 async function download(url,name){await saveNow();const r=await api(url);const blob=r instanceof Response?await r.blob():new Blob([JSON.stringify(r,null,2)],{type:'application/json'});downloadBlob(blob,name);}
 function downloadBlob(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),10000);}
 document.addEventListener('input',ev=>{
- const el=ev.target;if(el.id==='report-search'){search=el.value;const start=el.selectionStart;render();$('#report-search').focus();$('#report-search').setSelectionRange(start,start);return;}
+ if(ev.target.id==='ai-instructions')$('#ai-instructions-status').textContent='Unsaved changes. Click Save AI instructions to use them for your next revision.';
+ const el=ev.target;if(el.dataset.choiceLabel!==undefined&&choiceDraft){choiceDraft.choices[Number(el.dataset.choiceLabel)].text=el.value;return;}if(el.id==='report-search'){search=el.value;const start=el.selectionStart;render();$('#report-search').focus();$('#report-search').setSelectionRange(start,start);return;}
  if(el.dataset.field){let target=el.dataset.scope==='profile'?state.profile:el.dataset.scope==='template'?template():el.dataset.scope==='section'?selectedSection():report();target[el.dataset.field]=el.type==='checkbox'?el.checked:el.value;changed();}
  if(el.dataset.itemField){reportItem(el.dataset.item)[el.dataset.itemField]=el.value;changed();}
  if(el.dataset.findingField){report().findings.find(f=>f.id===el.dataset.finding)[el.dataset.findingField]=el.value;changed();refreshSummaries();}
@@ -263,6 +489,7 @@ document.addEventListener('input',ev=>{
  if(el.dataset.templateField){const i=selectedSection().items.find(i=>i.id===el.dataset.templateItem);i[el.dataset.templateField]=el.dataset.templateField==='options'?[...new Set(el.value.split('|').map(x=>x.trim()).filter(Boolean))]:el.value;changed();}
 });
 document.addEventListener('change',ev=>{
+ if(ev.target.dataset.choiceKind!==undefined&&choiceDraft){const index=Number(ev.target.dataset.choiceKind),kind=ev.target.value;if(Object.hasOwn(choiceKinds,kind)){choiceDraft.choices[index].kind=kind;document.querySelector(`[data-choice-row="${index}"] .choice-swatch`).dataset.choiceType=kind;}return;}
  const id=ev.target.dataset.findingLink;if(!id)return;
  const f=report().findings.find(f=>f.id===id),value=ev.target.value;
  if(value){const [si,ii]=value.split(':').map(Number),s=report().sections[si],i=s.items[ii];f.sectionId=s.id;f.itemId=i.id;}
@@ -293,6 +520,13 @@ document.addEventListener('click',async ev=>{const b=ev.target.closest('button')
  if(a==='add-section')addSectionDialog();
  if(a==='move-section'&&route==='template-editor'){const id=b.dataset.id||sectionId,rows=template().sections,i=rows.findIndex(s=>s.id===id);if(i>=0)moveTemplateSection(id,i+Number(b.dataset.delta),b.id);}
  if(a==='delete-section'){if(template().sections.length===1)throw Error('Keep at least one section.');if(confirm('Delete this section and its components?')){template().sections=template().sections.filter(s=>s.id!==sectionId);sectionId=null;changed();render();}}
+ if(a==='edit-choices')editChoices(b.dataset.id);
+ if(a==='move-choice'&&choiceDraft){const from=Number(b.dataset.index),delta=Number(b.dataset.delta);moveChoice(from,from+delta,delta);}
+ if(a==='add-choice'&&choiceDraft&&choiceDraft.choices.length<100){choiceDraft.choices.push({text:'',kind:'description'});renderChoiceRows();document.querySelector(`[data-choice-label="${choiceDraft.choices.length-1}"]`)?.focus();}
+ if(a==='remove-choice'&&choiceDraft){choiceDraft.choices.splice(Number(b.dataset.index),1);renderChoiceRows();}
+ if(a==='save-choices')saveChoices();
+ if(a==='remove-report-component'&&route==='editor'){const reportId=currentId,s=report().sections.find(s=>s.id===b.dataset.sectionId),i=s?.items.find(i=>i.id===b.dataset.itemId);if(i&&await confirmNote(`Remove “${i.name}” from this report? The template is unchanged. Linked notes and photos will stay in Other observations. You can undo this removal while this window remains open.`, 'Remove component')){if(route==='editor'&&currentId===reportId&&removeReportComponent(s.id,i.id)){render();toast('Component removed. Use Undo removal in System checks to restore it.');}}}
+ if(a==='undo-remove-component'&&restoreReportComponent())render();
  if(a==='add-item'){selectedSection().items.push({id:uid(),name:'New component',options:[],selected:[],rating:'',note:'',limitation:''});changed();render();}
  if(a==='delete-item'){if(confirm('Delete this component?')){selectedSection().items=selectedSection().items.filter(i=>i.id!==b.dataset.id);changed();render();}}
  if(a==='move-item'){const rows=selectedSection().items,i=rows.findIndex(i=>i.id===b.dataset.id),j=i+Number(b.dataset.delta);if(j>=0&&j<rows.length){[rows[i],rows[j]]=[rows[j],rows[i]];changed();render();}}
@@ -336,12 +570,13 @@ document.addEventListener('click',async ev=>{const b=ev.target.closest('button')
  }
  if(a==='backup'){downloadBlob(new Blob([JSON.stringify({format:'soloinspect-backup',created:new Date().toISOString(),revision,state:clone(state)},null,2)],{type:'application/json'}),`HomeKanban-backup-${dateToday()}.json`);toast('Current workspace exported, including unsaved changes.');}
  if(a==='restore')$('#restore-file').click();
+ if(a==='save-ai-instructions')await saveAIInstructions();
  if(a==='save-api'){const r=await api('/api/settings','PUT',{endpoint:$('#api-endpoint').value.trim(),model:$('#api-model').value.trim(),key:$('#api-key').value});$('#api-key').value='';$('#key-status').textContent=r.hasKey?'Key encrypted & saved':'No key configured';toast('API settings saved.');}
  if(a==='clear-key'&&confirm('Remove the API key saved on this computer?')){const s=await api('/api/settings');await api('/api/settings','PUT',{...s,clearKey:true});await loadSettings();toast('API key removed.');}
  if(a==='ai-finding'){const f=report().findings.find(f=>f.id===b.dataset.id),cfg=await api('/api/settings');if(!cfg.hasKey||!cfg.model)throw Error('Configure an API key and model in AI & settings first.');aiTarget={reportId:currentId,findingId:f.id,original:f.text};modal(`<h2>AI writing assistant</h2><p class="help">Send the text below to <b>${e(new URL(cfg.endpoint).hostname)}</b>, model ${e(cfg.model)}. API charges may apply. AI will not change your ratings or finding categories.</p><label class="field"><span>Field notes to send</span><textarea id="ai-input">${e(f.text)}</textarea></label><label class="field"><span>Output language</span><select id="ai-language"><option>English</option></select></label><div id="ai-output"></div><div class="actions">${action('close-dialog','Cancel')}${action('generate-ai','Send & generate draft','','primary')}</div>`);}
  if(a==='generate-ai'){const requestTarget=aiTarget,original=$('#ai-input').value;$('#ai-output').textContent='Generating a draft…';const result=await api('/api/ai','POST',{text:original,language:$('#ai-language').value});if(aiTarget!==requestTarget||!$('#dialog').open)return;$('#ai-output').innerHTML=`<label class="field"><span>AI draft · Review and edit</span><textarea id="ai-draft" style="min-height:180px">${e(result.draft)}</textarea></label><div class="actions">${action('accept-ai','Use this draft','','primary')}</div>`;}
- if(a==='accept-ai'){if(aiTarget.noteSession){useNoteAIDraft($('#ai-draft').value);return;}const r=state.reports.find(r=>r.id===aiTarget.reportId),f=r.findings.find(f=>f.id===aiTarget.findingId);if(f.text!==aiTarget.original)throw Error('The original note has changed. Generate again or copy the draft manually.');f.text=$('#ai-draft').value;delete f.textRuns;changed();closeModal();render();}
- if(a==='quit'){await saveNow();if(confirm('Save and exit HomeKanban?')){await api('/api/quit','POST',{});$('#main').innerHTML='<div class="empty"><h1>Safely closed</h1><p>You can close this window. Open HomeKanban again to continue.</p></div>';}}
+ if(a==='accept-ai'){const r=state.reports.find(r=>r.id===aiTarget.reportId),f=r.findings.find(f=>f.id===aiTarget.findingId);if(f.text!==aiTarget.original)throw Error('The original note has changed. Generate again or copy the draft manually.');f.text=$('#ai-draft').value;delete f.textRuns;changed();closeModal();render();}
+ if(a==='quit'){await saveNow();await api('/api/quit','POST',{});$('#main').innerHTML='<div class="empty"><h1>Safely closed</h1><p>You can close this window. Open HomeKanban again to continue.</p></div>';}
  }catch(err){toast(err.message,true);}finally{if(b.isConnected)b.disabled=false;}});
 async function imageData(file){if(file.size>25*1024*1024)throw Error('Each source image must be smaller than 25 MB.');if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw Error('Use a JPG, PNG, or WebP image.');const source=URL.createObjectURL(file);try{const img=new Image();img.src=source;await img.decode();const canvas=document.createElement('canvas'),scale=Math.min(1,1800/Math.max(img.width,img.height));canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);return canvas.toDataURL('image/jpeg',.84);}finally{URL.revokeObjectURL(source);}}
 $('#photo-file').addEventListener('change',async ev=>{const target=photoTarget,files=[...ev.target.files];try{const r=state.reports.find(r=>r.id===target.report),f=r?.findings.find(f=>f.id===target.finding);if(!f)throw Error('The report or finding no longer exists.');if(f.photos.length+files.length>30)throw Error('Each finding supports up to 30 photos.');const photos=[];for(const file of files)photos.push({src:await imageData(file),caption:''});f.photos.push(...photos);r.status='draft';r.updated=new Date().toISOString();dirty++;await saveNow();if(route==='editor'&&currentId===target.report){render();jumpTo('check-finding-'+target.finding);}toast(`Added ${photos.length} photos locally.`);}catch(err){toast(err.message,true);}finally{ev.target.value='';}});
@@ -349,5 +584,5 @@ $('#logo-file').addEventListener('change',async ev=>{try{if(ev.target.files[0]){
 $('#restore-file').addEventListener('change',async ev=>{try{const file=ev.target.files[0];if(!file)return;if(file.size>95*1024*1024)throw Error('The backup exceeds the 95 MB import limit.');const backup=JSON.parse(await file.text());if(backup.format!=='soloinspect-backup')throw Error('This is not a valid backup.');if(!confirm('Replace the current profile, templates, and reports with this backup? A local recovery snapshot will be retained first.'))return;await saveNow();await api('/api/restore','POST',{backup,revision});await boot();toast('Backup restored. Your local API key settings were retained.');}catch(err){toast(err.message,true);}finally{ev.target.value='';}});
 // All deferred editor scripts must be ready before the first render or a later restore.
 const frontendReady=document.readyState==='complete'?Promise.resolve():new Promise(resolve=>document.addEventListener('DOMContentLoaded',resolve,{once:true}));
-async function boot(){await frontendReady;const result=await api('/api/state');({state,revision,categories,ratings,dataDir}=result);if(Array.isArray(result.textColors))supportedTextColors=result.textColors;dirty=saved=0;route='reports';currentId=null;applySystemTheme();render();status('✓ Local data loaded');}
+async function boot(){await frontendReady;const result=await api('/api/state');({state,revision,categories,ratings,dataDir}=result);removedReportComponents.clear();choiceDraft=null;if(Array.isArray(result.textColors))supportedTextColors=result.textColors;dirty=saved=0;route='reports';currentId=null;applySystemTheme();render();status('✓ Local data loaded');}
 boot().catch(err=>{$('#main').textContent=err.message;status('Unable to load',true);});

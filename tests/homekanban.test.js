@@ -13,7 +13,7 @@ function oldWorkspace(base){
  fs.writeFileSync(path.join(dir,'backups/previous.json'),'original recovery file');fs.writeFileSync(path.join(dir,'exports/example.html'),'previous report');return {dir,state};
 }
 test('legacy directory and SQLite rename preserve reports, preferences, backups and exports',async()=>{
- const base=temp(),{dir,state}=oldWorkspace(base),target=defaultDataDirectory({LOCALAPPDATA:base});
+ const base=temp(),{dir,state}=oldWorkspace(base),target=defaultDataDirectory({LOCALAPPDATA:base,USERPROFILE:path.join(base,'test-user')});
  assert.equal(target,path.join(base,'HomeKanban'));assert.equal(fs.existsSync(dir),false);
  const app=createApp({dataDir:target,port:0});
  try{
@@ -21,14 +21,14 @@ test('legacy directory and SQLite rename preserve reports, preferences, backups 
   assert.equal(fs.readFileSync(path.join(target,'backups/previous.json'),'utf8'),'original recovery file');assert.equal(fs.readFileSync(path.join(target,'exports/example.html'),'utf8'),'previous report');
   assert.equal(fs.existsSync(path.join(target,'soloinspect.sqlite')),false);assert.equal(fs.existsSync(path.join(target,'homekanban.sqlite')),true);
  }finally{await app.close();}
- assert.equal(defaultDataDirectory({LOCALAPPDATA:base}),target);assert.equal(databasePath(target),path.join(target,'homekanban.sqlite'));
+ assert.equal(defaultDataDirectory({LOCALAPPDATA:base,USERPROFILE:path.join(base,'test-user')}),target);assert.equal(databasePath(target),path.join(target,'homekanban.sqlite'));
 });
 test('an existing HomeKanban workspace is never overwritten by legacy storage',()=>{
  const base=temp(),{dir}=oldWorkspace(base),target=path.join(base,'HomeKanban');fs.mkdirSync(target);fs.writeFileSync(path.join(target,'homekanban.sqlite'),'existing database');
- assert.equal(defaultDataDirectory({LOCALAPPDATA:base}),target);assert.equal(databasePath(target),path.join(target,'homekanban.sqlite'));assert.equal(fs.readFileSync(path.join(target,'homekanban.sqlite'),'utf8'),'existing database');assert.ok(fs.existsSync(path.join(dir,'soloinspect.sqlite')));
+ assert.equal(defaultDataDirectory({LOCALAPPDATA:base,USERPROFILE:path.join(base,'test-user')}),target);assert.equal(databasePath(target),path.join(target,'homekanban.sqlite'));assert.equal(fs.readFileSync(path.join(target,'homekanban.sqlite'),'utf8'),'existing database');assert.ok(fs.existsSync(path.join(dir,'soloinspect.sqlite')));
 });
 test('an empty new folder cannot hide the old workspace',()=>{
- const base=temp(),{dir}=oldWorkspace(base);fs.mkdirSync(path.join(base,'HomeKanban'));assert.throws(()=>defaultDataDirectory({LOCALAPPDATA:base}),/empty HomeKanban folder/);assert.ok(fs.existsSync(path.join(dir,'soloinspect.sqlite')));
+ const base=temp(),{dir}=oldWorkspace(base);fs.mkdirSync(path.join(base,'HomeKanban'));assert.throws(()=>defaultDataDirectory({LOCALAPPDATA:base,USERPROFILE:path.join(base,'test-user')}),/empty HomeKanban folder/);assert.ok(fs.existsSync(path.join(dir,'soloinspect.sqlite')));
 });
 test('custom data directories support new and legacy environment variables without moving them',()=>{
  const base=temp(),{dir}=oldWorkspace(base),custom=path.join(base,'custom');assert.equal(defaultDataDirectory({LOCALAPPDATA:base,HOMEKANBAN_DATA:custom,SOLOINSPECT_DATA:dir}),custom);assert.equal(defaultDataDirectory({SOLOINSPECT_DATA:dir}),dir);assert.ok(fs.existsSync(dir));

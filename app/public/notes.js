@@ -59,7 +59,7 @@ const ReportPhotos=(()=>{
    s.controller.flush();await saveNow();close(s);toast('Photo saved. Linked report views are updated.');
   }else{
    s.controller.command(name);
-   const hint=card.querySelector('.report-photo-hint');if(hint)hint.textContent=name==='arrow-row'?'Drag along the base line. Use the end handles to resize, the middle handle for arrow height, and the blue handle to rotate.':'Drag to draw. Press Esc to move or resize marks. Changes save locally; Save photo closes the tools.';
+   const hint=card.querySelector('.report-photo-hint');if(hint)hint.textContent=name==='arrow-row'?'Drag across the row to place separate parallel arrows. Use the end handles to resize, the middle handle for arrow height, and the blue handle to rotate.':'Drag to draw. Press Esc to move or resize marks. Changes save locally; Save photo closes the tools.';
   }
  }
  document.addEventListener('click',async ev=>{
@@ -183,7 +183,7 @@ function openNote(findingId=null,sectionId=null,itemId=null,origin=null,source='
  <section class="note-photo-section" aria-labelledby="note-photos-title"><div class="note-row"><h3 id="note-photos-title">Photos</h3>${noteAction('add-photos','＋ Add photos','','small')}</div><p class="help">Choose one or more photos, drop/paste here, or drag to adjust orders. JPG, PNG, WebP · up to 30 photos.</p><input id="note-photo-file" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden><div id="note-photos"></div></section>
  ${wordingMarkup('note-text','Note / report narrative',draft)}
  <fieldset class="note-categories"><legend>Category</legend>${categories.map(c=>`<label><input type="radio" name="note-category" data-note-field="category" value="${e(c)}" ${c===draft.category?'checked':''}><span>${e(c)}</span></label>`).join('')}</fieldset>
- <div class="note-tools"><div class="note-summary-control"><label class="note-summary-toggle"><input type="checkbox" role="switch" class="note-summary-switch" data-note-field="includeInSummary" aria-describedby="note-summary-help" ${draft.includeInSummary!==false?'checked':''} ${noteEditor.summaryOnly?'disabled':''}> Add to summary</label><p class="help" id="note-summary-help">${noteEditor.summaryOnly?'Always included in both summaries because this note was created in Summary and pictures.':'Includes text in Summary, and text with photos in Summary and pictures. When off, keep the note and photos in System checks.'}</p></div><div class="note-ai-control">${noteAction('ai','✧ AI Revise','','small')}<p class="help">An API connection is required.</p></div></div><div id="note-message" class="help" role="status">Changes are applied when you select ${existing?'Update note':'Add note'}.</div></div></div>
+ <div class="note-tools"><div class="note-summary-control"><label class="note-summary-toggle"><input type="checkbox" role="switch" class="note-summary-switch" data-note-field="includeInSummary" aria-describedby="note-summary-help" ${draft.includeInSummary!==false?'checked':''} ${noteEditor.summaryOnly?'disabled':''}> Add to summary</label><p class="help" id="note-summary-help">${noteEditor.summaryOnly?'Always included in both summaries because this note was created in Summary and pictures.':'Includes text in Summary, and text with photos in Summary and pictures. When off, keep the note and photos in System checks.'}</p></div><div class="note-ai-control">${noteAction('ai','✧ AI Revise','title="Polish all text in this note"','small')}${noteAction('undo-ai','Undo AI revision','hidden','small')}<p class="help">Polish all note text using your saved AI Instructions. Sends text to your AI provider; Internet and API charges apply.</p></div></div><div id="note-message" class="help" role="status">Changes are applied when you select ${existing?'Update note':'Add note'}.</div></div></div>
  <footer class="note-footer"><span class="help">${existing?'Changes update every place this note appears.':'Save the text, photos, and category together.'}<small class="note-window-tip">Drag the title bar to move; drag the bottom-right corner to resize.</small></span><div class="actions">${noteAction('cancel','Cancel')}${noteAction('save',existing?'Update note':'Add note','','primary')}</div></footer><button type="button" class="note-window-grip" data-note-resize title="Drag to resize. Arrow keys also adjust the size."><span aria-hidden="true">◢</span></button>`;
  renderNotePhotos();$('#note-dialog').classList.remove('note-bank-open');layoutNoteWindow();$('#note-dialog').showModal();$('#note-text').focus({preventScroll:true});$('#note-dialog').scrollTop=0;
 }
@@ -208,7 +208,7 @@ function inlinePhotoState(session,photo,status){
 }
 async function editNotePhoto(index,tool){
  const session=noteEditor;if(!session||session.busy)return;const photo=session.draft.photos[index];if(!photo)return;
- if(session.inlinePhoto?.photo===photo&&session.inlinePhoto.controller){session.inlinePhoto.controller.command(tool);if(['arrow-row','end-arrows'].includes(tool))noteHint('Drag along the base line. Drag end handles to resize, the middle handle to adjust arrow height, or the blue round handle to rotate. Save photo when finished.');return;}
+ if(session.inlinePhoto?.photo===photo&&session.inlinePhoto.controller){session.inlinePhoto.controller.command(tool);if(['arrow-row','end-arrows'].includes(tool))noteHint('Drag across the row to place separate parallel arrows. Drag end handles to resize, the middle handle to adjust arrow height, or the blue round handle to rotate. Save photo when finished.');return;}
  endInlinePhoto(session);session.photoDrafts??=new Map();session.busy=true;$('#note-dialog [data-note-action="save"]').disabled=true;
  try{
   const pending=session.photoDrafts.get(photo);
@@ -219,7 +219,7 @@ async function editNotePhoto(index,tool){
    renderNotePhotos();const card=$(`#note-photos [data-note-photo="${index}"]`),host=card.querySelector('.note-photo-surface'),active={photo,controller:null};session.inlinePhoto=active;
    const controller=await PhotoEditor.mount(host,{src:photo.src,pending:pending?.model,undoHistory:pending?.history,tool:tool==='undo'?'select':tool,onChange:edit=>{if(noteEditor===session&&session.draft.photos.includes(photo)){session.photoDrafts.set(photo,edit);noteHint('Photo changed. Save photo to finish.');}},onState:status=>inlinePhotoState(session,photo,status)});
    if(noteEditor!==session||session.inlinePhoto!==active){controller.dispose();return;}active.controller=controller;if(tool==='undo')controller.command('undo');
-   if(['arrow-row','end-arrows'].includes(tool))noteHint('Drag along the base line. Drag end handles to resize, the middle handle to adjust arrow height, or the blue round handle to rotate. Save photo when finished.');
+   if(['arrow-row','end-arrows'].includes(tool))noteHint('Drag across the row to place separate parallel arrows. Drag end handles to resize, the middle handle to adjust arrow height, or the blue round handle to rotate. Save photo when finished.');
   }
  }catch(err){toast(err.message,true);if(noteEditor===session){endInlinePhoto(session,true);renderNotePhotos();noteHint(err.message);}}
  finally{session.busy=false;if(noteEditor===session)$('#note-dialog [data-note-action="save"]').disabled=false;}
@@ -255,16 +255,40 @@ async function saveNote(){
  const origin=session.draft.includeInSummary===false?'check-finding-'+session.draft.id:session.origin;
  changed();await closeNote(true);render();jumpTo(origin);await saveNow();toast('Note saved. Linked views have been updated.');
 }
-async function reviseNote(){
- const session=noteEditor,cfg=await api('/api/settings');if(noteEditor!==session)return;
- if(!cfg.hasKey||!cfg.model){noteHint('AI Revise is not connected yet. This button is a placeholder until an API is configured. Your note has not been changed or sent.');return;}
- if(!session.draft.text.trim())throw Error('Enter field notes before using AI revise.');
- aiTarget={noteSession:session,original:session.draft.text};
- modal(`<h2>AI Revise</h2><p class="help">Send only the text below to <b>${e(new URL(cfg.endpoint).hostname)}</b>, model ${e(cfg.model)}. Review the draft before using it. API charges may apply.</p><label class="field"><span>Text to revise or translate into English</span><textarea id="ai-input">${e(session.draft.text)}</textarea></label><label class="field"><span>Output language</span><select id="ai-language"><option>English</option></select></label><div id="ai-output"></div><div class="actions">${action('close-dialog','Cancel')}${action('generate-ai','Send & generate draft','','primary')}</div>`);
+function updateNoteAIControls(){
+ const button=$('#note-dialog [data-note-action="ai"]'),undo=$('#note-dialog [data-note-action="undo-ai"]');
+ button.disabled=!!noteEditor?.aiBusy;button.textContent=noteEditor?.aiBusy?'Revising…':'✧ AI Revise';button.setAttribute('aria-busy',String(!!noteEditor?.aiBusy));
+ undo.hidden=!noteEditor?.aiUndo;undo.disabled=!!noteEditor?.aiBusy;
 }
-function useNoteAIDraft(text){
- const session=aiTarget.noteSession;if(noteEditor!==session||session.draft.text!==aiTarget.original)throw Error('The note has changed. Generate again or copy the draft manually.');
- session.draft.text=text;delete session.draft.textRuns;setWording('note-text',session.draft);closeModal();noteHint('AI draft applied here. Review it, then save the note.');
+async function reviseNote(){
+ const session=noteEditor;if(!session||session.aiBusy)return;
+ // Always read the entire editor at click time, regardless of the current selection.
+ const original=readWording($('#note-text'));
+ if(!original.text.trim())throw Error('Enter a note before using AI Revise.');
+ if(original.text.length>100000)throw Error('AI Revise supports notes up to 100,000 characters. Your text has not been sent.');
+ session.aiBusy=true;updateNoteAIControls();noteHint('Preparing to revise all text in this note…');
+ const unchanged=()=>noteEditor===session&&JSON.stringify(readWording($('#note-text')))===JSON.stringify(original);
+ try{
+  const cfg=await api('/api/settings');if(noteEditor!==session)return;
+  if(!cfg.hasKey||!cfg.model)throw Error('Configure your API key and model in AI & settings first. Your note has not been sent.');
+  if(cfg.aiRevision!=='polish-v2')throw Error('Save your work, then exit and reopen HomeKanban to activate the updated AI Revise. Your note has not been sent.');
+  if(!unchanged()){noteHint('The note changed. Click AI Revise again to revise the latest text. Nothing was sent.');return;}
+  noteHint('Polishing all note text: spelling, grammar, and clarity…');
+  const result=await api('/api/ai','POST',{text:original.text,language:'English'});
+  if(noteEditor!==session)return;
+  if(!unchanged()){noteHint('The note changed while AI was working. Your latest edits were kept. Click AI Revise again when ready.');return;}
+  if(typeof result.draft!=='string'||!result.draft.trim()||result.draft.length>100000)throw Error('The AI service did not return usable wording. Your note is unchanged.');
+  Wording.assign(session.draft,[{text:result.draft}]);setWording('note-text',session.draft);
+  session.aiUndo={before:original,after:readWording($('#note-text'))};
+  noteHint('AI revision applied. Review the wording, then select '+(session.existing?'Update note':'Add note')+'. Use Undo AI revision to restore your previous wording.');
+ }catch(error){if(noteEditor===session)noteHint(error.message);}
+ finally{session.aiBusy=false;if(noteEditor===session)updateNoteAIControls();}
+}
+async function undoNoteAI(){
+ const session=noteEditor,undo=session?.aiUndo;if(!undo||session.aiBusy)return;
+ if(JSON.stringify(readWording($('#note-text')))!==JSON.stringify(undo.after)&&!await confirmNote('Restore the wording from before AI Revise? This will also replace text edits made since that revision.','Restore previous wording'))return;
+ if(noteEditor!==session||session.aiUndo!==undo)return;
+ Wording.assign(session.draft,Wording.runs(undo.before));setWording('note-text',session.draft);delete session.aiUndo;updateNoteAIControls();noteHint('Previous wording restored. Save the note when ready.');
 }
 async function openNoteLibrary(){await saveNow();route='fast-notes';currentId=null;render();}
 function openFastNote(id=null){
@@ -334,6 +358,7 @@ document.addEventListener('click',async ev=>{
    setWording('note-text',f);noteHint('Wording copied. Adjust it for this property, then save the note.');$('#note-dialog').classList.remove('note-bank-open');$('#note-dialog [data-note-action="toggle-note-bank"]').setAttribute('aria-expanded','false');focusWordingEnd('note-text');
   }
   if(a==='ai'){b.disabled=true;await reviseNote();}
+  if(a==='undo-ai')await undoNoteAI();
   if(a==='library-close')await closeLibrary();
   if(a==='library-background'){libraryEditor.background=b.dataset.color;updateLibraryStyle();}
   if(a==='library-delete-card'){await deleteLibraryNote(b.dataset.id);}

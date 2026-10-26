@@ -1,12 +1,16 @@
 # HomeKanban — Windows home inspection reports
 
-Current release: **0.18.11**. An English-language, offline-first workspace for a solo home inspector. This is a trial release, not a certified inspection or regulatory-compliance product.
+Current published release: **0.18.25**. An English-language, offline-first workspace for a solo home inspector. This is a trial release, not a certified inspection or regulatory-compliance product.
 
 **Free to use, including for commercial inspections.** HomeKanban's code and documentation are [MIT licensed](LICENSE). No HomeKanban subscription or account is required. Optional AI providers and web hosts have separate terms and may charge fees. See [third-party notices](THIRD_PARTY_NOTICES.md).
 
-**[Download HomeKanban v0.18.11 for Windows](https://github.com/inspekhome/HomeKanban/releases/download/v0.18.11/HomeKanban-Windows-v0.18.11.zip)** · [Release notes and checksum](https://github.com/inspekhome/HomeKanban/releases/tag/v0.18.11) · [User Guide](docs/USER-GUIDE.md)
+**[Download HomeKanban v0.18.25 for Windows](https://github.com/inspekhome/HomeKanban/releases/download/v0.18.25/HomeKanban-Windows-v0.18.25.zip)** · [Release notes and checksum](https://github.com/inspekhome/HomeKanban/releases/tag/v0.18.25) · [User Guide](docs/USER-GUIDE.md)
 
 Download the Windows ZIP above and extract the entire folder before opening `HomeKanban.exe`. The GitHub **Code > Download ZIP** button downloads source code, not the ready-to-run application.
+
+Version **0.18.25** includes the inspector-authored **System Template** with 15 sections, 59 components, and color-coded choices: Material / description (green), Issue / concern (amber), and Others (gray). Select **Duplicate** to make your own working template. The bundled baseline is maintained across releases; existing workspaces and report snapshots are not overwritten.
+
+Recent improvements include status boxes on the right in the editor and all report exports, all-choice exports, section and choice reordering, compact controls, Add note aligned with Limitation, direct save-and-exit, persistent workspace recovery, and one-click AI Revise using editable AI Instructions. AI requires your own configured provider; live-provider acceptance is still pending.
 
 ## Run
 
@@ -34,11 +38,11 @@ PDF and HTML share the same report renderer and linked finding data. PDF export 
 
 **Export to Web Hosting downloads a self-contained `index.html`; it does not publish it or create a public URL.** Uploading, hosting limits, access control, and privacy remain separate deployment decisions. The exported document embeds its photos, which can exceed a host's file-size limit. Client email and phone are omitted by default.
 
-Only an explicitly submitted note is sent to the configured HTTPS AI provider. Review the returned draft before applying it. API keys are encrypted for the Windows user with DPAPI and excluded from report exports and JSON backups. Restoring on another Windows user/computer requires re-entering the key. AI calls require internet access and may incur provider charges.
+Only an explicitly submitted note is sent to the configured HTTPS AI provider. AI Revise applies the polished text directly; review the result and use Undo AI revision if needed. API keys are encrypted for the Windows user with DPAPI and excluded from report exports and JSON backups. Restoring on another Windows user/computer requires re-entering the key. AI calls require internet access and may incur provider charges.
 
 ## Storage and known limits
 
-Default data: `%LOCALAPPDATA%\HomeKanban\homekanban.sqlite`. Existing SoloInspect workspaces and legacy backup identifiers remain compatible. `HOMEKANBAN_DATA`, `HOMEKANBAN_PORT`, and `HOMEKANBAN_BROWSER` override defaults; legacy `SOLOINSPECT_` environment variables remain supported.
+Default data: `%LOCALAPPDATA%\HomeKanban\homekanban.sqlite`. A recovered workspace can be pinned using `%USERPROFILE%\.homekanban-workspace.json` with `format: "homekanban-workspace-location"` and an absolute `dataDirectory`. The configured folder must contain an existing readable `homekanban.sqlite`; startup stops rather than creating an empty replacement if it is missing. Keep this machine-specific file out of public distributions. Explicit data-directory environment variables take precedence. Existing SoloInspect workspaces and legacy backup identifiers remain compatible. `HOMEKANBAN_DATA`, `HOMEKANBAN_PORT`, and `HOMEKANBAN_BROWSER` override defaults; legacy `SOLOINSPECT_` environment variables remain supported.
 
 SQLite uses WAL and a workspace revision checked atomically on every save. A stale window receives a conflict instead of overwriting newer data. Back up that window before refreshing.
 
@@ -55,12 +59,12 @@ With Node.js 24.19.0 on PATH, from the repository root:
 ```powershell
 New-Item -ItemType Directory -Force work | Out-Null
 node --test tests/*.test.js
-powershell -NoProfile -File scripts/build.ps1 -Version 0.18.11
-node scripts/smoke-package.js dist/HomeKanban-Windows-v0.18.11
+powershell -NoProfile -File scripts/build.ps1 -Version 0.18.25
+node scripts/smoke-package.js dist/HomeKanban-Windows-v0.18.25
 ```
 
 Tests use isolated workspaces under `work`; a few tests require local loopback access, Windows DPAPI, and Edge/Chrome. The packaged runtime can be used if Node is not on PATH. Set `HOMEKANBAN_NODE` for a different packaging runtime.
 
-The current application passed 140 automated tests and an isolated Windows-package PDF smoke test on the development machine. Packaging changes are additionally checked against an explicit public-file manifest. Passing tests does not establish that the product has no defects or replace clean-machine acceptance testing.
+The current application passed 186 automated tests and an isolated Windows-package PDF smoke test on the development machine. Packaging changes are additionally checked against an explicit public-file manifest. Passing tests does not establish that the product has no defects or replace clean-machine acceptance testing.
 
 See [Publishing](docs/PUBLISHING.md) for clean source and Windows packages. Private working material, inspection databases, historical screenshots, reports, backups, reference videos and external narrative documents are excluded. Never attach client data or API keys to public issues.

@@ -3,12 +3,12 @@
  const RED='#e02020',colors={'#e02020':'Red','#245c99':'Blue','#226b43':'Green','#f3ce20':'Yellow','#743a91':'Purple','#000000':'Black','#ffffff':'White'},copy=x=>JSON.parse(JSON.stringify(x)),clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
  const icons={left:'<path d="M4 9a8 8 0 1 1 0 7M4 3v6h6"/>',right:'<path d="M20 9a8 8 0 1 0 0 7M20 3v6h-6"/>',arrow:'<path d="M4 20 20 4M10 4h10v10"/>',line:'<path d="M4 20 20 4"/>',rect:'<rect x="4" y="4" width="16" height="16" rx="1"/>',circle:'<circle cx="12" cy="12" r="8"/>',text:'<path d="m4 20 8-16 8 16M7 14h10"/>',save:'<path d="M4 3h13l4 4v14H3V3h1ZM7 3v6h10V3M7 21v-8h10v8"/>',select:'<path d="m5 3 14 10-7 1-3 7-4-18Z"/>',undo:'<path d="M4 9h10a6 6 0 0 1 0 12M4 9l6-6M4 9l6 6"/>'};
  function icon(name){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name]||''}</svg>`;}
- icons['arrow-row']='<path d="M3 20h18M4 20V5m-2 3 2-3 2 3M12 20V5m-2 3 2-3 2 3M20 20V5m-2 3 2-3 2 3"/>';
+ icons['arrow-row']='<path d="M4 20V5m-2 3 2-3 2 3M12 20V5m-2 3 2-3 2 3M20 20V5m-2 3 2-3 2 3"/>';
  icons.remove='<path d="m6 6 12 12M18 6 6 18"/>';
  icons['end-arrows']='<path d="M4 20h16M4 20V8m-3 4 3-4 3 4M20 20V8m-3 4 3-4 3 4"/>';
  // Retain rendering of older end-arrow drafts; the tool is no longer offered in the UI.
  const isArrowGroup=s=>s.type==='arrow-row'||s.type==='end-arrows';
- // Both sketches are one annotation: a baseline with parallel perpendicular arrows.
+ // Parallel arrows remain one annotation; only legacy end-arrows draw a connector.
  // Endpoints control span/direction; a separate height controls arrow length.
  function arrowGroup(s){
   const dx=s.x2-s.x1,dy=s.y2-s.y1,length=Math.hypot(dx,dy),ux=length?dx/length:1,uy=length?dy/length:0,nx=uy,ny=-ux;
@@ -69,7 +69,7 @@
   if(m.turns===1){ctx.translate(m.height,0);ctx.rotate(Math.PI/2);}if(m.turns===2){ctx.translate(m.width,m.height);ctx.rotate(Math.PI);}if(m.turns===3){ctx.translate(0,m.width);ctx.rotate(-Math.PI/2);}
   ctx.drawImage(img,0,0,m.width,m.height);const stroke=Math.max(3,Math.min(m.width,m.height)*.005);ctx.strokeStyle=RED;ctx.fillStyle=RED;ctx.lineWidth=stroke;ctx.lineCap='round';ctx.lineJoin='round';
   for(const s of m.shapes){ctx.strokeStyle=Object.hasOwn(colors,s.color)?s.color:RED;ctx.fillStyle=ctx.strokeStyle;const b=bounds(s);ctx.beginPath();
-   if(isArrowGroup(s)){const g=arrowGroup(s);ctx.moveTo(s.x1,s.y1);ctx.lineTo(s.x2,s.y2);for(const a of g.arrows){ctx.moveTo(a.base.x,a.base.y);ctx.lineTo(a.tip.x,a.tip.y);}ctx.stroke();for(const a of g.arrows){ctx.beginPath();ctx.moveTo(a.tip.x,a.tip.y);for(const p of a.head)ctx.lineTo(p.x,p.y);ctx.closePath();ctx.fill();}}
+   if(isArrowGroup(s)){const g=arrowGroup(s);if(s.type==='end-arrows'){ctx.moveTo(s.x1,s.y1);ctx.lineTo(s.x2,s.y2);}for(const a of g.arrows){ctx.moveTo(a.base.x,a.base.y);ctx.lineTo(a.tip.x,a.tip.y);}ctx.stroke();for(const a of g.arrows){ctx.beginPath();ctx.moveTo(a.tip.x,a.tip.y);for(const p of a.head)ctx.lineTo(p.x,p.y);ctx.closePath();ctx.fill();}}
    if(s.type==='arrow'||s.type==='line'){ctx.moveTo(s.x1,s.y1);ctx.lineTo(s.x2,s.y2);ctx.stroke();if(s.type==='arrow'){const a=Math.atan2(s.y2-s.y1,s.x2-s.x1),h=stroke*5;ctx.beginPath();ctx.moveTo(s.x2,s.y2);ctx.lineTo(s.x2-h*Math.cos(a-.45),s.y2-h*Math.sin(a-.45));ctx.lineTo(s.x2-h*Math.cos(a+.45),s.y2-h*Math.sin(a+.45));ctx.closePath();ctx.fill();}}
    if(s.type==='rect')ctx.strokeRect(b.left,b.top,b.right-b.left,b.bottom-b.top);
    if(s.type==='circle'){ctx.ellipse((b.left+b.right)/2,(b.top+b.bottom)/2,Math.max(1,(b.right-b.left)/2),Math.max(1,(b.bottom-b.top)/2),0,0,2*Math.PI);ctx.stroke();}

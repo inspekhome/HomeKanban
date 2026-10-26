@@ -11,6 +11,17 @@ test('an open server uses updated renderer files for preview, web download and P
   const request=(route,method='GET',body)=>fetch(url+route,{method,headers:{'X-Solo-Token':token,'Content-Type':'application/json'},...(body?{body:JSON.stringify(body)}:{})});
   const data=app.read(),t=data.state.templates[0];
   const report={id:'sync-report',address:'TEST ONLY',client:'Test',date:'2026-10-24',time:'',weather:'',email:'',phone:'',notes:'',scope:'Test only',notice:t.notice,status:'draft',inspector:{...data.state.profile,name:'Test'},sections:structuredClone(t.sections),findings:[{id:'first',origin:'summary',location:'',text:'Latest saved observation.',category:'Defect/Action Needed',includeInSummary:true,photos:[]}]};
+  report.sections[0].items.forEach((item,index)=>item.rating=['I','NI','NP','D'][index]);
+  const editorCSS=fs.readFileSync(path.join(copy,'public/style.css'),'utf8');
+  const checkStatusColors=html=>{
+   for(const code of ['I','NI','NP','D']){
+    const color=editorCSS.match(new RegExp('\\.section-rating\\.'+code+'\\.active\\{background:(#[a-f0-9]+);'))?.[1];
+    assert.ok(color,'Editor must define the selected '+code+' color');
+    assert.ok(html.includes('.status-box.checked[data-rating="'+code+'"]{background:'+color+';border-color:'+color+'}'),'Exported '+code+' must match the editor');
+    assert.ok(html.includes('class="status-box checked" data-rating="'+code+'" role="img" aria-label="'+code+': selected"'),'Export must mark the recorded '+code+' selection');
+   }
+   assert.ok(html.includes('print-color-adjust:exact'));
+  };
   data.state.reports.push(report);
   assert.equal((await request('/api/state','PUT',data)).status,200);
   const initial=await(await request('/api/reports/sync-report/html')).text();
@@ -28,11 +39,13 @@ test('an open server uses updated renderer files for preview, web download and P
    assert.equal(response.status,200);assert.ok(html.includes('data-update="B"'));assert.ok(!html.includes('data-update="A"'));
    assert.ok(html.includes('Saved after the template update.'));assert.ok(!html.includes('Latest saved observation.'));
    assert.equal(response.headers.get('cache-control'),'no-store');
+   checkStatusColors(html);
   }
   const pdf=await request('/api/reports/sync-report/pdf');assert.equal(pdf.status,200);
   const bytes=Buffer.from(await pdf.arrayBuffer());assert.equal(bytes.subarray(0,5).toString(),'%PDF-');
   const exported=fs.readdirSync(path.join(dataDir,'exports')).map(dir=>fs.readFileSync(path.join(dataDir,'exports',dir,'report.html'),'utf8'));
   assert.equal(exported.length,1);assert.ok(exported[0].includes('data-update="B"'));assert.ok(exported[0].includes('Saved after the template update.'));
+  checkStatusColors(exported[0]);
   // A failed update must fail visibly, rather than silently serving an older layout.
   fs.writeFileSync(file,'this is invalid javascript');
   assert.equal((await request('/api/reports/sync-report/html')).status,500);

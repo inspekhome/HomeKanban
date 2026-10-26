@@ -1,0 +1,717 @@
+{
+  "name": "System Template",
+  "scope": "YOUR OWN DISCLIAMER HERE:",
+  "notice": "SAMPLE NOTICE:\nInspection Report:  (1) Contain the written opinions of the home inspector based upon the judgment and experience of the home inspector; (2) Identify the items, components, systems and certain terms included in the scope of the home inspection; (3) identify based on a visual inspection of the readily accessible areas whether the included items, components, and systems are performing their intended function or are determined to be significantly deficient; (3) provide the Client with objective information regarding the condition of the systems and components of the home as inspected at the time of the home inspection; (4)  Acts to identify visible defects and conditions that, in the judgment of the home inspector, adversely affect the function or integrity of the items, components, and systems inspected, including those items or components near the end of their serviceable life; and (5) May identify items in need of further evaluation.",
+  "sections": [
+    {
+      "name": "Structure",
+      "disclaimer": "",
+      "items": [
+        {
+          "name": "Building type",
+          "options": [
+            "Single family",
+            "Townhouse",
+            "Condo"
+          ]
+        },
+        {
+          "name": "Foundation",
+          "options": [
+            "Concrete",
+            "Block",
+            "Stone",
+            "Slab on Ground",
+            "Cracks",
+            "Settlement",
+            "Leaks"
+          ],
+          "choiceTypes": {
+            "Concrete": "description",
+            "Block": "description",
+            "Stone": "description",
+            "Slab on Ground": "description",
+            "Cracks": "concern",
+            "Settlement": "concern",
+            "Leaks": "concern"
+          }
+        },
+        {
+          "name": "Floor structure",
+          "options": [
+            "Wood",
+            "Steel",
+            "Concrete",
+            "Sagging",
+            "Uneven"
+          ],
+          "choiceTypes": {
+            "Wood": "description",
+            "Steel": "description",
+            "Concrete": "description",
+            "Sagging": "concern",
+            "Uneven": "concern"
+          }
+        },
+        {
+          "name": "Walls",
+          "options": [
+            "Wood frame",
+            "Masonry",
+            "Not visible"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Exterior",
+      "disclaimer": "",
+      "items": [
+        {
+          "name": "Wall covering",
+          "options": [
+            "Brick",
+            "Vinyl",
+            "Wood",
+            "Fiber cement",
+            "Stucco"
+          ],
+          "choiceTypes": {
+            "Brick": "description",
+            "Vinyl": "description",
+            "Wood": "description",
+            "Fiber cement": "description",
+            "Stucco": "description"
+          }
+        },
+        {
+          "name": "Grading & drainage",
+          "options": [
+            "Slope Away",
+            "Swale",
+            "Neg or Poor Grading"
+          ],
+          "choiceTypes": {
+            "Slope Away": "description",
+            "Swale": "description",
+            "Neg or Poor Grading": "concern"
+          }
+        },
+        {
+          "name": "Deck / porch",
+          "options": [
+            "Post",
+            "Beam",
+            "Stairway",
+            "Railing",
+            "Loose Railing",
+            "Rot Post",
+            "Rusted or Corroded Fastener"
+          ],
+          "choiceTypes": {
+            "Post": "description",
+            "Beam": "description",
+            "Stairway": "description",
+            "Railing": "description",
+            "Loose Railing": "concern",
+            "Rot Post": "concern",
+            "Rusted or Corroded Fastener": "concern"
+          }
+        },
+        {
+          "name": "Windows & exterior doors",
+          "options": [
+            "Screen",
+            "Shutter",
+            "Opening"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Roof",
+      "disclaimer": "",
+      "items": [
+        {
+          "name": "Inspection method",
+          "options": [
+            "Walked",
+            "Ground",
+            "Drone",
+            "Pole"
+          ],
+          "choiceTypes": {
+            "Walked": "description",
+            "Ground": "description",
+            "Drone": "description",
+            "Pole": "description"
+          }
+        },
+        {
+          "name": "Roof covering",
+          "options": [
+            "Asphalt shingles",
+            "Metal",
+            "Wood",
+            "Slate",
+            "Old",
+            "non-professional Installation",
+            "Physical Damage"
+          ],
+          "choiceTypes": {
+            "Asphalt shingles": "description",
+            "Metal": "description",
+            "Wood": "description",
+            "Slate": "description",
+            "Old": "concern",
+            "non-professional Installation": "concern",
+            "Physical Damage": "concern"
+          }
+        },
+        {
+          "name": "Flashing",
+          "options": [
+            "Metal",
+            "Rubber",
+            "Limited Visibility"
+          ],
+          "choiceTypes": {
+            "Metal": "description",
+            "Rubber": "description",
+            "Limited Visibility": "normal"
+          }
+        },
+        {
+          "name": "Gutters & downspouts",
+          "options": [
+            "Clean",
+            "Service or Clean",
+            "Service/Clean"
+          ],
+          "choiceTypes": {
+            "Clean": "description",
+            "Service or Clean": "description",
+            "Service/Clean": "concern"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Chimney",
+      "disclaimer": "",
+      "items": [
+        {
+          "name": "Crown and Hat",
+          "options": [
+            "Missing",
+            "Crack"
+          ],
+          "choiceTypes": {
+            "Missing": "concern",
+            "Crack": "concern"
+          }
+        },
+        {
+          "name": "Flashing",
+          "options": [
+            "Missing",
+            "Damaged"
+          ],
+          "choiceTypes": {
+            "Missing": "concern",
+            "Damaged": "concern"
+          }
+        },
+        {
+          "name": "Condition",
+          "options": [
+            "Crack",
+            "Deterioration"
+          ],
+          "choiceTypes": {
+            "Crack": "concern",
+            "Deterioration": "concern"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Garage",
+      "disclaimer": "",
+      "items": [
+        {
+          "name": "Garage door & opener",
+          "options": [
+            "Door Panel",
+            "Opener"
+          ]
+        },
+        {
+          "name": "Garage door operation",
+          "options": [
+            "Noise"
+          ],
+          "choiceTypes": {
+            "Noise": "concern"
+          }
+        },
+        {
+          "name": "Garage Floor, Wall & Ceiling",
+          "options": [
+            "Ceiling Drywall",
+            "Water Mark",
+            "Cracks"
+          ],
+          "choiceTypes": {
+            "Ceiling Drywall": "description",
+            "Water Mark": "concern",
+            "Cracks": "concern"
+          }
+        },
+        {
+          "name": "Entrance door & Lights",
+          "options": [
+            "Self-Closing"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Basement & Crawlspace",
+      "disclaimer": "",
+      "items": [
+        {
+          "name": "Access",
+          "options": [
+            "Entered",
+            "Limited entry",
+            "Not accessible",
+            "Not present"
+          ]
+        },
+        {
+          "name": "Visible moisture",
+          "options": [
+            "Effloresce",
+            "Water Stain",
+            "Musty Odor"
+          ]
+        },
+        {
+          "name": "Sump pump",
+          "options": [
+            "Power",
+            "Pit",
+            "Pump",
+            "Drain"
+          ]
+        },
+        {
+          "name": "Beam/Post",
+          "options": [
+            "Metal",
+            "Wood",
+            "Masonry Column"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Plumbing",
+      "disclaimer": "",
+      "items": [
+        {
+          "name": "Water supply",
+          "options": [
+            "Public",
+            "Well",
+            "Unknown"
+          ]
+        },
+        {
+          "name": "Supply material",
+          "options": [
+            "Copper",
+            "PEX",
+            "CPVC",
+            "Galvanized",
+            "Not visible"
+          ]
+        },
+        {
+          "name": "Drain material",
+          "options": [
+            "PVC",
+            "ABS",
+            "Cast iron",
+            "Not visible"
+          ]
+        },
+        {
+          "name": "Water heater",
+          "options": [
+            "Gas",
+            "Electric",
+            "Tankless"
+          ]
+        },
+        {
+          "name": "Fixtures & drainage",
+          "options": [
+            "PVC",
+            "Iron",
+            "ABS"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Heating",
+      "disclaimer": "",
+      "items": [
+        {
+          "name": "Operation",
+          "options": [
+            "Operated",
+            "Not tested in summer",
+            "Not tested - other reason"
+          ]
+        },
+        {
+          "name": "Fuel",
+          "options": [
+            "Gas",
+            "Electric",
+            "Oil",
+            "Propane",
+            "Heat pump"
+          ]
+        },
+        {
+          "name": "Distribution",
+          "options": [
+            "Forced air",
+            "Radiator",
+            "Baseboard",
+            "Other"
+          ]
+        },
+        {
+          "name": "Filter",
+          "options": [
+            "Dirty",
+            "Service Required"
+          ],
+          "choiceTypes": {
+            "Dirty": "concern",
+            "Service Required": "concern"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cooling",
+      "disclaimer": "",
+      "items": [
+        {
+          "name": "Operation",
+          "options": [
+            "Operated",
+            "Not tested in cold weather",
+            "Not tested - other reason"
+          ],
+          "choiceTypes": {
+            "Operated": "description",
+            "Not tested in cold weather": "normal",
+            "Not tested - other reason": "normal"
+          }
+        },
+        {
+          "name": "Type",
+          "options": [
+            "Central AC",
+            "Heat pump",
+            "Mini split",
+            "Window unit"
+          ]
+        },
+        {
+          "name": "Distribution",
+          "options": [
+            "Ductwork",
+            "Returns"
+          ]
+        },
+        {
+          "name": "Condensate drainage",
+          "options": [
+            "Dain",
+            "Pump",
+            "Cut off"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Electrical",
+      "disclaimer": "",
+      "items": [
+        {
+          "name": "Service panel",
+          "options": [
+            "Non Accessible"
+          ]
+        },
+        {
+          "name": "Visible wiring",
+          "options": [
+            "Copper",
+            "Aluminum",
+            "Not visible"
+          ]
+        },
+        {
+          "name": "Receptacles & GFCI",
+          "options": [
+            "FPE",
+            "other recalled"
+          ],
+          "choiceTypes": {
+            "FPE": "concern",
+            "other recalled": "concern"
+          }
+        },
+        {
+          "name": "Smoke / CO alarms",
+          "options": [
+            "Dated",
+            "Old"
+          ],
+          "choiceTypes": {
+            "Dated": "concern",
+            "Old": "concern"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fireplace",
+      "disclaimer": "",
+      "items": [
+        {
+          "name": "Fireplace",
+          "options": [
+            "Firebox",
+            "Opening",
+            "Damper",
+            "Smoke Chamber"
+          ]
+        },
+        {
+          "name": "Clearance",
+          "options": [
+            "Non-combustion Clearance",
+            "Hearth",
+            "Mantel"
+          ]
+        },
+        {
+          "name": "Gas Log",
+          "options": [
+            "Pilot",
+            "Control",
+            "Cut off",
+            "Gas odor"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Bathrooms",
+      "disclaimer": "",
+      "items": [
+        {
+          "name": "Sink & faucet",
+          "options": [
+            "Leak",
+            "others"
+          ]
+        },
+        {
+          "name": "Toilet",
+          "options": [
+            "Loose",
+            "Leak",
+            "Flush"
+          ],
+          "choiceTypes": {
+            "Loose": "concern",
+            "Leak": "concern",
+            "Flush": "concern"
+          }
+        },
+        {
+          "name": "Tub / shower",
+          "options": [
+            "Diverter",
+            "Shower head",
+            "Leaks"
+          ],
+          "choiceTypes": {
+            "Diverter": "description",
+            "Shower head": "description",
+            "Leaks": "concern"
+          }
+        },
+        {
+          "name": "Ventilation",
+          "options": [
+            "Noisy",
+            "Fan non available"
+          ],
+          "choiceTypes": {
+            "Noisy": "concern",
+            "Fan non available": "concern"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Kitchen",
+      "disclaimer": "",
+      "items": [
+        {
+          "name": "Sink & disposal",
+          "options": [
+            "Disposal",
+            "Leak"
+          ],
+          "choiceTypes": {
+            "Disposal": "description",
+            "Leak": "concern"
+          }
+        },
+        {
+          "name": "Dishwasher",
+          "options": [
+            "Leak",
+            "Damaged"
+          ],
+          "choiceTypes": {
+            "Leak": "concern",
+            "Damaged": "concern"
+          }
+        },
+        {
+          "name": "Range / cooktop",
+          "options": [
+            "Gas",
+            "Electric",
+            "No Functional",
+            "Anti-Tipping"
+          ]
+        },
+        {
+          "name": "Ventilation",
+          "options": [
+            "Non",
+            "Damaged"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Interior",
+      "disclaimer": "",
+      "items": [
+        {
+          "name": "Walls & ceilings",
+          "options": [
+            "Cracks",
+            "Nail Pops",
+            "Damage",
+            "Sagging"
+          ],
+          "choiceTypes": {
+            "Cracks": "concern",
+            "Nail Pops": "concern",
+            "Damage": "concern",
+            "Sagging": "concern"
+          }
+        },
+        {
+          "name": "Floors",
+          "options": [
+            "Wood",
+            "Laminate",
+            "Carpet"
+          ]
+        },
+        {
+          "name": "Doors & windows",
+          "options": [
+            "Touch",
+            "Lock/Latching",
+            "Panel"
+          ],
+          "choiceTypes": {
+            "Touch": "concern",
+            "Lock/Latching": "concern",
+            "Panel": "description"
+          }
+        },
+        {
+          "name": "Stairs & railings",
+          "options": [
+            "Railing",
+            "Light",
+            "Steps"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Attic & Insulation",
+      "disclaimer": "",
+      "items": [
+        {
+          "name": "Access",
+          "options": [
+            "Entered",
+            "Hatch only",
+            "Not accessible"
+          ]
+        },
+        {
+          "name": "Insulation",
+          "options": [
+            "Fiberglass",
+            "Cellulose",
+            "Spray foam",
+            "Not visible"
+          ]
+        },
+        {
+          "name": "Ventilation",
+          "options": [
+            "Ridge vent",
+            "Soffit vent",
+            "Gable vent",
+            "Fan"
+          ]
+        },
+        {
+          "name": "Moisture observations",
+          "options": [
+            "Attic Fan",
+            "Bio-Growth"
+          ],
+          "choiceTypes": {
+            "Attic Fan": "description",
+            "Bio-Growth": "concern"
+          }
+        }
+      ]
+    }
+  ]
+}

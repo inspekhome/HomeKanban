@@ -21,7 +21,7 @@ function client(){
 test('row arrows move any section, preserve contents and selection, and leave reports and other templates unchanged',async()=>{
  const c=client(),initial=structuredClone(c.state),id=c.t.sections[0].id;
  await c.click(id,1);assert.equal(c.t.sections[1].id,id);assert.equal(c.h.selected,id);
- await c.click('custom15',-1);assert.equal(c.t.sections[13].id,'custom15');assert.equal(c.h.selected,id);
+ await c.click('custom15',-1);assert.equal(c.t.sections.at(-2).id,'custom15');assert.equal(c.h.selected,id);
  assert.deepEqual(c.state.reports,initial.reports);assert.deepEqual(c.state.templates[1],initial.templates[1]);
  for(const section of c.t.sections)assert.deepEqual(section,initial.templates[0].sections.find(s=>s.id===section.id));
  const before=structuredClone(c.t);await c.click(c.t.sections[0].id,-1);await c.click(c.t.sections.at(-1).id,1);await c.click('missing',1);assert.deepEqual(c.t,before);assert.equal(c.h.dirty,2);
@@ -33,14 +33,14 @@ test('drag and drop inserts before or after a target in both directions, includi
  assert.deepEqual(c.t.sections.slice(0,2).map(s=>s.id),[second,first]);
  c.events.get('dragstart')(c.dragEvent('custom15'));c.events.get('drop')(c.dragEvent(second));assert.equal(c.t.sections[0].id,'custom15');
  c.events.get('dragstart')(c.dragEvent('custom15'));c.events.get('drop')(c.dragEvent('custom14',true));assert.equal(c.t.sections.at(-1).id,'custom15');
- assert.equal(new Set(c.t.sections.map(s=>s.id)).size,15);assert.equal(c.h.dirty,3);
+ assert.equal(new Set(c.t.sections.map(s=>s.id)).size,c.t.sections.length);assert.equal(c.h.dirty,3);
 });
 
 test('cancelled drags, outside drops, same-position drops and invalid positions do not reorder sections',()=>{
  const c=client(),id=c.t.sections[0].id,before=structuredClone(c.t);
  c.events.get('dragstart')(c.dragEvent(id));c.events.get('dragend')();c.events.get('drop')(c.dragEvent('custom15'));
  c.events.get('dragstart')(c.dragEvent(id));c.events.get('drop')(c.dragEvent(id,true));
- c.h.move(id,NaN);c.h.move(id,-1);c.h.move(id,15);c.h.move('missing',0);
+ c.h.move(id,NaN);c.h.move(id,-1);c.h.move(id,c.t.sections.length);c.h.move('missing',0);
  assert.deepEqual(c.t,before);assert.equal(c.h.dirty,0);
 });
 
@@ -52,7 +52,7 @@ test('new reports inherit reordered sections with blank statuses while existing 
 });
 
 test('all section rows expose drag handles and named arrows with only the boundary directions disabled',()=>{
- const c=client(),html=c.h.html();assert.equal((html.match(/draggable="true"/g)||[]).length,15);assert.equal((html.match(/data-action="move-section"/g)||[]).length,30);
+ const c=client(),html=c.h.html();assert.equal((html.match(/draggable="true"/g)||[]).length,c.t.sections.length);assert.equal((html.match(/data-action="move-section"/g)||[]).length,c.t.sections.length*2);
  assert.match(html,/aria-label="Move Structure up" disabled/);assert.match(html,/aria-label="Move Custom section 15 down" disabled/);
  assert.equal((html.match(/ disabled/g)||[]).length,2);assert.match(html,/Drag a section up or down/);
 });

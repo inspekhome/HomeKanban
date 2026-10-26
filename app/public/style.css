@@ -11,9 +11,9 @@ button.primary{box-shadow:0 2px 4px #163c5a12}.table th{background:#f5f8fb}.tabl
 
 .template-scope-help{margin:-8px 0 0}.field textarea[data-field="scope"][data-scope="template"]{min-height:150px}
 
-/* Four inspection status columns stay to the left of each component. */
-.checklist-card{--status-width:128px;--status-gap:18px}.checklist-columns,.check-row{display:grid;grid-template-columns:var(--status-width) minmax(0,1fr);column-gap:var(--status-gap)}
-.checklist-columns{align-items:center;background:#edf3f8;border:1px solid #dbe4ec;border-radius:4px;margin-top:18px;padding:10px 0;font-size:10px;letter-spacing:.6px;color:#52758f}.status-columns,.rating-group{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;text-align:center}.status-columns b{font-size:11px}.check-row{align-items:start;padding:22px 0}.check-name{margin-bottom:12px}.rating-group{padding-top:0;flex-wrap:nowrap}.rating{display:grid;place-items:center;min-width:0;width:100%;height:30px;padding:3px;border:0;background:transparent;border-radius:4px}.rating.active{background:transparent}.rating:hover{background:#e5edf5}.status-box{display:grid;place-items:center;width:19px;height:19px;background:#fff;border:1px solid #9cafc0;border-radius:3px;font-size:13px;line-height:1;color:white}.rating.active .status-box{background:#315f83;border-color:#315f83}.rating.D.active .status-box{background:#91564a;border-color:#91564a}.rating.NI.active .status-box{background:#6d8092;border-color:#6d8092}.component-body{min-width:0}.needs-review{background:linear-gradient(90deg,#f7f2e9,transparent 80%)}.review-note{font-size:11px;color:#8b6744;margin:0 0 12px}.checklist-card .help{margin:18px 0 0}
+/* Four inspection status columns stay to the right of each component. */
+.checklist-card{--status-width:128px;--status-gap:18px}.checklist-columns,.check-row{display:grid;grid-template-columns:minmax(0,1fr) var(--status-width);column-gap:var(--status-gap)}
+.checklist-columns{align-items:center;background:#edf3f8;border:1px solid #dbe4ec;border-radius:4px;margin-top:18px;padding:10px 0;font-size:10px;letter-spacing:.6px;color:#52758f}.status-columns,.rating-group{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;text-align:center}.status-columns b{font-size:11px}.check-row{align-items:start;padding:22px 0}.check-name{margin-bottom:12px}.rating-group{padding-top:0;flex-wrap:nowrap}.rating{display:grid;place-items:center;min-width:0;width:100%;height:30px;padding:3px;border:0;background:transparent;border-radius:4px}.rating.active{background:transparent}.rating:hover{background:#e5edf5}.status-box{display:grid;place-items:center;width:19px;height:19px;background:#fff;border:1px solid #9cafc0;border-radius:3px;font-size:13px;line-height:1;color:white}.component-body{min-width:0}.needs-review{background:linear-gradient(90deg,#f7f2e9,transparent 80%)}.review-note{font-size:11px;color:#8b6744;margin:0 0 12px}.checklist-card .help{margin:18px 0 0}
 @media(max-width:1100px){.checklist-card{--status-width:108px;--status-gap:12px}}
 @media(max-width:750px){.checklist-card{--status-width:96px;--status-gap:12px}.checklist-columns{font-size:9px;letter-spacing:0}.check-name{line-height:1.6}.checklist-card .chips{gap:4px}.checklist-card .chip{padding:4px 6px}.status-box{width:18px;height:18px}}
 
@@ -40,18 +40,18 @@ button.primary{box-shadow:0 2px 4px #163c5a12}.table th{background:#f5f8fb}.tabl
  .topbar{padding-left:18px;padding-right:18px}
  main.report-editor{max-width:none;margin:0;padding:28px 16px 64px}
  .report-editor .page-head{flex-wrap:wrap}.report-editor .page-head>.actions{max-width:none}
- #system-checks .editor-layout{grid-template-columns:176px minmax(0,1fr);gap:14px}
+ #system-checks .editor-layout{grid-template-columns:148px minmax(0,1fr);gap:14px}
  #system-checks .system-nav{padding:6px;top:16px;max-height:calc(100vh - 32px)}
  .report-editor .checklist-card{padding:20px;--status-width:120px;--status-gap:12px}
 }
-.system-nav a{font-size:14px;padding:9px 5px}.system-nav .system-link{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:6px;align-items:start;position:relative}.system-number{font-size:12px;color:#62798d;padding-top:2px}.system-label{overflow-wrap:anywhere;line-height:1.45}.system-nav .count{float:none;font-size:12px;color:#62798d;white-space:nowrap;padding-top:2px}
+.system-nav a{font-size:14px;padding:9px 5px}.system-nav .system-link{display:grid;grid-template-columns:18px minmax(0,1fr);gap:6px;align-items:start;position:relative}.system-number{font-size:12px;color:#62798d;padding-top:2px}.system-label{overflow-wrap:anywhere;line-height:1.45}.system-nav .count{float:none;font-size:12px;color:#62798d;white-space:nowrap;padding-top:2px}
 .system-nav .section-progress{position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:1.5em;border-radius:2px;background:#df8a13;pointer-events:none}.system-nav .section-progress.is-complete{background:#2e7d32}
 .report-editor .report-block h2{font-size:21px}.report-editor .report-block h3{font-size:20px}.report-editor .report-block h4{font-size:17px}.report-editor .check-name{font-size:18px;line-height:1.5;margin-bottom:12px}
 .report-editor .field{min-width:0;font-size:14px;color:#52697d}.report-editor input,.report-editor textarea,.report-editor select{min-width:0;max-width:100%;font-size:16px;line-height:1.65}.report-editor input,.report-editor select{padding:10px 12px}.report-editor textarea{padding:12px;min-height:130px}.report-editor .source-finding textarea{min-height:200px}
 .report-editor .check-notes{grid-template-columns:repeat(2,minmax(0,1fr))}.report-editor .check-notes label{min-width:0;font-size:14px;color:#52697d}.report-editor .check-notes input{font-size:16px;padding:10px 12px}.report-editor .chip{font-size:14px;padding:7px 10px}.report-editor .small{font-size:14px;padding:8px 11px}.report-editor .source-finding .photo input{font-size:14px}.report-editor .source-finding .photo button{font-size:13px;padding:5px 7px}
 .report-editor .narrative{font-size:16px;line-height:1.8}.report-editor .help,.report-editor .sub,.report-editor .finding-links,.report-editor .summary-empty{font-size:14px;color:#52697d}.report-editor .tiny,.report-editor .legend,.report-editor .report-jump-links a,.report-editor .summary-photos figcaption{font-size:13px}.report-editor .status-columns b{font-size:13px}.report-editor .checklist-columns{font-size:12px;letter-spacing:.2px}.report-editor .rating{height:34px}.report-editor .status-box{width:22px;height:22px;font-size:15px}.report-editor .source-finding .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 @media(max-width:1100px){.report-editor .check-notes,.report-editor .source-finding .grid{grid-template-columns:minmax(0,1fr)}}
-@media(max-width:750px){.system-nav .system-link{grid-template-columns:18px minmax(0,1fr) auto;gap:5px;max-width:100%}.system-nav .count{margin-left:0}.report-editor .checklist-card{--status-width:104px;--status-gap:10px}.report-editor .checklist-card .chip{padding:6px 8px}.report-editor .checklist-columns{font-size:10px}}
+@media(max-width:750px){.system-nav .system-link{grid-template-columns:18px minmax(0,1fr);gap:5px;max-width:100%}.system-nav .count{margin-left:0}.report-editor .checklist-card{--status-width:104px;--status-gap:10px}.report-editor .checklist-card .chip{padding:6px 8px}.report-editor .checklist-columns{font-size:10px}}
 @media(max-width:750px){.sidebar #nav{flex-wrap:wrap}.sidebar #nav button{min-width:0;flex:1 1 60px;padding:8px 4px}.sidebar #nav button span{min-width:0;overflow-wrap:anywhere}}
 
 /* Spacious note writing, with reusable wording beside the working draft. */
@@ -156,7 +156,13 @@ body:has(dialog[open]){overflow:hidden}
 
 /* Section status buttons align with the individual component columns. */
 .section-rating{width:calc(100% - 4px);min-width:0;min-height:34px;margin:0 2px;padding:4px 0;border:1px solid #9cb3c6;border-radius:4px;background:#fff;color:#315f83;font-size:13px;font-weight:700;letter-spacing:0;line-height:1.2}
-.section-rating:hover{background:#dce9f4;border-color:#527b9a}.section-rating.active{background:#315f83;border-color:#315f83;color:#fff}.section-rating.D.active{background:#91564a;border-color:#91564a}.section-rating:focus-visible{outline:3px solid #769cba;outline-offset:2px}.section-rating:disabled{opacity:.45;cursor:default}
+.section-rating:hover{background:#dce9f4;border-color:#527b9a}.section-rating.active{color:#fff}.section-rating:focus-visible{outline:3px solid #769cba;outline-offset:2px}.section-rating:disabled{opacity:.45;cursor:default}
+
+/* Inspection status colors stay consistent for individual and section selections in every theme. */
+.rating.I.active .status-box,.section-rating.I.active{background:#2e7d32;border-color:#2e7d32}
+.rating.NI.active .status-box,.section-rating.NI.active{background:#df8a13;border-color:#df8a13}
+.rating.NP.active .status-box,.section-rating.NP.active{background:#6d8092;border-color:#6d8092}
+.rating.D.active .status-box,.section-rating.D.active{background:#b42318;border-color:#b42318}
 
 /* Keep ordering controls beside every template section, including custom sections. */
 .template-layout{grid-template-columns:280px minmax(0,1fr);gap:18px}.template-section-nav{display:block;padding:10px;max-height:calc(100vh - 40px);overscroll-behavior:contain}.template-section-nav h3{margin:4px 6px 0;font-size:16px}.template-section-nav>.help{margin:6px 6px 12px;font-size:12px;line-height:1.5}
@@ -336,7 +342,7 @@ body:has(dialog[open]) .report-tools{visibility:hidden}
 
 #note-dialog .note-summary-switch:disabled,.note-summary-toggle:has(input:disabled){cursor:default}
 
-/* Unselected statuses keep a quiet label; selected statuses retain their existing fill. */
+/* Unselected statuses keep a quiet label; selected statuses use a white checkmark. */
 .rating:not(.active) .status-box{color:#91a1b0;font-size:11px;font-weight:400}
 .rating.active .status-box{color:#fff}
 
@@ -428,3 +434,51 @@ html[data-theme]:not([data-theme="blue-gray"]) .note-categories label:has(input:
 html[data-theme]:not([data-theme="blue-gray"]) .note-categories input{accent-color:var(--accent)}
 html[data-theme]:not([data-theme="blue-gray"]) .photo-summary-category>.photo-category-title{background:var(--theme-soft);color:var(--accent);border-color:var(--theme-focus)}
 html[data-theme]:not([data-theme="blue-gray"]) .report-tool::after{background:var(--theme-strong)}
+
+/* Choice purpose colors remain distinct in every workspace theme. */
+.choice-chip,.choice-swatch{--choice-bg:#e7f3e8;--choice-border:#9ec3a3;--choice-ink:#286039;--choice-selected:#cee6d3}
+[data-choice-type="normal"]{--choice-bg:#edf2f6;--choice-border:#b6c7d4;--choice-ink:#3c566b;--choice-selected:#dce7ef}
+[data-choice-type="concern"]{--choice-bg:#fff2d9;--choice-border:#d9b46d;--choice-ink:#805514;--choice-selected:#ffe2ab}
+.choice-chip,html[data-theme] .chip.choice-chip{display:inline-flex;align-items:center;gap:6px;background:var(--choice-bg);border:1px solid var(--choice-border);color:var(--choice-ink);text-align:left;max-width:100%;overflow-wrap:anywhere}
+.choice-chip.selected,html[data-theme] .chip.choice-chip.selected{background:var(--choice-selected);border-color:var(--choice-ink);color:var(--choice-ink)}
+.choice-mark{display:inline-flex;align-items:center;justify-content:center;flex:0 0 13px;width:13px;height:13px;border:1px solid currentColor;border-radius:2px;font-size:12px;font-weight:700;line-height:1}
+.template-component{padding:18px 0;border-bottom:1px solid var(--line)}
+.template-component-heading{display:flex;gap:12px;align-items:flex-end;margin-bottom:12px}.template-component-heading>.field{flex:1;min-width:0}
+.template-choice-preview{margin-bottom:12px}.template-choice-preview .choice-chip{font-size:13px}
+#dialog:has(#choice-rows){width:760px;max-width:calc(100vw - 24px)}
+.choice-edit-row{display:grid;grid-template-columns:20px minmax(0,1.5fr) minmax(0,1fr) 22px auto;gap:8px;align-items:end;margin:12px 0;padding:5px 0;border-radius:4px}
+.choice-edit-row input,.choice-edit-row select{width:100%;min-width:0}.choice-edit-row button{padding:7px}
+.choice-edit-row .choice-drag-handle{display:flex;align-items:center;justify-content:center;width:20px;height:36px;padding:0;border:0;background:transparent;color:#6889a2;cursor:grab;touch-action:none;user-select:none}
+.choice-row-actions{display:flex;gap:3px;align-items:center;height:36px}.choice-row-actions button{width:26px;min-width:26px;height:32px;padding:0}
+.choice-drag-handle:focus-visible{outline:2px solid var(--accent);outline-offset:1px}.choice-edit-row.dragging{opacity:.45}.choice-edit-row.drop-before{box-shadow:inset 0 3px #315f83}.choice-edit-row.drop-after{box-shadow:inset 0 -3px #315f83}
+.choice-swatch{height:32px;background:var(--choice-bg);border:1px solid var(--choice-border);border-radius:4px}
+.component-heading .check-name{gap:8px}.component-remove{padding:0;width:24px;min-width:24px;height:28px;border:0;background:transparent;color:#7c8e9d;font-size:21px;line-height:1}.component-remove:hover{color:#b42318;background:#fff1ef}
+.component-undo{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;margin-bottom:12px;background:var(--paper);border:1px solid var(--line);border-radius:6px;font-size:13px}.component-undo button{flex-shrink:0}
+@media(max-width:650px){.choice-edit-row{grid-template-columns:20px minmax(0,1fr) 22px auto}.choice-edit-row .choice-drag-handle{grid-column:1;grid-row:1/3;align-self:center}.choice-text-field{grid-column:2/-1}.choice-purpose-field{grid-column:2}.template-component-heading{flex-wrap:wrap}.component-undo{flex-wrap:wrap}}
+
+/* Six square dots provide a consistent reorder handle; report dots also show completion. */
+.square-grip-icon{display:block;width:9.6px;height:14.4px;fill:currentColor;pointer-events:none;flex-shrink:0}
+.section-drag-handle,.fast-note-drag-handle{display:flex;align-items:center;justify-content:center}
+.report-section-row{display:grid;grid-template-columns:20px minmax(0,1fr);gap:3px;align-items:center;position:relative;border-radius:5px;margin:3px 0;cursor:grab}
+.system-nav .report-section-row .system-link{display:block;padding:9px 2px;margin:0;min-width:0}
+.system-nav .report-section-handle{display:flex;align-items:center;justify-content:center;width:20px;min-width:0;height:32px;padding:0;margin:0;border:0;background:transparent;cursor:grab;touch-action:none;user-select:none}
+.report-section-handle.is-complete{color:#2e7d32}.report-section-handle.is-incomplete{color:#df8a13}
+.report-section-handle:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.report-section-row.dragging{opacity:.45;cursor:grabbing}.report-section-row.drop-before{box-shadow:inset 0 3px #315f83}.report-section-row.drop-after{box-shadow:inset 0 -3px #315f83}
+
+/* Consistent square controls, with readable strokes rather than font-dependent glyphs. */
+.control-icon{display:block;width:16px;height:16px;pointer-events:none;flex-shrink:0}
+.template-section-nav .template-section-move,.template-component-heading .section-controls button,.choice-row-actions button,.bank-card-controls .bank-icon{display:grid;place-items:center;width:26px;height:26px;min-width:26px;min-height:26px;margin:0;padding:0;flex:0 0 26px;border-radius:4px}
+.template-component-heading .section-controls{align-items:center;height:36px}
+.fast-note-row .bank-card-controls{gap:5px}
+
+/* Statuses sit slightly farther right; Add note aligns with the Limitation input below. */
+.checklist-card{--component-action-width:30px}
+.checklist-columns,.check-row,.component-input-row{grid-template-columns:minmax(0,1fr) var(--status-width) var(--component-action-width)}
+.check-row>.rating-group{grid-column:2;grid-row:1}
+.check-row>.component-body{grid-column:1;grid-row:1}
+.component-input-row{display:grid;grid-column:1/-1;grid-row:2;column-gap:var(--status-gap);align-items:end;min-width:0}
+.component-input-row>.check-notes{grid-column:1;min-width:0}
+.component-input-row>.component-add-note{grid-column:2/4;justify-self:end}
+.check-row>.component-findings{grid-column:1;grid-row:3;min-width:0}
+@media(max-width:750px){.checklist-card{--component-action-width:26px}}

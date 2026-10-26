@@ -1,12 +1,26 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),P=require('../app/public/photo-editor');
 const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-7,`${a} != ${b}`);
-test('both sketches have one baseline and the correct number of parallel arrowheads',()=>{
+test('arrow groups retain the correct number of parallel arrowheads and shared editing bounds',()=>{
  for(const [type,count] of [['arrow-row',7],['end-arrows',2]]){
   const s={type,x1:200,y1:500,x2:800,y2:500},g=P.arrowGroup(s);assert.equal(g.arrows.length,count);near(g.arrows[0].base.x,200);near(g.arrows.at(-1).base.x,800);
   for(const a of g.arrows){near(a.base.y,500);near(a.tip.x,a.base.x);assert.ok(a.tip.y<500);assert.ok(a.head.every(p=>p.y>a.tip.y));}
   assert.ok(P.hit(s,g.center,8));assert.equal(P.hit(s,{x:1000,y:700},8),false);
   const points=g.arrows.flatMap(a=>[a.base,a.tip,...a.head]),b=P.bounds(s);assert.ok(points.every(p=>p.x>=b.left&&p.x<=b.right&&p.y>=b.top&&p.y<=b.bottom));
+ }
+});
+
+test('arrow rows draw independent shafts without a tail connector at every orientation',()=>{
+ for(const end of [{x:800,y:500},{x:200,y:100},{x:650,y:250}]){
+  const paths=[];let segments=[],cursor;const ctx={};
+  for(const name of ['clearRect','fillRect','save','restore','translate','rotate','drawImage','closePath','fill'])ctx[name]=()=>{};
+  ctx.beginPath=()=>{segments=[];cursor=null;};ctx.moveTo=(x,y)=>cursor={x,y};
+  ctx.lineTo=(x,y)=>{segments.push({from:cursor,to:{x,y}});cursor={x,y};};ctx.stroke=()=>paths.push(segments.slice());
+  const m=P.model('test',1200,800),s={type:'arrow-row',x1:200,y1:500,x2:end.x,y2:end.y,height:120};m.shapes=[s];P.paint(ctx,m,{});
+  assert.equal(paths.length,1);assert.equal(paths[0].length,7);
+  for(const [i,line] of paths[0].entries()){const arrow=P.arrowGroup(s).arrows[i];assert.deepEqual(line.from,arrow.base);assert.deepEqual(line.to,arrow.tip);}
+  assert.ok(!paths[0].some(line=>line.from.x===s.x1&&line.from.y===s.y1&&line.to.x===s.x2&&line.to.y===s.y2));
+  s.type='end-arrows';paths.length=0;P.paint(ctx,m,{});assert.equal(paths[0].length,3,'Legacy end-arrow drafts retain their original appearance');
  }
 });
 test('resize scales both dimensions, arrow height is independent, and arbitrary rotation preserves shape geometry',()=>{
