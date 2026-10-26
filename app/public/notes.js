@@ -175,13 +175,11 @@ function openNote(findingId=null,sectionId=null,itemId=null,origin=null,source='
  const r=report(),existing=r.findings.find(f=>f.id===findingId),section=r.sections.find(s=>s.id===sectionId),item=section?.items.find(i=>i.id===itemId);
  const draft=existing?clone(existing):{id:uid(),location:item?`${section.name} / ${item.name}`:'',category:categories[0],text:'',photos:[],includeInSummary:true,origin:source,...(item?{sectionId:section.id,itemId:item.id}:{})};
  if(draft.origin==='summary')draft.includeInSummary=true;
- const fromSummary=source==='summary'||origin?.startsWith('summary-')||origin?.startsWith('finding-')||draft.origin==='summary';
- const ref=findingComponent(r,draft),returnAnchor=origin||(draft.origin==='summary'?'finding-':'check-finding-')+draft.id;
+ const returnAnchor=origin||(draft.origin==='summary'?'finding-':'check-finding-')+draft.id;
  noteEditor={reportId:r.id,draft,original:JSON.stringify(draft),existing:!!existing,photoDrafts:new Map(),origin:returnAnchor,summaryOnly:draft.origin==='summary',busy:false};
- const componentField=!fromSummary?`<label class="field full"><span>Checklist component</span><select id="note-component"><option value="">Other observations</option>${r.sections.map((s,si)=>`<optgroup label="${e(s.name)}">${s.items.map((i,ii)=>`<option value="${si}:${ii}" ${ref?.item===i?'selected':''}>${e(s.name)} / ${e(i.name)}</option>`).join('')}</optgroup>`).join('')}</select></label>`:'';
  const destination=noteDestination(r,draft);
  $('#note-dialog').innerHTML=`<header class="note-heading"><div class="note-window-title"><button type="button" class="note-move-grip" data-note-move aria-label="Move note window" title="Drag the title bar to move. Focus this handle and use arrow keys to move with the keyboard."><span aria-hidden="true">✥</span></button><div><h2 id="note-title">${existing?'Edit Note':'New Note'}</h2><p class="help" id="note-destination" ${destination?'':'hidden'}>${e(destination)}</p></div></div><div class="note-window-controls">${noteAction('maximize-window','Maximize','aria-pressed="false"','small')}${noteAction('cancel','Close','aria-label="Close note editor"','quiet')}</div></header>
- <div class="note-layout bank-note-layout">${noteAction('toggle-note-bank','Fast notes','aria-expanded="false" aria-controls="note-bank-sidebar"','note-bank-toggle')}<aside id="note-bank-sidebar" class="note-library"><h3>Fast notes</h3>${bankMarkup('note')}</aside><div class="note-writing">${componentField?`<div class="grid">${componentField}</div>`:''}
+ <div class="note-layout bank-note-layout">${noteAction('toggle-note-bank','Fast notes','aria-expanded="false" aria-controls="note-bank-sidebar"','note-bank-toggle')}<aside id="note-bank-sidebar" class="note-library"><h3>Fast notes</h3>${bankMarkup('note')}</aside><div class="note-writing">
  <section class="note-photo-section" aria-labelledby="note-photos-title"><div class="note-row"><h3 id="note-photos-title">Photos</h3>${noteAction('add-photos','＋ Add photos','','small')}</div><p class="help">Choose one or more photos, drop/paste here, or drag to adjust orders. JPG, PNG, WebP · up to 30 photos.</p><input id="note-photo-file" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden><div id="note-photos"></div></section>
  ${wordingMarkup('note-text','Note / report narrative',draft)}
  <fieldset class="note-categories"><legend>Category</legend>${categories.map(c=>`<label><input type="radio" name="note-category" data-note-field="category" value="${e(c)}" ${c===draft.category?'checked':''}><span>${e(c)}</span></label>`).join('')}</fieldset>
@@ -317,7 +315,6 @@ document.addEventListener('input',ev=>{
 });
 document.addEventListener('change',ev=>{
  if(ev.target.id==='note-photo-file'){addNotePhotos([...ev.target.files]);ev.target.value='';}
- if(ev.target.id==='note-component'&&noteEditor){const f=noteEditor.draft,r=state.reports.find(r=>r.id===noteEditor.reportId);if(ev.target.value){const [si,ii]=ev.target.value.split(':').map(Number);f.sectionId=r.sections[si].id;f.itemId=r.sections[si].items[ii].id;}else{delete f.sectionId;delete f.itemId;}}
 });
 document.addEventListener('click',async ev=>{
  const b=ev.target.closest('[data-note-action]');if(!b)return;

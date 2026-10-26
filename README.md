@@ -1,10 +1,12 @@
 # HomeKanban — Windows home inspection reports
 
-Current release: **0.18.8**. An English-language, offline-first workspace for a solo home inspector. This is a trial release, not a certified inspection or regulatory-compliance product.
+Current release: **0.18.11**. An English-language, offline-first workspace for a solo home inspector. This is a trial release, not a certified inspection or regulatory-compliance product.
 
 **Free to use, including for commercial inspections.** HomeKanban's code and documentation are [MIT licensed](LICENSE). No HomeKanban subscription or account is required. Optional AI providers and web hosts have separate terms and may charge fees. See [third-party notices](THIRD_PARTY_NOTICES.md).
 
-Start with the [User Guide](docs/USER-GUIDE.md). Ready-to-run Windows ZIPs, when published, are listed under [Releases](https://github.com/inspekhome/HomeKanban/releases); the GitHub source download is not the Windows application package.
+**[Download HomeKanban v0.18.11 for Windows](https://github.com/inspekhome/HomeKanban/releases/download/v0.18.11/HomeKanban-Windows-v0.18.11.zip)** · [Release notes and checksum](https://github.com/inspekhome/HomeKanban/releases/tag/v0.18.11) · [User Guide](docs/USER-GUIDE.md)
+
+Download the Windows ZIP above and extract the entire folder before opening `HomeKanban.exe`. The GitHub **Code > Download ZIP** button downloads source code, not the ready-to-run application.
 
 ## Run
 
@@ -53,8 +55,8 @@ With Node.js 24.19.0 on PATH, from the repository root:
 ```powershell
 New-Item -ItemType Directory -Force work | Out-Null
 node --test tests/*.test.js
-powershell -NoProfile -File scripts/build.ps1 -Version 0.18.8
-node scripts/smoke-package.js dist/HomeKanban-Windows-v0.18.8
+powershell -NoProfile -File scripts/build.ps1 -Version 0.18.11
+node scripts/smoke-package.js dist/HomeKanban-Windows-v0.18.11
 ```
 
 Tests use isolated workspaces under `work`; a few tests require local loopback access, Windows DPAPI, and Edge/Chrome. The packaged runtime can be used if Node is not on PATH. Set `HOMEKANBAN_NODE` for a different packaging runtime.

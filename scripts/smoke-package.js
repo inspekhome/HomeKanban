@@ -1,6 +1,6 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
-const packageRoot=path.resolve(process.argv[2]||'dist/HomeKanban-Windows-v0.18.8');
+const packageRoot=path.resolve(process.argv[2]||'dist/HomeKanban-Windows-v0.18.11');
 const {createApp}=require(path.join(packageRoot,'app/server.js'));
 async function main(){
  const dataDir=fs.mkdtempSync(path.resolve('work/package-smoke-'));
@@ -8,7 +8,7 @@ async function main(){
  try{
   const url=await app.start();
   const home=await (await fetch(url)).text();
-  assert.ok(home.includes('v0.18.8'));
+  assert.ok(home.includes('v0.18.11'));
   assert.ok(home.includes('<title>HomeKanban'));
   for(const [asset,type] of [['/branding/homekanban-logo.svg','image/svg+xml'],['/branding/homekanban-house.png','image/png'],['/favicon.ico','image/x-icon']]){const response=await fetch(url+asset);assert.equal(response.status,200);assert.equal(response.headers.get('content-type'),type);assert.ok((await response.arrayBuffer()).byteLength>1000);}
   assert.ok(!home.includes('SoloInspect'));

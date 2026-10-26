@@ -1,6 +1,6 @@
 # HomeKanban User Guide
 
-Version 0.18.8 · Windows x64 · English interface
+Version 0.18.11 · Windows x64 · English interface
 
 HomeKanban is a free, offline-first report-writing workspace for individual home inspectors. One local workspace holds your profile, templates, Fast notes and reports. You do not need a HomeKanban account or subscription. Optional AI and online publishing require your own services and may cost money.
 
@@ -19,7 +19,7 @@ To reopen an already running workspace, open HomeKanban.exe again. When finished
 
 Open **User info** in the left navigation. Enter your inspector name, business details, license information and contact details. Add your report logo if needed, then save.
 
-Under **System Themes**, select **Blue Gray**, **Indigo**, **Sage**, **Peach** or **Lavender**. The choice saves immediately and changes the workspace colors. It does not change the report export colors, inspection status colors, annotation colors or saved Fast note formatting.
+Under **System Themes**, select **Blue Gray**, **Indigo**, **Sage**, **Peach**, **Lavender** or **Black & Gray**. Black & Gray uses charcoal buttons and headings with light gray navigation and backgrounds. The choice saves immediately and changes the workspace colors. It does not change the report export colors, inspection status colors, annotation colors or saved Fast note formatting.
 
 Every new report captures your current profile. Changing User info does not silently rewrite older reports. In a report, **Update from current profile** replaces that report's inspector details with the current profile when you choose to do so.
 
@@ -54,9 +54,11 @@ Use the section directory to move through the report. Each component has four bo
 | **NP** | Not Present |
 | **D** | Deficient |
 
-Unselected boxes show pale letters. Selected boxes show a white checkmark on a colored background. Select the statuses that describe the actual inspection. **I** and **D** can be selected together for an inspected item with a deficiency. **NI** and **NP** are alternatives to an inspected item.
+Unselected boxes show pale letters. Selected boxes show a white checkmark on a colored background. Choose one status per component. Use **I** for an inspected item and **D** when a deficiency was observed. Use **NI** when the item was not inspected, or **NP** when it was not present.
 
 The status buttons at the top of a section apply that status to the section's components. Clicking a status already selected across the section clears that status. Review individual exceptions after bulk selection.
+
+In the section directory, a short orange bar means some inspection statuses are still blank. It turns green as soon as every component has an **I**, **NI**, **NP** or **D** status, and returns to orange if any selection is cleared. This updates automatically for individual and bulk selections. The bar tracks checklist statuses; **Check completeness** still checks other required information, such as reasons for **NI**. Summaries and Other observations have no status bar.
 
 Choose applicable materials and add notes or limitations. For **NI**, enter the actual reason the item could not be inspected. A material choice such as Not visible does not by itself record an inspection status or explain an inspection limitation.
 
@@ -65,6 +67,8 @@ A blank status means no status was recorded. In exported reports, an empty Type 
 ## 6. Write New Notes and Edit Notes
 
 Under the relevant checklist component, choose **Add note & photos**. Enter the observation, location and category, and add a recommended action where appropriate.
+
+New Note and Edit Note start with Photos, followed by the narrative, matching the layout used for summary notes. The checklist source appears once below the window title. The note keeps its original component association automatically; there is no duplicate component selector above Photos.
 
 - Drag the note window's title bar to move it.
 - Drag its bottom-right corner to adjust width and height.
