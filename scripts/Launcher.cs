@@ -7,8 +7,8 @@ using System.Reflection;
 [assembly: AssemblyTitle("HomeKanban")]
 [assembly: AssemblyProduct("HomeKanban")]
 [assembly: AssemblyDescription("Offline Home Inspection Reports")]
-[assembly: AssemblyVersion("0.18.25.0")]
-[assembly: AssemblyFileVersion("0.18.25.0")]
+[assembly: AssemblyVersion("0.18.42.0")]
+[assembly: AssemblyFileVersion("0.18.42.0")]
 class Launcher {
  [STAThread] static void Main() {
   try {

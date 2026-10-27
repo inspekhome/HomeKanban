@@ -35,5 +35,5 @@ test('clipboard receives plain text and empty summaries leave the clipboard unto
 });
 test('blocked clipboard access falls back without falsely reporting success',async()=>{
  const c=client({writeText:async()=>{throw Error('Denied');}});c.h.set(report());await c.h.copy();assert.equal(c.messages.length,0);assert.equal(c.dialogs.length,1);assert.ok(c.dialogs[0].includes('Press Ctrl+C'));assert.ok(c.dialogs[0].includes('&lt;keep literal text&gt;'));
- const legacy=client({legacyCopy:true});legacy.h.set(report());await legacy.h.copy();assert.deepEqual(legacy.messages,['Summary text copied.']);assert.equal(legacy.dialogs.length,0);
+ const unavailable=client();unavailable.h.set(report());await unavailable.h.copy();assert.equal(unavailable.messages.length,0);assert.equal(unavailable.dialogs.length,1);assert.ok(unavailable.dialogs[0].includes('Press Ctrl+C'));
 });

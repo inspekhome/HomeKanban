@@ -7,11 +7,12 @@ HomeKanban's application code and documentation are available under the MIT Lice
 | Component | Use | License / notice |
 | --- | --- | --- |
 | Node.js 24.19.0, Windows x64 | Runs the local server, including its built-in SQLite API | Node.js MIT license and the separate notices for its incorporated components; the complete upstream text is in `docs/NODE-LICENSE.txt` in source and `runtime/LICENSE.txt` in the Windows package. |
+| Quill 2.0.3 and bundled dependencies | Offline rich-text editing, selection, clipboard and undo history | Quill and Parchment use BSD-3-Clause; bundled utility libraries use MIT. Complete component versions and copyright/license texts are in `app/public/vendor/editor-LICENSES.txt`. |
 | HomeKanban wordmark, house image and Windows icon | Application branding | Supplied by the project owner, who confirmed permission to publicly use and distribute them on 2026-10-25. Their provenance is recorded in `app/public/branding/SOURCE.txt`. Included under the project MIT License to the extent of the owner's rights. No trademark endorsement is granted. |
 
 The Node.js license file was compared with the [upstream v24.19.0 LICENSE](https://github.com/nodejs/node/blob/v24.19.0/LICENSE) on 2026-10-25 and matched after line-ending normalization. It includes the notices for libraries embedded in Node.js; do not replace it with just the short MIT paragraph.
 
-The application has no third-party npm dependencies. Its HTML, CSS, JavaScript, C# launcher, SVG controls and canvas photo tools are maintained in this repository. Development tools on a maintainer's machine are not included merely because they were used during development.
+The browser editor is bundled locally from the exact versions pinned in `scripts/editor/package-lock.json`. Users do not need npm, an online CDN or a subscription. The checked-in bundle includes Quill, Parchment, quill-delta, eventemitter3, fast-diff and Lodash utilities; preserve `app/public/vendor/editor-LICENSES.txt` when redistributing it. esbuild and jsdom are build/test tools and are not included in the Windows runtime package. HomeKanban's integration, C# launcher, SVG controls and canvas photo tools remain maintained in this repository.
 
 ## Installed separately, not redistributed here
 

@@ -1,0 +1,1 @@
+{"name":"homekanban-editor-build","version":"1.0.0","private":true,"description":"Build-only dependencies for the offline HomeKanban text editor","license":"MIT","devDependencies":{"esbuild":"0.28.2","jsdom":"30.1.3"},"dependencies":{"quill":"2.0.3"}}

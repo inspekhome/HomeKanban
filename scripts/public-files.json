@@ -1,6 +1,10 @@
 {
-  "version": "0.18.25",
+  "version": "0.18.42",
   "files": [
+    "app/public/workspace-limits.js",
+    "tests/save-transactions.test.js",
+    "tests/backup-capacity.test.js",
+    "tests/helpers/workspace-client.cjs",
     "tests/choice-order.test.js",
     "tests/report-section-order.test.js",
     "tests/checklist-choices.test.js",
@@ -75,7 +79,21 @@
     "tests/wording.test.js",
     "tests/workspace-location.test.js",
     "app/data/system-template.json",
-    "tests/system-template.test.js"
+    "tests/system-template.test.js",
+    "app/public/web-publishing.js",
+    "tests/web-publishing.test.js",
+    "app/public/note-voice.js",
+    "tests/note-voice.test.js",
+    "app/voice.js",
+    "tests/voice-api.test.js",
+    "app/public/vendor/editor.js",
+    "app/public/vendor/editor-LICENSES.txt",
+    "scripts/editor/entry.js",
+    "scripts/editor/build.cjs",
+    "scripts/editor/package.json",
+    "scripts/editor/package-lock.json",
+    "scripts/editor/README.md",
+    "tests/modern-editor.test.js"
   ],
   "format": 1
 }

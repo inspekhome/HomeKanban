@@ -71,6 +71,12 @@ const ReportPhotos=(()=>{
 })();
 // A note is edited as a local draft, then committed once to its shared report record.
 let noteEditor=null, libraryEditor=null;
+let noteVoiceConsent=null;
+function syncNoteVoiceScope(reportId){
+ if(typeof NoteVoice==='undefined')return;
+ noteVoiceConsent??=NoteVoice.createConsentGate();noteVoiceConsent.enter(reportId);
+ if(noteEditor&&noteEditor.reportId!==reportId){noteEditor.voice?.dispose();if($('#voice-confirm')?.open)$('#voice-confirm').close('cancel');}
+}
 const noteAction=(name,label,extra='',cls='')=>`<button type="button" data-note-action="${name}" ${extra} class="${cls}">${label}</button>`;
 const noteLibrary=()=>state.noteLibrary||[];
 // Window preferences belong to this browser/computer, never to a report draft.
@@ -171,6 +177,9 @@ function setNoteSummary(included){
  noteHint('Draft changed. Save the note to update the report.');
 }
 function openNote(findingId=null,sectionId=null,itemId=null,origin=null,source='checklist'){
+ disposeWording('note-text');
+ noteEditor?.voice?.dispose();
+ if($('#voice-confirm')?.open)$('#voice-confirm').close('cancel');
  if(typeof ReportPhotos!=='undefined')ReportPhotos.closeFinding(findingId);
  const r=report(),existing=r.findings.find(f=>f.id===findingId),section=r.sections.find(s=>s.id===sectionId),item=section?.items.find(i=>i.id===itemId);
  const draft=existing?clone(existing):{id:uid(),location:item?`${section.name} / ${item.name}`:'',category:categories[0],text:'',photos:[],includeInSummary:true,origin:source,...(item?{sectionId:section.id,itemId:item.id}:{})};
@@ -180,13 +189,63 @@ function openNote(findingId=null,sectionId=null,itemId=null,origin=null,source='
  const destination=noteDestination(r,draft);
  $('#note-dialog').innerHTML=`<header class="note-heading"><div class="note-window-title"><button type="button" class="note-move-grip" data-note-move aria-label="Move note window" title="Drag the title bar to move. Focus this handle and use arrow keys to move with the keyboard."><span aria-hidden="true">✥</span></button><div><h2 id="note-title">${existing?'Edit Note':'New Note'}</h2><p class="help" id="note-destination" ${destination?'':'hidden'}>${e(destination)}</p></div></div><div class="note-window-controls">${noteAction('maximize-window','Maximize','aria-pressed="false"','small')}${noteAction('cancel','Close','aria-label="Close note editor"','quiet')}</div></header>
  <div class="note-layout bank-note-layout">${noteAction('toggle-note-bank','Fast notes','aria-expanded="false" aria-controls="note-bank-sidebar"','note-bank-toggle')}<aside id="note-bank-sidebar" class="note-library"><h3>Fast notes</h3>${bankMarkup('note')}</aside><div class="note-writing">
- <section class="note-photo-section" aria-labelledby="note-photos-title"><div class="note-row"><h3 id="note-photos-title">Photos</h3>${noteAction('add-photos','＋ Add photos','','small')}</div><p class="help">Choose one or more photos, drop/paste here, or drag to adjust orders. JPG, PNG, WebP · up to 30 photos.</p><input id="note-photo-file" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden><div id="note-photos"></div></section>
+ <section class="note-photo-section" aria-labelledby="note-photos-title"><div class="note-row"><h3 id="note-photos-title">Photos</h3>${noteAction('add-photos','＋ Add photos','','small')}</div><input id="note-photo-file" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden><div id="note-photos"></div></section>
  ${wordingMarkup('note-text','Note / report narrative',draft)}
  <fieldset class="note-categories"><legend>Category</legend>${categories.map(c=>`<label><input type="radio" name="note-category" data-note-field="category" value="${e(c)}" ${c===draft.category?'checked':''}><span>${e(c)}</span></label>`).join('')}</fieldset>
- <div class="note-tools"><div class="note-summary-control"><label class="note-summary-toggle"><input type="checkbox" role="switch" class="note-summary-switch" data-note-field="includeInSummary" aria-describedby="note-summary-help" ${draft.includeInSummary!==false?'checked':''} ${noteEditor.summaryOnly?'disabled':''}> Add to summary</label><p class="help" id="note-summary-help">${noteEditor.summaryOnly?'Always included in both summaries because this note was created in Summary and pictures.':'Includes text in Summary, and text with photos in Summary and pictures. When off, keep the note and photos in System checks.'}</p></div><div class="note-ai-control">${noteAction('ai','✧ AI Revise','title="Polish all text in this note"','small')}${noteAction('undo-ai','Undo AI revision','hidden','small')}<p class="help">Polish all note text using your saved AI Instructions. Sends text to your AI provider; Internet and API charges apply.</p></div></div><div id="note-message" class="help" role="status">Changes are applied when you select ${existing?'Update note':'Add note'}.</div></div></div>
- <footer class="note-footer"><span class="help">${existing?'Changes update every place this note appears.':'Save the text, photos, and category together.'}<small class="note-window-tip">Drag the title bar to move; drag the bottom-right corner to resize.</small></span><div class="actions">${noteAction('cancel','Cancel')}${noteAction('save',existing?'Update note':'Add note','','primary')}</div></footer><button type="button" class="note-window-grip" data-note-resize title="Drag to resize. Arrow keys also adjust the size."><span aria-hidden="true">◢</span></button>`;
- renderNotePhotos();$('#note-dialog').classList.remove('note-bank-open');layoutNoteWindow();$('#note-dialog').showModal();$('#note-text').focus({preventScroll:true});$('#note-dialog').scrollTop=0;
+ <div class="note-tools"><div class="note-summary-control"><label class="note-summary-toggle"><input type="checkbox" role="switch" class="note-summary-switch" data-note-field="includeInSummary" aria-describedby="note-summary-help" ${draft.includeInSummary!==false?'checked':''} ${noteEditor.summaryOnly?'disabled':''}> Add to summary</label><p class="help" id="note-summary-help">${noteEditor.summaryOnly?'Always included in both summaries because this note was created in Summary and pictures.':'Includes text in Summary, and text with photos in Summary and pictures. When off, keep the note and photos in System checks.'}</p></div><div class="note-ai-control">${noteAction('ai','✧ AI Revise','title="Polish all text in this note"','small')}${noteAction('undo-ai','Undo AI revision','hidden','small')}<p class="help"><span>Uses your saved AI instructions.</span><span>Requires Internet; API fees apply.</span></p></div></div><div id="note-message" class="help" role="status"></div></div>
+ <footer class="note-footer"><span class="help">${existing?'Changes update every place this note appears.':'Save the text, photos, and category together.'}<small class="note-window-tip">Drag the title bar to move; drag the bottom-right corner to resize.</small></span><div class="actions">${noteAction('cancel','Cancel')}${noteAction('save',existing?'Update note':'Add note','','primary')}</div></footer></div><button type="button" class="note-window-grip" data-note-resize title="Drag to resize. Arrow keys also adjust the size."><span aria-hidden="true">◢</span></button>`;
+ mountWording('note-text');renderNotePhotos();$('#note-dialog').classList.remove('note-bank-open');layoutNoteWindow();$('#note-dialog').showModal();$('#note-text').focus({preventScroll:true});$('#note-dialog').scrollTop=0;initNoteVoice(noteEditor);
 }
+function initNoteVoice(session){
+ if(typeof NoteVoice==='undefined')return;
+ syncNoteVoiceScope(session.reportId);
+ const editor=$('#note-text'),button=$('#note-dialog [data-note-action="voice"]');
+ if(!button)return;
+ const current=()=>noteEditor===session&&route==='editor'&&currentId===session.reportId&&$('#note-dialog').open&&editor.isConnected;
+ session.voice=NoteVoice.create({getUserMedia:navigator.mediaDevices?.getUserMedia.bind(navigator.mediaDevices),Recorder:window.MediaRecorder,isCurrent:current,
+  transcribe:async(blob,signal)=>{
+   const audio=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(',')[1]);reader.onerror=()=>reject(Error('Unable to read this recording.'));reader.readAsDataURL(blob);});
+   if(!current()||signal.aborted)throw Error('Voice input cancelled.');
+   const result=await api('/api/transcribe','POST',{audio,mime:blob.type},{signal});return result.text;
+  },
+  onText:text=>insertNoteVoiceText(session,text),
+  onInterim:text=>{const el=$('#note-voice-interim');el.textContent=text?'Hearing: '+text:'';el.hidden=!text;},
+  onMessage:text=>{$('#note-voice-status').textContent=text;},
+  onState:status=>{
+   const listening=status!=='idle';button.classList.toggle('is-listening',listening);button.setAttribute('aria-pressed',String(listening));
+   button.setAttribute('aria-label',listening?'Stop voice input':'Start voice input');button.title=listening?'Stop voice input':'Start voice input';
+   button.querySelector('[data-voice-label]').textContent=status==='transcribing'?'Transcribing…':status==='retry'?'Retry':status==='stopping'?'Finishing…':listening?'Stop':'Voice input';button.disabled=['stopping','transcribing'].includes(status);$('#note-dialog [data-note-action="cancel-voice"]').hidden=!listening;
+  }
+ });
+}
+function insertNoteVoiceText(session,text){
+ if(noteEditor!==session||!$('#note-dialog').open)return;
+ const editor=$('#note-text');if(readWording(editor).text.length+text.length+2>100000)throw Error('This note has reached its text limit. Shorten it before adding more voice text.');
+ insertWordingVoiceText(editor,text);
+}
+async function toggleNoteVoice(){
+ const session=noteEditor;if(!session?.voice)return;
+ if(session.voice.active){await session.voice.stop();return;}
+ if(session.voicePrompt)return;
+ if(session.aiBusy){noteHint('Wait for AI Revise to finish before starting voice input.');return;}
+ restoreWordingSelection($('#note-text'));rememberWordingSelection();
+ session.voicePrompt=true;
+ const current=()=>noteEditor===session&&route==='editor'&&currentId===session.reportId&&$('#note-dialog').open;
+ try{
+  const cfg=await api('/api/voice-settings');if(!current())return;
+  if(!cfg.multilingual||!cfg.hasKey){$('#note-voice-status').textContent=cfg.multilingual?'Set up your OpenAI API key in AI & settings → Voice Input first.':'Save your work, then restart HomeKanban to enable multilingual Voice Input.';return;}
+  const allowed=await noteVoiceConsent.request(session.reportId,()=>confirmNoteVoice(session),current);
+  if(!current())return;
+  if(!allowed){$('#note-voice-status').textContent='Voice input was not started.';return;}
+  restoreWordingSelection($('#note-text'));rememberWordingSelection();await session.voice.start();
+ }finally{session.voicePrompt=false;}
+}
+function confirmNoteVoice(session){
+ const dialog=$('#voice-confirm'),r=state.reports.find(r=>r.id===session.reportId);if(!r)return Promise.resolve(false);
+ dialog.innerHTML=`<h2 id="voice-confirm-title">Use voice input for this report?</h2><p><strong>${e(r.address||'Address not entered')}</strong>${r.client?'<br>'+e(r.client):''}</p><p>Click Stop to send this recording to <strong>OpenAI</strong> for transcription using your Voice Input API key. Internet and API charges apply. After 3 minutes, recording stops and transcribes automatically.</p><p>Languages are detected automatically. The original language is kept; use AI Revise for English wording. HomeKanban holds audio only in memory and does not save recordings to disk. Cancel voice discards the recording.</p><p class="help">Allow voice input while this report stays open. We will ask again when you leave and reopen it, or switch to another report. Your browser may also request microphone permission.</p><form method="dialog" class="actions"><button value="cancel" autofocus>Cancel</button><button value="allow" class="primary">Allow for this report</button></form>`;
+ return new Promise(resolve=>{dialog.addEventListener('close',()=>resolve(dialog.returnValue==='allow'),{once:true});dialog.returnValue='';dialog.showModal();});
+}
+async function finishNoteVoice(session){const complete=await session.voice.stop();return complete!==false&&noteEditor===session;}
 function renderCommonNotes(){if(noteEditor)renderBank('note');}
 function notePhotoSource(photo){return noteEditor.photoDrafts?.get(photo)?.src||photo.src;}
 function endInlinePhoto(session=noteEditor,discard=false){const active=session?.inlinePhoto;if(!active)return;if(!discard)active.controller?.flush();active.controller?.dispose();session.inlinePhoto=null;}
@@ -194,7 +253,7 @@ function renderNotePhotos(){
  endInlinePhoto();
  const photos=noteEditor.draft.photos;
  const editTools=[['left','Rotate left 90°'],['right','Rotate right 90°'],['arrow','Draw arrow'],['line','Draw straight line'],['arrow-row','Draw arrow row'],['rect','Draw rectangle'],['circle','Draw circle'],['text','Add text']];
- $('#note-photos').innerHTML=photos.length?`<div class="note-photo-grid">${photos.map((ph,j)=>`<figure data-note-photo="${j}"><div class="note-photo-frame"><div class="note-photo-surface" data-note-photo-drag="${j}" draggable="true" tabindex="0" role="img" aria-label="Photo ${j+1}. Drag to reorder; Alt and arrow keys also move it." title="Drag this photo to change its order"><img draggable="false" src="${e(notePhotoSource(ph))}" alt="${e(ph.caption||'Inspection photograph '+(j+1))}"></div>${noteAction('remove-photo','<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>',`data-index="${j}" aria-label="Remove photo ${j+1}" title="Remove photo ${j+1}"`,'photo-remove')}</div><div class="note-photo-toolbar"><div class="note-photo-tools" role="group" aria-label="Edit photo ${j+1}">${editTools.map(([tool,label])=>noteAction('edit-photo',PhotoEditor.icon(tool),`data-index="${j}" data-tool="${tool}" aria-label="${label} on photo ${j+1}" title="${label}"`,'photo-icon '+(['left','right'].includes(tool)?'':'red-photo-tool'))).join('')}${noteAction('edit-photo',PhotoEditor.icon('undo'),`data-index="${j}" data-tool="undo" aria-label="Undo photo ${j+1} edit" title="Undo" ${noteEditor.photoDrafts?.get(ph)?.history?.length?'':'disabled'}`,'photo-icon')}${noteAction('save-photo',PhotoEditor.icon('save'),`data-index="${j}" aria-label="Save photo ${j+1}" title="Save photo" ${noteEditor.photoDrafts?.has(ph)?'':'disabled'}`,'photo-icon')}</div></div></figure>`).join('')}</div>`:noteAction('add-photos','Click to add photos, or drop them here. You can also write a text-only note.','aria-label="Add photos or drop images here"','note-drop-hint');
+ $('#note-photos').innerHTML=photos.length?`<div class="note-photo-grid">${photos.map((ph,j)=>`<figure data-note-photo="${j}"><div class="note-photo-frame"><div class="note-photo-surface" data-note-photo-drag="${j}" draggable="true" tabindex="0" role="img" aria-label="Photo ${j+1}. Drag to reorder; Alt and arrow keys also move it." title="Drag this photo to change its order"><img draggable="false" src="${e(notePhotoSource(ph))}" alt="${e(ph.caption||'Inspection photograph '+(j+1))}"></div>${noteAction('remove-photo','<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>',`data-index="${j}" aria-label="Remove photo ${j+1}" title="Remove photo ${j+1}"`,'photo-remove')}</div><div class="note-photo-toolbar"><div class="note-photo-tools" role="group" aria-label="Edit photo ${j+1}">${editTools.map(([tool,label])=>noteAction('edit-photo',PhotoEditor.icon(tool),`data-index="${j}" data-tool="${tool}" aria-label="${label} on photo ${j+1}" title="${label}"`,'photo-icon '+(['left','right'].includes(tool)?'':'red-photo-tool'))).join('')}${noteAction('edit-photo',PhotoEditor.icon('undo'),`data-index="${j}" data-tool="undo" aria-label="Undo photo ${j+1} edit" title="Undo" ${noteEditor.photoDrafts?.get(ph)?.history?.length?'':'disabled'}`,'photo-icon')}${noteAction('save-photo',PhotoEditor.icon('save'),`data-index="${j}" aria-label="Save photo ${j+1}" title="Save photo" ${noteEditor.photoDrafts?.has(ph)?'':'disabled'}`,'photo-icon')}</div></div></figure>`).join('')}</div>`:noteAction('add-photos','Click to add photos, or drop them here. JPG, PNG, WebP · up to 30 photos.','aria-label="Add photos or drop images here"','note-drop-hint');
 }
 function applyNotePhotoDrafts(session){endInlinePhoto(session);for(const [photo,edit] of session.photoDrafts||[])photo.src=edit.src;session.photoDrafts?.clear();}
 function saveNotePhoto(index){
@@ -241,11 +300,14 @@ async function addNotePhotos(files){
  finally{session.busy=false;if(noteEditor===session)$('#note-dialog [data-note-action="save"]').disabled=false;}
 }
 async function closeNote(force=false){
- if(!force&&noteChanged()&&!await confirmNote('Discard the unsaved changes to this note?'))return;
- endInlinePhoto(noteEditor,true);$('#note-dialog').close();noteEditor=null;
+ if($('#voice-confirm')?.open)$('#voice-confirm').close('cancel');
+ if(!force&&(noteChanged()||noteEditor?.voice?.active)&&!await confirmNote('Discard the unsaved changes and any pending voice recording in this note?'))return;
+ noteEditor?.voice?.abort('Voice input stopped.');
+ noteEditor?.voice?.dispose();endInlinePhoto(noteEditor,true);$('#note-dialog').close();noteEditor=null;
 }
 async function saveNote(){
  const session=noteEditor;if(!session||session.busy)return;
+ if(session.voice?.active&&!await finishNoteVoice(session))return;
  const r=state.reports.find(r=>r.id===session.reportId);if(!r)throw Error('The report no longer exists.');
  applyNotePhotoDrafts(session);
  if(session.summaryOnly){session.draft.origin='summary';session.draft.includeInSummary=true;}
@@ -262,6 +324,8 @@ function updateNoteAIControls(){
 }
 async function reviseNote(){
  const session=noteEditor;if(!session||session.aiBusy)return;
+ if(session.voice?.active&&!await finishNoteVoice(session))return;
+ if(session.aiBusy||noteEditor!==session)return;
  // Always read the entire editor at click time, regardless of the current selection.
  const original=readWording($('#note-text'));
  if(!original.text.trim())throw Error('Enter a note before using AI Revise.');
@@ -297,7 +361,7 @@ function openFastNote(id=null){
  const existing=id?bankFind(id):null;if(id&&!existing)throw Error('This fast note no longer exists.');
  libraryEditor={id:existing?.id||uid(),existing:!!existing,metadata:clone(existing||{}),background:existing?.background||'white',original:'',busy:false};
  $('#library-dialog').innerHTML=`<header class="note-heading"><h2 id="library-title">${existing?'Edit Fast Note':'Add Fast Note'}</h2>${noteAction('library-close','×','aria-label="Close fast note editor"','quiet')}</header><div class="fast-note-form">${wordingMarkup('library-note-text','Wording',existing||{text:''},'fast-note-word-count')}<p id="fast-note-word-count" class="help fast-note-word-count" role="status" aria-live="polite"></p><fieldset class="bank-backgrounds"><legend>Background color</legend>${Object.entries(Wording.backgrounds).map(([value,name])=>noteAction('library-background','<span aria-hidden="true">✓</span>',`data-color="${value}" aria-label="${name} background" aria-pressed="false" title="${name}"`,'bank-swatch bank-bg-'+value)).join('')}</fieldset></div><footer class="note-footer"><div class="actions">${noteAction('library-close','Cancel')}${noteAction('library-save','Save','','primary')}</div></footer>`;
- updateLibraryStyle();libraryEditor.original=JSON.stringify(libraryForm());$('#library-dialog').showModal();$('#library-note-text').focus({preventScroll:true});
+ mountWording('library-note-text');updateLibraryStyle();libraryEditor.original=JSON.stringify(libraryForm());$('#library-dialog').showModal();$('#library-note-text').focus({preventScroll:true});
 }
 function libraryForm(){return {...readWording($('#library-note-text')),background:libraryEditor.background};}
 function libraryChanged(){return !!libraryEditor&&JSON.stringify(libraryForm())!==libraryEditor.original;}
@@ -319,18 +383,22 @@ async function deleteLibraryNote(id){
   state.noteLibrary=noteLibrary().filter(n=>n.id!==id);dirty++;status('Unsaved changes');refreshFastNotes();await saveNow();toast('Fast note deleted.');
  }finally{fastNotesDeleting=false;}
 }
-async function closeLibrary(){if(libraryEditor?.busy)return;if(libraryChanged()&&!await confirmNote('Discard unsaved fast note changes?'))return;$('#library-dialog').close();libraryEditor=null;}
+async function closeLibrary(){if(libraryEditor?.busy)return;if(libraryChanged()&&!await confirmNote('Discard unsaved fast note changes?'))return;$('#library-dialog').close();libraryEditor=null;if(!inFlight)status(dirty>saved?'Unsaved changes':'✓ Saved locally');}
 async function saveLibraryNote(){
  const session=libraryEditor;if(!session||session.busy)return;
  const values=libraryForm();if(!values.text.trim())throw Error('Enter your reusable wording.');
  Wording.validate(values);Wording.validateFastNotes([values]);if(values.text.length>100000)throw Error('The note is too long. Use fewer than 100,000 characters.');
  const item={...session.metadata,id:session.id,title:fastNoteLabel(values),category:session.metadata.category||categories[3],...values};
  if(!values.textRuns)delete item.textRuns;
- state.noteLibrary??=[];const index=state.noteLibrary.findIndex(n=>n.id===item.id);
- if(index<0){if(state.noteLibrary.length>=Wording.FAST_NOTE_MAX_COUNT)throw Error('You can save up to 50 fast notes. Delete one before adding another.');state.noteLibrary.push(item);}else state.noteLibrary[index]=item;
+ if(!noteLibrary().some(n=>n.id===item.id)&&noteLibrary().length>=Wording.FAST_NOTE_MAX_COUNT)throw Error('You can save up to 50 fast notes. Delete one before adding another.');
  session.busy=true;
- try{dirty++;status('Unsaved changes');await saveNow();session.original=JSON.stringify(values);$('#library-dialog').close();libraryEditor=null;refreshFastNotes();toast('Fast note saved.');}
- finally{session.busy=false;}
+ try{
+  await commitWorkspaceEdit(draft=>{draft.noteLibrary??=[];const index=draft.noteLibrary.findIndex(n=>n.id===item.id);if(index<0)draft.noteLibrary.push(item);else draft.noteLibrary[index]=item;});
+  session.original=JSON.stringify(values);session.existing=true;session.metadata=clone(item);refreshFastNotes();
+  // Keep later typing/format/color changes in the open editor, ready for Save.
+  if(libraryChanged())toast('Fast note saved. Newer edits are still unsaved.');
+  else{$('#library-dialog').close();libraryEditor=null;toast('Fast note saved.');}
+ }finally{session.busy=false;if(libraryEditor===session)updateLibraryStyle();}
 }
 document.addEventListener('input',ev=>{
  const el=ev.target;
@@ -358,6 +426,8 @@ document.addEventListener('click',async ev=>{
    setWording('note-text',f);noteHint('Wording copied. Adjust it for this property, then save the note.');$('#note-dialog').classList.remove('note-bank-open');$('#note-dialog [data-note-action="toggle-note-bank"]').setAttribute('aria-expanded','false');focusWordingEnd('note-text');
   }
   if(a==='ai'){b.disabled=true;await reviseNote();}
+  if(a==='voice')await toggleNoteVoice();
+  if(a==='cancel-voice')noteEditor?.voice?.abort('Voice input cancelled. The recording was discarded.');
   if(a==='undo-ai')await undoNoteAI();
   if(a==='library-close')await closeLibrary();
   if(a==='library-background'){libraryEditor.background=b.dataset.color;updateLibraryStyle();}
@@ -369,6 +439,10 @@ document.addEventListener('click',async ev=>{
  }catch(err){toast(err.message,true);}finally{if(b.isConnected&&!(a==='edit-photo'&&b.dataset.tool==='undo'))b.disabled=false;if(libraryEditor)updateLibraryStyle();}
 });
 $('#note-dialog').addEventListener('cancel',ev=>{ev.preventDefault();closeNote();});
+$('#note-dialog').addEventListener('close',()=>{if(!$('#note-dialog').open){noteEditor?.voice?.dispose();disposeWording('note-text');}});
+$('#library-dialog').addEventListener('close',()=>{if(!$('#library-dialog').open)disposeWording('library-note-text');});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)noteEditor?.voice?.abort('Voice input stopped because the app is no longer visible.');});
+window.addEventListener('pagehide',()=>{noteVoiceConsent?.enter(null);noteEditor?.voice?.dispose();});
 $('#library-dialog').addEventListener('cancel',ev=>{ev.preventDefault();closeLibrary();});
 $('#note-dialog').addEventListener('paste',ev=>{if($('#library-dialog').open||$('#dialog').open)return;const files=[...ev.clipboardData.items].filter(i=>i.kind==='file'&&i.type.startsWith('image/')).map(i=>i.getAsFile()).filter(Boolean);if(files.length){ev.preventDefault();addNotePhotos(files);}});
 // Internal photo drags reorder only; they must never enter the external-file import path.

@@ -1,6 +1,6 @@
 # HomeKanban User Guide
 
-Version 0.18.25 · Windows x64 · English interface
+Version 0.18.42 · Windows x64 · English interface
 
 HomeKanban is a free, offline-first report-writing workspace for individual home inspectors. One local workspace holds your profile, templates, Fast notes and reports. You do not need a HomeKanban account or subscription. Optional AI and online publishing require your own services and may cost money.
 
@@ -13,15 +13,17 @@ HomeKanban is a free, offline-first report-writing workspace for individual home
 
 The launcher requires Windows with .NET Framework 4.x. Node.js is included. Use an installed Microsoft Edge or Google Chrome for the interface and PDF export. This trial release is unsigned; a full clean-machine Windows 10/11 compatibility matrix is still pending.
 
-To reopen an already running workspace, open HomeKanban.exe again. When finished, select **Exit HomeKanban**. It saves pending changes and stops the app directly, without a confirmation dialog. If saving fails, the app stays open so you can retry. Closing the browser tab alone does not stop the app.
+To reopen an already running workspace, open HomeKanban.exe again. When finished, select **Exit HomeKanban**. It saves pending changes and stops the app directly, without a confirmation dialog. If saving fails, the app stays open so you can retry. After a successful exit, menus are removed and the window is closed where the browser permits it. Otherwise, a Safely closed page remains; close that window manually. Closing the browser tab alone does not stop the app. On short desktop windows, the sidebar reserves visible space for Exit HomeKanban and lets the navigation list scroll separately.
 
 ## 2. Set up User info
 
 Open **User info** in the left navigation. Enter your inspector name, business details, license information and contact details. Add your report logo if needed, then save.
 
-Under **System Themes**, select **Blue Gray**, **Indigo**, **Sage**, **Peach**, **Lavender** or **Black & Gray**. Black & Gray uses charcoal buttons and headings with light gray navigation and backgrounds. The choice saves immediately and changes the workspace colors. It does not change the report export colors, inspection status colors, annotation colors or saved Fast note formatting.
+Under **System Themes**, select **Blue Gray**, **Indigo**, **Sage**, **Peach**, **Lavender** or **Dark Mode**. Dark Mode uses charcoal backgrounds, soft gray-white text, and blue-gray controls throughout the workspace, including note editors. It replaces Black & Gray; previous selections continue to work. The choice saves immediately and changes the workspace colors. It does not change the report export colors, inspection status colors, annotation colors or saved Fast note formatting.
 
 Every new report captures your current profile. Changing User info does not silently rewrite older reports. In a report, **Update from current profile** replaces that report's inspector details with the current profile when you choose to do so.
+
+The circle at the top right shows your Report logo when available; otherwise it shows the first and last name initials (for example, Wenwei Yao → WY). A single-word name uses its first two characters, and a blank name shows HI. Click the circle to open User info. Choose or remove your logo there; the circle updates immediately.
 
 ## 3. Prepare Templates
 
@@ -73,7 +75,11 @@ A blank status means no status was recorded. Unchecked choices are displayed for
 
 ## 6. Write New Notes and Edit Notes
 
+The text editor is bundled with HomeKanban and works offline. Select wording to apply bold, italic, underline or a text color; with no selection, the chosen style applies to your next words. Clear formatting removes styling from the selection, or resets the typing style at the cursor. Use **Ctrl+Z** to undo and **Ctrl+Y** or **Ctrl+Shift+Z** to redo. Pasted wording stays plain text; image pastes continue to add note photos. Existing formatted notes remain readable without a database conversion.
+
 In the relevant checklist component, choose the **Add note** icon at the far right, after the **D** status box. Enter the observation, location and category, and add a recommended action where appropriate.
+
+Selected categories use matching colored borders and radio dots: Defect/Action Needed (red), Marginal/Deferred Maintenance (orange-yellow), Recommendation (yellow), and Notes (blue). AI Revise has a rounded glass appearance in both light and dark themes.
 
 New Note and Edit Note start with Photos, followed by the narrative, matching the layout used for summary notes. The checklist source appears once below the window title. The note keeps its original component association automatically; there is no duplicate component selector above Photos.
 
@@ -86,6 +92,16 @@ New Note and Edit Note start with Photos, followed by the narrative, matching th
 Notes added directly in **Summary and pictures** always remain in both summaries; their Add to summary switch cannot be disabled. The summaries and System checks refer to the same note, so editing one updates the other linked occurrences.
 
 The text Summary shows narrative text. Summary and pictures shows the associated text and photographs. Click the report's links to move from a summary to the corresponding detailed note or checklist entry. The copy icon beside Summary copies text only.
+
+Set up **AI & settings → Voice Input · OpenAI** first. Enter your own OpenAI API key and click **Save voice key**. This is separate from AI Revise; you may enter the same OpenAI key in both places. The voice key is encrypted for your Windows account and excluded from exported backups. The transcription service uses `gpt-transcribe`; internet, account access, and separate API billing are required.
+
+Click **Voice input** (to the right of Clear formatting) in New Note or Edit Note. The first use in each report visit asks you to allow sending recordings to OpenAI. Cancel leaves the microphone off. Permission covers other notes while that report stays open; leaving or reopening the report, switching reports, or reopening the app requires a new confirmation. Your browser may also request microphone permission.
+
+Speak in English, Chinese, Korean, or another supported language. Click **Stop** to send the recording for transcription and append the result to the narrative. Languages are detected automatically; browser language does not control recognition. The service keeps the original language instead of translating it. Use **AI Revise** afterward to polish or translate the wording according to your instructions. Review the transcript before saving; recognition accuracy varies.
+
+Recordings stop and transcribe automatically after 3 minutes, with a 20 MB recording limit. **Cancel voice** stops capture and discards pending audio. A failed transcription leaves existing note text unchanged and keeps the recording in the open note's memory for **Retry**; retrying may incur another charge. Closing the note or hiding the app stops capture and discards any pending audio. HomeKanban does not save audio files to disk or include them in reports or backups. Saving a note waits for transcription to finish; it will not silently save after a failed transcription.
+
+The Cancel and Add note / Update note buttons, together with the save/resize hint, sit under the right editing column. Fast notes can use the full height of the left column.
 
 ## 7. Add and mark photographs
 
@@ -124,7 +140,7 @@ Return to **Reports**. The library's actions are ordered as follows:
 | Open | Continue editing the report. |
 | PDF Preview | View the printable report; the browser Print dialog can save a PDF. |
 | Export PDF | Generate and download the report using an installed supported browser. |
-| Export to Web Hosting | Download a self-contained `index.html` with embedded photos. |
+| Export to Web Hosting | Slide control reserved for future publishing; Cloudflare is not connected yet. |
 | Copy | Start a new report with the same checklist structure, scope and notice; property details, findings, photos and recorded results are cleared. |
 | Delete | Remove the report after confirmation. |
 
@@ -132,7 +148,7 @@ PDF Preview, exported PDFs and exported web reports use the same selected status
 
 Review the exported PDF before sending it. If you change the report, export a new file; an older download does not update automatically.
 
-**Export to Web Hosting does not upload a report or create a public link.** Upload the downloaded HTML to a host you control. The file includes the report and embedded photos, and can be large. Check the host's current limits and access controls. A public hosting link is not automatically password-protected. Do not put client reports in the public HomeKanban source-code repository.
+**Export to Web Hosting** is a soft glass slide toggle in muted green. Drag its round handle all the way to the right to publish. After a confirmed publication, the toggle turns a muted rose color and reads **Terminate Web Hosting**; drag its handle left to take the report offline. There is no second confirmation dialog. An incomplete drag resets the handle. Keyboard users can focus the toggle and use Right/Left, Space, or Enter. Cloudflare upload and termination are not connected in this version, so a completed slide shows a connection message and keeps the original status; it never simulates a successful publication. Report Library actions use two rows: Open, PDF Preview, and Export PDF above Export to Web Hosting, Copy, and Delete. The compact toggle has a single-line label. There is no separate Download HTML button. A public hosting link is not automatically password-protected. Do not put client reports in the public HomeKanban source-code repository.
 
 ## 11. Optional AI writing assistance
 
@@ -158,7 +174,7 @@ Default data location: `%LOCALAPPDATA%\HomeKanban\homekanban.sqlite`. After reco
 
 For an upgrade: export a backup, save and exit the old application, extract the complete new Windows package to a new folder, then launch it. Keep the previous package and backup until you have checked your reports.
 
-The current app stores the entire workspace, including photos, in one database document. The save-request limit is 100 MiB and the backup import UI limit is 95 MiB, across all reports. Automatic recovery snapshots and cached exports are not automatically removed. Large photo archives can exhaust space; maintain separate original-photo storage and monitor the data folder.
+The current app stores the entire workspace, including photos, in one database document. Saving and restoring use the same 100 MiB limit for workspace data across all reports. The importer can read files up to 200 MiB to accommodate older indented backups, but restored data must still fit the 100 MiB workspace limit. New backups use compact JSON. Automatic recovery snapshots and cached exports are not automatically removed. Large photo archives can exhaust space; maintain separate original-photo storage and monitor the data folder.
 
 ## 13. Troubleshooting
 
@@ -172,3 +188,9 @@ The current app stores the entire workspace, including photos, in one database d
 ## License
 
 HomeKanban's code and documentation are MIT licensed. You may use it free of charge for personal or commercial inspections, modify it and redistribute it while preserving the required notices. There is no warranty. See LICENSE and THIRD_PARTY_NOTICES.md in the package. Separate AI services, hosting and imported content have their own terms.
+
+The report editor uses a compact System checks directory with room for approximately twelve characters per line. Longer section names wrap without being shortened or clipped. The directory sits closer to the left navigation so the right writing area has more space; completion colors and drag handles remain available.
+
+## 15. Save and recovery fixes in 0.18.42
+
+If you continue typing while a Fast note is being saved, the editor remains open with the newer changes. Click Save again to store those changes. If a save fails, retry or cancel the draft; cancelling does not update the saved Fast note. A failed new-report creation can also be retried without generating duplicate reports.

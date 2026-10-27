@@ -5,8 +5,8 @@ const {seed}=require('../app/seed');
 // Exercise the real click handler and save queue; a failed save must never quit.
 function client(view='reports'){
  const state=seed(),events=new Map(),nodes=new Map(),requests=[];let confirmations=0;
- const node=key=>{if(!nodes.has(key))nodes.set(key,{content:'test-token',innerHTML:'Open workspace',textContent:'',style:{},classList:{toggle(){}},addEventListener(){}});return nodes.get(key);};
- const context=vm.createContext({initialState:state,initialRoute:view,Wording:require('../app/public/wording'),structuredClone,crypto,setTimeout:()=>1,clearTimeout(){},confirm(){confirmations++;throw Error('Confirmation must not be used for Save or Exit');},fetch:(url,options)=>new Promise(resolve=>requests.push({url,options,reply(body,status=200){resolve({ok:status===200,status,headers:{get:()=> 'application/json'},json:async()=>body});}})),document:{querySelector:node,addEventListener:(name,fn)=>events.set(name,fn)},window:{addEventListener(){}}});
+ const node=key=>{if(!nodes.has(key))nodes.set(key,{content:'test-token',innerHTML:'Open workspace',textContent:'',style:{},classList:{toggle(){},remove(){}},focus(){},addEventListener(){}});return nodes.get(key);};
+ const context=vm.createContext({initialState:state,initialRoute:view,TypeError,AbortSignal,Wording:require('../app/public/wording'),structuredClone,crypto,setTimeout:()=>1,clearTimeout(){},confirm(){confirmations++;throw Error('Confirmation must not be used for Save or Exit');},fetch:(url,options)=>new Promise(resolve=>requests.push({url,options,reply(body,status=200){resolve({ok:status===200,status,headers:{get:()=> 'application/json'},json:async()=>body});}})),document:{body:{classList:{add(){}}},querySelectorAll:()=>[],querySelector:node,addEventListener:(name,fn)=>events.set(name,fn)},window:{close(){},addEventListener(){}}});
  const source=fs.readFileSync(require.resolve('../app/public/app.js'),'utf8');
  vm.runInContext(source.slice(0,source.lastIndexOf('\nboot().catch'))+`
  state=initialState;revision=7;route=initialRoute;state.reports.push(blankReport(state.templates[0],{id:'test-report'}));currentId=route==='editor'?'test-report':state.templates[0].id;
@@ -50,4 +50,11 @@ test('Exit with no pending changes quits without a redundant save or confirmatio
 
 test('A failed quit request does not claim that the workspace is closed',async()=>{
  const c=client(),exit=c.click('quit');(await waitFor(c,1)).reply({error:'Unable to stop service'},500);await exit.done;assert.equal(exit.button.disabled,false);assert.equal(c.node('#main').innerHTML,'Open workspace');assert.match(c.node('#toast').textContent,/Unable to stop service/);
+});
+
+test('after Exit, cached navigation and save actions cannot reopen or edit the workspace',async()=>{
+ const c=client('editor'),exit=c.click('quit');(await waitFor(c,1)).reply({ok:true});await exit.done;
+ assert.equal(c.node('.sidebar').hidden,true);assert.equal(c.node('.topbar').hidden,true);const closed=c.node('#main').innerHTML;
+ await c.click('open-template').done;await c.click('save').done;await c.click('quit').done;
+ assert.equal(c.requests.length,1);assert.equal(c.node('#main').innerHTML,closed);assert.equal(exit.button.disabled,true);
 });

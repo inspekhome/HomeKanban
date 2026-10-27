@@ -14,8 +14,10 @@ const {readFrontendAsset}=require('./frontend');
 const {defaultDataDirectory,databasePath}=require('./storage');
 const {exportPDF}=require('./pdf-export');
 const {DEFAULT_AI_INSTRUCTIONS,normalizeAIInstructions,aiMessages}=require('./ai');
+const Voice=require('./voice');
 const PUBLIC=path.join(__dirname,'public');
-const MAX_BODY=100*1024*1024;
+const WorkspaceLimits=require('./public/workspace-limits');
+const MAX_BODY=WorkspaceLimits.MAX_REQUEST_BYTES;
 function fail(message,status=400){const e=new Error(message);e.status=status;throw e;}
 function validateState(s){
  if(!s||s.schema!==2||!s.profile||!Array.isArray(s.templates)||!s.templates.length||!Array.isArray(s.reports))fail('Invalid HomeKanban backup or data format.');
@@ -44,18 +46,19 @@ function createApp({dataDir=defaultDataDirectory(),port=Number(process.env.HOMEK
  if(!db.prepare('SELECT id FROM documents WHERE id=1').get())db.prepare('INSERT INTO documents VALUES (1,0,?)').run(JSON.stringify(seed()));
  // A controlled update may hand off the existing session to keep open editors usable.
  if(sessionToken!==undefined&&!/^[a-f0-9]{64}$/.test(sessionToken))throw new Error('Invalid session handoff.');
- const token=sessionToken||randomBytes(32).toString('hex');let pdfBusy=false,aiBusy=false;
+ const token=sessionToken||randomBytes(32).toString('hex');let pdfBusy=false,aiBusy=false,voiceBusy=false,closing=false,closePromise;
  const read=()=>{const row=db.prepare('SELECT * FROM documents WHERE id=1').get();return {revision:row.revision,state:JSON.parse(row.json)};};
  const settings=()=>{const row=db.prepare('SELECT json FROM settings WHERE id=1').get();const cfg=row?JSON.parse(row.json):{endpoint:'https://api.openai.com/v1/chat/completions',model:'',encryptedKey:''};return {...cfg,instructions:typeof cfg.instructions==='string'&&cfg.instructions.trim()?cfg.instructions:DEFAULT_AI_INSTRUCTIONS};};
- function backup(){const dir=path.join(dataDir,'backups');fs.mkdirSync(dir,{recursive:true});fs.writeFileSync(path.join(dir,`backup-${Date.now()}-${randomBytes(3).toString('hex')}.json`),JSON.stringify({format:'soloinspect-backup',created:new Date().toISOString(),...read()},null,2));}
+ function backup(){const dir=path.join(dataDir,'backups');fs.mkdirSync(dir,{recursive:true});fs.writeFileSync(path.join(dir,`backup-${Date.now()}-${randomBytes(3).toString('hex')}.json`),JSON.stringify({format:'soloinspect-backup',created:new Date().toISOString(),...read()}));}
  function save(s,revision){
   migrateState(s);validateState(s);
+  let json;try{json=WorkspaceLimits.stateJSON(s);}catch(error){fail(error.message,413);}
   const conflict=()=>fail('Another window has saved newer data. Use Back up data to export this window before refreshing.',409);
   const old=read();if(revision!==old.revision)conflict();
   backup();
   // Another process can save while this process writes its backup. Check the
   // revision atomically in SQLite so both writers cannot report success.
-  const result=db.prepare('UPDATE documents SET revision=revision+1,json=? WHERE id=1 AND revision=?').run(JSON.stringify(s),revision);
+  const result=db.prepare('UPDATE documents SET revision=revision+1,json=? WHERE id=1 AND revision=?').run(json,revision);
   if(result.changes!==1)conflict();
   return {revision:old.revision+1};
  }
@@ -63,6 +66,7 @@ function createApp({dataDir=defaultDataDirectory(),port=Number(process.env.HOMEK
  const server=http.createServer(async(req,res)=>{
   const send=(status,body,type='application/json; charset=utf-8',extra={})=>{res.writeHead(status,{'Content-Type':type,'X-Content-Type-Options':'nosniff','Cache-Control':'no-store','Referrer-Policy':'no-referrer','X-Frame-Options':'DENY',...extra});res.end(typeof body==='string'||Buffer.isBuffer(body)?body:JSON.stringify(body));};
   try{
+   if(closing)fail('HomeKanban is closing. Reopen it from your desktop.',503);
    const host=`127.0.0.1:${server.address().port}`;if(req.headers.host!==host)fail('Invalid host',403);
    if(req.headers.origin&&req.headers.origin!==`http://${host}`)fail('Cross-origin request denied',403);
    if(req.headers['sec-fetch-site']==='cross-site')fail('Cross-site request denied',403);
@@ -70,12 +74,12 @@ function createApp({dataDir=defaultDataDirectory(),port=Number(process.env.HOMEK
    if(route.startsWith('/api/')){
     const cookie=(req.headers.cookie||'').split(';').map(s=>s.trim()).includes(`solo_session=${token}`);
     if(req.headers['x-solo-token']!==token&&!cookie)fail('Session expired. Reopen HomeKanban.',401);
-    let body={};if(['POST','PUT'].includes(req.method)){let bytes=0,chunks=[];for await(const chunk of req){bytes+=chunk.length;if(bytes>MAX_BODY)fail('The workspace exceeds the 100 MB save limit.',413);chunks.push(chunk);}try{body=JSON.parse(Buffer.concat(chunks).toString()||'{}');}catch{fail('Invalid JSON.');}}
+    let body={};if(['POST','PUT'].includes(req.method)){let bytes=0,chunks=[];for await(const chunk of req){bytes+=chunk.length;if(bytes>(route==='/api/transcribe'?28*1024*1024:MAX_BODY))fail(route==='/api/transcribe'?'The recording is too large.':'The workspace exceeds the 100 MB save limit.',413);chunks.push(chunk);}try{body=JSON.parse(Buffer.concat(chunks).toString()||'{}');}catch{fail('Invalid JSON.');}}
     if(route==='/api/state'&&req.method==='GET')return send(200,{...read(),categories,ratings,dataDir,textColors:Object.keys(Wording.colors)});
     if(route==='/api/state'&&req.method==='PUT')return send(200,save(body.state,body.revision));
     if(route==='/api/backup'&&req.method==='GET')return send(200,{format:'soloinspect-backup',created:new Date().toISOString(),...read()},undefined,{'Content-Disposition':'attachment; filename="HomeKanban-backup.json"'});
     if(route==='/api/restore'&&req.method==='POST'){if(body.backup?.format!=='soloinspect-backup')fail('Invalid backup format.');return send(200,save(body.backup.state,body.revision));}
-    if(route==='/api/settings'&&req.method==='GET'){const {encryptedKey,...rest}=settings();return send(200,{...rest,hasKey:!!encryptedKey,aiRevision:'polish-v2'});}
+    if(route==='/api/settings'&&req.method==='GET'){const {encryptedKey,encryptedVoiceKey,...rest}=settings();return send(200,{...rest,hasKey:!!encryptedKey,aiRevision:'polish-v2'});}
     if(route==='/api/ai-instructions'&&req.method==='PUT'){
      const instructions=normalizeAIInstructions(body.instructions);
      db.prepare('INSERT OR REPLACE INTO settings VALUES (1,?)').run(JSON.stringify({...settings(),instructions}));
@@ -87,7 +91,23 @@ function createApp({dataDir=defaultDataDirectory(),port=Number(process.env.HOMEK
      let encryptedKey=settings().encryptedKey;if(body.clearKey)encryptedKey='';else if(body.key){if(typeof body.key!=='string'||body.key.length>1000||/[\r\n]/.test(body.key))fail('Invalid API key format.');encryptedKey=dpapi(body.key.trim());}
      // A key cannot silently migrate to a different provider.
      if(settings().endpoint!==u.href&&!body.key)encryptedKey='';
-     db.prepare('INSERT OR REPLACE INTO settings VALUES (1,?)').run(JSON.stringify({endpoint:u.href,model:body.model.trim(),encryptedKey,instructions}));return send(200,{ok:true,hasKey:!!encryptedKey});
+     db.prepare('INSERT OR REPLACE INTO settings VALUES (1,?)').run(JSON.stringify({...settings(),endpoint:u.href,model:body.model.trim(),encryptedKey,instructions}));return send(200,{ok:true,hasKey:!!encryptedKey});
+    }
+    if(route==='/api/voice-settings'&&req.method==='GET')return send(200,{hasKey:!!settings().encryptedVoiceKey,provider:'OpenAI',model:Voice.MODEL,multilingual:true});
+    if(route==='/api/voice-settings'&&req.method==='PUT'){
+     let encryptedVoiceKey=settings().encryptedVoiceKey||'';
+     if(body.clearKey===true)encryptedVoiceKey='';
+     else if(body.key){if(typeof body.key!=='string'||body.key.length>1000||/[\r\n]/.test(body.key)||!body.key.trim())fail('Invalid Voice Input API key.');encryptedVoiceKey=dpapi(body.key.trim());}
+     db.prepare('INSERT OR REPLACE INTO settings VALUES (1,?)').run(JSON.stringify({...settings(),encryptedVoiceKey}));
+     return send(200,{ok:true,hasKey:!!encryptedVoiceKey});
+    }
+    if(route==='/api/transcribe'&&req.method==='POST'){
+     if(voiceBusy)fail('Another recording is being transcribed. Please wait.',429);
+     const cfg=settings();if(!cfg.encryptedVoiceKey)fail('Add your OpenAI API key under Voice Input in AI & settings first.');
+     Voice.decodeAudio(body);voiceBusy=true;
+     const controller=new AbortController(),cancel=()=>{if(!res.writableFinished)controller.abort();};res.once('close',cancel);
+     try{return send(200,await Voice.transcribe(body,dpapi(cfg.encryptedVoiceKey,true),{signal:controller.signal}));}
+     finally{voiceBusy=false;res.removeListener('close',cancel);}
     }
     if(route==='/api/ai'&&req.method==='POST'){
      if(aiBusy)fail('An AI request is already in progress.',429);const cfg=settings();if(!cfg.encryptedKey||!cfg.model)fail('Configure an API key and model ID first.');if(typeof body.text!=='string'||!body.text.trim()||body.text.length>100000)fail('Enter note text of up to 100,000 characters.');
@@ -98,7 +118,7 @@ function createApp({dataDir=defaultDataDirectory(),port=Number(process.env.HOMEK
     }
     const m=route.match(/^\/api\/reports\/([a-zA-Z0-9-]+)\/(html|pdf|check)$/);
     if(m&&req.method==='GET'){const r=read().state.reports.find(r=>r.id===m[1]);if(!r)fail('Report not found.',404);if(m[2]==='check')return send(200,{issues:issues(r),issueDetails:issueDetails(r)});if(m[2]==='html')return send(200,reportHTML(r),'text/html; charset=utf-8',url.searchParams.has('download')?{'Content-Disposition':'attachment; filename="index.html"'}:{});if(pdfBusy)fail('A PDF export is in progress. Please try again shortly.',429);pdfBusy=true;try{return send(200,await makePDF(r,dataDir),'application/pdf',{'Content-Disposition':'attachment; filename="inspection-report.pdf"'});}finally{pdfBusy=false;}}
-    if(route==='/api/quit'&&req.method==='POST'){send(200,{ok:true});setTimeout(()=>server.close(()=>{db.close();if(require.main===module)process.exit(0);}),200);return;}
+    if(route==='/api/quit'&&req.method==='POST'){if(pdfBusy||aiBusy||voiceBusy)fail('Wait for the current export or AI request to finish, then exit.',409);closing=true;res.once('finish',()=>{close().then(()=>{if(require.main===module)process.exit(0);});});send(200,{ok:true});return;}
     fail('Endpoint not found.',404);
    }
    if(!['GET','HEAD'].includes(req.method))fail('Method not allowed',405);
@@ -108,7 +128,8 @@ function createApp({dataDir=defaultDataDirectory(),port=Number(process.env.HOMEK
    const assets={'/app.js':'text/javascript; charset=utf-8','/notes.js':'text/javascript; charset=utf-8','/bank.js':'text/javascript; charset=utf-8','/wording.js':'text/javascript; charset=utf-8','/wording-editor.js':'text/javascript; charset=utf-8','/style.css':'text/css; charset=utf-8'};if(Object.hasOwn(assets,route))return send(200,readFrontendAsset(PUBLIC,route.slice(1)),assets[route]);fail('Not found',404);
   }catch(e){if(!res.headersSent)send(e.status||500,{error:e.status?e.message:'The operation failed. Please try again. The failed request did not overwrite your data.'});}
  });
- return {server,db,read,dataDir,start:()=>new Promise((resolve,reject)=>{server.once('error',reject);server.listen(port,'127.0.0.1',()=>resolve(`http://127.0.0.1:${server.address().port}`));}),close:()=>new Promise(resolve=>server.close(()=>{db.close();resolve();}))};
+ function close(){if(closePromise)return closePromise;closing=true;closePromise=new Promise(resolve=>server.close(()=>{db.close();resolve();}));server.closeIdleConnections();return closePromise;}
+ return {server,db,read,dataDir,start:()=>new Promise((resolve,reject)=>{server.once('error',reject);server.listen(port,'127.0.0.1',()=>resolve(`http://127.0.0.1:${server.address().port}`));}),close};
 }
 function openAppBrowser(url){
  const browser=findBrowser();if(browser)spawn(browser,[`--app=${url}`],{windowsHide:true,detached:true,stdio:'ignore'}).unref();else spawn('cmd.exe',['/c','start','',url],{windowsHide:true,stdio:'ignore'});
