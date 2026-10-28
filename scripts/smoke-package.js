@@ -19,7 +19,7 @@ async function main(){
   assert.equal(response.status,200);
   const data=await response.json();
   assert.equal(data.state.schema,2);
-  assert.equal(data.state.templates.length,1);assert.equal(data.state.templates[0].name,'System Template');assert.equal(data.state.templates[0].sections.length,15);assert.equal(data.state.templates[0].sections.flatMap(s=>s.items).length,59);assert.ok(Object.values(data.state.profile).every(v=>v===''));assert.deepEqual(data.state.reports,[]);assert.deepEqual(data.state.templates[0].sections.map(s=>s.name),require(path.join(packageRoot,'app/data/system-template.json')).sections.map(s=>s.name));
+  assert.equal(data.state.templates.length,1);assert.equal(data.state.templates[0].name,'System Template');assert.equal(data.state.templates[0].sections.length,18);assert.equal(data.state.templates[0].sections.flatMap(s=>s.items).length,65);assert.ok(Object.values(data.state.profile).every(v=>v===''));assert.deepEqual(data.state.reports,[]);assert.deepEqual(data.state.templates[0].sections.map(s=>s.name),require(path.join(packageRoot,'app/data/system-template.json')).sections.map(s=>s.name));
   assert.deepEqual(Object.keys(data.ratings),['I','NI','NP','D']);
   const script=await (await fetch(url+'/app.js')).text();
   assert.ok(script.includes('checklist-columns'));
@@ -34,7 +34,8 @@ async function main(){
   assert.equal((await fetch(url+'/wording-editor.js')).status,200);
   assert.equal((await fetch(url+'/api/narratives',{headers:{'X-Solo-Token':token}})).status,404);
   assert.ok(!fs.existsSync(path.join(packageRoot,'app/data/narratives.json')));
-  assert.deepEqual(data.state.noteLibrary,[]);
+  assert.equal(data.state.noteLibrary.length,15);
+  assert.deepEqual(data.state.noteLibrary.map(({id,...note})=>note),require(path.join(packageRoot,'app/data/fast-notes.json')));
   assert.ok(!script.includes("rating==='NT'"));
   assert.ok(fs.statSync(path.join(packageRoot,'HomeKanban.exe')).size>0);
   const t=data.state.templates[0],r={id:'package-smoke',client:'Test client',address:'PACKAGE ACCEPTANCE TEST ONLY',email:'',phone:'',date:'2026-10-25',time:'',weather:'',notes:'',scope:'Synthetic package test.',notice:t.notice,status:'draft',inspector:{...data.state.profile,name:'Test inspector'},sections:structuredClone(t.sections),findings:[]};

@@ -1,5 +1,5 @@
 {
-  "version": "0.18.58",
+  "version": "0.18.59",
   "files": [
     "tests/scope-format.test.js",
     "app/public/workspace-limits.js",
@@ -103,7 +103,8 @@
     "tests/helpers/memory-r2.cjs",
     "docs/WEB-HOSTING.md",
     "tests/hosting-ui.test.js",
-    "tests/hosting-print.test.js"
+    "tests/hosting-print.test.js",
+    "app/data/fast-notes.json"
   ],
   "format": 1
 }

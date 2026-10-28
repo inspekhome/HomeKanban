@@ -1,7 +1,7 @@
 {
   "name": "System Template",
-  "scope": "YOUR OWN DISCLIAMER HERE:",
-  "notice": "SAMPLE NOTICE:\nInspection Report:  (1) Contain the written opinions of the home inspector based upon the judgment and experience of the home inspector; (2) Identify the items, components, systems and certain terms included in the scope of the home inspection; (3) identify based on a visual inspection of the readily accessible areas whether the included items, components, and systems are performing their intended function or are determined to be significantly deficient; (3) provide the Client with objective information regarding the condition of the systems and components of the home as inspected at the time of the home inspection; (4)  Acts to identify visible defects and conditions that, in the judgment of the home inspector, adversely affect the function or integrity of the items, components, and systems inspected, including those items or components near the end of their serviceable life; and (5) May identify items in need of further evaluation.",
+  "scope": "A home inspection performed in accordance with the Maryland SoPs:\n(A) Is intended to provide a client with objective information regarding the condition of the systems and components of a home as inspected at the time of the home inspection;\n(B) Acts to identify visible defects and conditions that, in the judgment of the home inspector, adversely affect the function or integrity of the items, components, and systems inspected, including those items or components near the end of their serviceable life;\n(C) May not be construed as a compliance inspection pursuant to any code or governmental regulation;\n(D) Is not an express or implied warranty or a guarantee of the adequacy, performance or useful life of any item, component, or system in, on, or about the inspected property;\n(E) Is based on the visual observation of the home inspector; and\n(F) Shall be performed in a time period sufficient to allow compliance with the other provisions of the Maryland SoPs.",
+  "notice": "Inspection Report:  (1) Contain the written opinions of the home inspector based upon the judgment and experience of the home inspector; (2) Identify the items, components, systems and certain terms included in the scope of the home inspection; (3) identify based on a visual inspection of the readily accessible areas whether the included items, components, and systems are performing their intended function or are determined to be significantly deficient; (3) provide the Client with objective information regarding the condition of the systems and components of the home as inspected at the time of the home inspection; (4)  Acts to identify visible defects and conditions that, in the judgment of the home inspector, adversely affect the function or integrity of the items, components, and systems inspected, including those items or components near the end of their serviceable life; and (5) May identify items in need of further evaluation.",
   "sections": [
     {
       "name": "Structure",
@@ -13,7 +13,12 @@
             "Single family",
             "Townhouse",
             "Condo"
-          ]
+          ],
+          "choiceTypes": {
+            "Single family": "description",
+            "Townhouse": "description",
+            "Condo": "description"
+          }
         },
         {
           "name": "Foundation",
@@ -21,19 +26,13 @@
             "Concrete",
             "Block",
             "Stone",
-            "Slab on Ground",
-            "Cracks",
-            "Settlement",
-            "Leaks"
+            "Slab on Ground"
           ],
           "choiceTypes": {
             "Concrete": "description",
             "Block": "description",
             "Stone": "description",
-            "Slab on Ground": "description",
-            "Cracks": "concern",
-            "Settlement": "concern",
-            "Leaks": "concern"
+            "Slab on Ground": "description"
           }
         },
         {
@@ -42,24 +41,29 @@
             "Wood",
             "Steel",
             "Concrete",
-            "Sagging",
-            "Uneven"
+            "Post/Column",
+            "Not visible"
           ],
           "choiceTypes": {
             "Wood": "description",
             "Steel": "description",
             "Concrete": "description",
-            "Sagging": "concern",
-            "Uneven": "concern"
+            "Post/Column": "description",
+            "Not visible": "description"
           }
         },
         {
           "name": "Walls",
           "options": [
-            "Wood frame",
+            "Wood Frame",
             "Masonry",
-            "Not visible"
-          ]
+            "Others"
+          ],
+          "choiceTypes": {
+            "Wood Frame": "description",
+            "Masonry": "description",
+            "Others": "normal"
+          }
         }
       ]
     },
@@ -73,15 +77,17 @@
             "Brick",
             "Vinyl",
             "Wood",
-            "Fiber cement",
-            "Stucco"
+            "Hardi",
+            "Stucco/EIFs",
+            "Board"
           ],
           "choiceTypes": {
             "Brick": "description",
             "Vinyl": "description",
             "Wood": "description",
-            "Fiber cement": "description",
-            "Stucco": "description"
+            "Hardi": "description",
+            "Stucco/EIFs": "description",
+            "Board": "description"
           }
         },
         {
@@ -89,12 +95,14 @@
           "options": [
             "Slope Away",
             "Swale",
-            "Neg or Poor Grading"
+            "Neg or Poor Grading",
+            "Sign of Ponding"
           ],
           "choiceTypes": {
             "Slope Away": "description",
             "Swale": "description",
-            "Neg or Poor Grading": "concern"
+            "Neg or Poor Grading": "concern",
+            "Sign of Ponding": "concern"
           }
         },
         {
@@ -104,18 +112,18 @@
             "Beam",
             "Stairway",
             "Railing",
-            "Loose Railing",
             "Rot Post",
-            "Rusted or Corroded Fastener"
+            "Loose Railing",
+            "Ledger Fastener"
           ],
           "choiceTypes": {
             "Post": "description",
             "Beam": "description",
             "Stairway": "description",
             "Railing": "description",
-            "Loose Railing": "concern",
             "Rot Post": "concern",
-            "Rusted or Corroded Fastener": "concern"
+            "Loose Railing": "concern",
+            "Ledger Fastener": "normal"
           }
         },
         {
@@ -125,74 +133,10 @@
             "Shutter",
             "Opening"
           ]
-        }
-      ]
-    },
-    {
-      "name": "Roof",
-      "disclaimer": "",
-      "items": [
-        {
-          "name": "Inspection method",
-          "options": [
-            "Walked",
-            "Ground",
-            "Drone",
-            "Pole"
-          ],
-          "choiceTypes": {
-            "Walked": "description",
-            "Ground": "description",
-            "Drone": "description",
-            "Pole": "description"
-          }
         },
         {
-          "name": "Roof covering",
-          "options": [
-            "Asphalt shingles",
-            "Metal",
-            "Wood",
-            "Slate",
-            "Old",
-            "non-professional Installation",
-            "Physical Damage"
-          ],
-          "choiceTypes": {
-            "Asphalt shingles": "description",
-            "Metal": "description",
-            "Wood": "description",
-            "Slate": "description",
-            "Old": "concern",
-            "non-professional Installation": "concern",
-            "Physical Damage": "concern"
-          }
-        },
-        {
-          "name": "Flashing",
-          "options": [
-            "Metal",
-            "Rubber",
-            "Limited Visibility"
-          ],
-          "choiceTypes": {
-            "Metal": "description",
-            "Rubber": "description",
-            "Limited Visibility": "normal"
-          }
-        },
-        {
-          "name": "Gutters & downspouts",
-          "options": [
-            "Clean",
-            "Service or Clean",
-            "Service/Clean"
-          ],
-          "choiceTypes": {
-            "Clean": "description",
-            "Service or Clean": "description",
-            "Service/Clean": "concern"
-          }
+          "name": "New component",
+          "options": []
         }
       ]
     },
@@ -205,22 +149,14 @@
           "options": [
             "Missing",
             "Crack"
-          ],
-          "choiceTypes": {
-            "Missing": "concern",
-            "Crack": "concern"
-          }
+          ]
         },
         {
           "name": "Flashing",
           "options": [
             "Missing",
             "Damaged"
-          ],
-          "choiceTypes": {
-            "Missing": "concern",
-            "Damaged": "concern"
-          }
+          ]
         },
         {
           "name": "Condition",
@@ -232,6 +168,45 @@
             "Crack": "concern",
             "Deterioration": "concern"
           }
+        }
+      ]
+    },
+    {
+      "name": "Roof",
+      "disclaimer": "",
+      "items": [
+        {
+          "name": "Inspection method",
+          "options": [
+            "Walked",
+            "Ground",
+            "Ladder",
+            "Drone",
+            "Not accessible"
+          ]
+        },
+        {
+          "name": "Roof covering",
+          "options": [
+            "Asphalt shingles",
+            "Metal",
+            "Wood",
+            "Slate"
+          ]
+        },
+        {
+          "name": "Flashing",
+          "options": [
+            "Metal",
+            "Rubber"
+          ]
+        },
+        {
+          "name": "Gutters & downspouts",
+          "options": [
+            "Clean",
+            "Service or Clean"
+          ]
         }
       ]
     },
@@ -249,9 +224,11 @@
         {
           "name": "Garage door operation",
           "options": [
+            "Functional",
             "Noise"
           ],
           "choiceTypes": {
+            "Functional": "description",
             "Noise": "concern"
           }
         },
@@ -271,48 +248,96 @@
         {
           "name": "Entrance door & Lights",
           "options": [
-            "Self-Closing"
-          ]
+            "Functional",
+            "Damaged"
+          ],
+          "choiceTypes": {
+            "Functional": "description",
+            "Damaged": "concern"
+          }
         }
       ]
     },
     {
-      "name": "Basement & Crawlspace",
+      "name": "Basement",
       "disclaimer": "",
       "items": [
         {
-          "name": "Access",
+          "name": "Condition",
           "options": [
-            "Entered",
-            "Limited entry",
-            "Not accessible",
-            "Not present"
-          ]
+            "Finished",
+            "non-Finsihed",
+            "Partial Finished"
+          ],
+          "choiceTypes": {
+            "Finished": "description",
+            "non-Finsihed": "description",
+            "Partial Finished": "description"
+          }
         },
         {
-          "name": "Visible moisture",
+          "name": "Floor",
           "options": [
-            "Effloresce",
-            "Water Stain",
-            "Musty Odor"
-          ]
+            "Water Damge",
+            "Musty Odor",
+            "Bio-Growth"
+          ],
+          "choiceTypes": {
+            "Water Damge": "concern",
+            "Musty Odor": "concern",
+            "Bio-Growth": "concern"
+          }
         },
         {
-          "name": "Sump pump",
+          "name": "Sump Pump",
           "options": [
-            "Power",
-            "Pit",
             "Pump",
-            "Drain"
-          ]
+            "Pit & Water Level",
+            "Power Supply",
+            "Discharge/Drain"
+          ],
+          "choiceTypes": {
+            "Pump": "description",
+            "Pit & Water Level": "description",
+            "Power Supply": "description",
+            "Discharge/Drain": "description"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Crawlspace",
+      "disclaimer": "",
+      "items": [
+        {
+          "name": "Accessibility",
+          "options": [
+            "Accessible",
+            "non - Accessible",
+            "Partially Accessibility"
+          ],
+          "choiceTypes": {
+            "Accessible": "description",
+            "non - Accessible": "concern",
+            "Partially Accessibility": "normal"
+          }
         },
         {
-          "name": "Beam/Post",
+          "name": "Floor",
           "options": [
-            "Metal",
-            "Wood",
-            "Masonry Column"
-          ]
+            "Concrete",
+            "Moisture Barrier",
+            "Dirty",
+            "Water Concern",
+            "Ventilation"
+          ],
+          "choiceTypes": {
+            "Concrete": "description",
+            "Moisture Barrier": "description",
+            "Dirty": "concern",
+            "Water Concern": "concern",
+            "Ventilation": "normal"
+          }
         }
       ]
     },
@@ -372,7 +397,7 @@
         {
           "name": "Operation",
           "options": [
-            "Operated",
+            "Functional",
             "Not tested in summer",
             "Not tested - other reason"
           ]
@@ -401,11 +426,7 @@
           "options": [
             "Dirty",
             "Service Required"
-          ],
-          "choiceTypes": {
-            "Dirty": "concern",
-            "Service Required": "concern"
-          }
+          ]
         }
       ]
     },
@@ -416,15 +437,10 @@
         {
           "name": "Operation",
           "options": [
-            "Operated",
+            "Functional",
             "Not tested in cold weather",
             "Not tested - other reason"
-          ],
-          "choiceTypes": {
-            "Operated": "description",
-            "Not tested in cold weather": "normal",
-            "Not tested - other reason": "normal"
-          }
+          ]
         },
         {
           "name": "Type",
@@ -449,48 +465,6 @@
             "Pump",
             "Cut off"
           ]
-        }
-      ]
-    },
-    {
-      "name": "Electrical",
-      "disclaimer": "",
-      "items": [
-        {
-          "name": "Service panel",
-          "options": [
-            "Non Accessible"
-          ]
-        },
-        {
-          "name": "Visible wiring",
-          "options": [
-            "Copper",
-            "Aluminum",
-            "Not visible"
-          ]
-        },
-        {
-          "name": "Receptacles & GFCI",
-          "options": [
-            "FPE",
-            "other recalled"
-          ],
-          "choiceTypes": {
-            "FPE": "concern",
-            "other recalled": "concern"
-          }
-        },
-        {
-          "name": "Smoke / CO alarms",
-          "options": [
-            "Dated",
-            "Old"
-          ],
-          "choiceTypes": {
-            "Dated": "concern",
-            "Old": "concern"
-          }
         }
       ]
     },
@@ -527,6 +501,44 @@
       ]
     },
     {
+      "name": "Electrical",
+      "disclaimer": "",
+      "items": [
+        {
+          "name": "Service panel",
+          "options": [
+            "Non Accessible",
+            "120/240 volt",
+            "200 amp"
+          ]
+        },
+        {
+          "name": "Visible wiring",
+          "options": [
+            "Copper",
+            "Aluminum",
+            "Not visible"
+          ]
+        },
+        {
+          "name": "Circuit & GFCI",
+          "options": [
+            "FPE",
+            "other recalled"
+          ]
+        },
+        {
+          "name": "Grounding",
+          "options": [
+            "non visible",
+            "UFER",
+            "Rods",
+            "Pipe"
+          ]
+        }
+      ]
+    },
+    {
       "name": "Bathrooms",
       "disclaimer": "",
       "items": [
@@ -543,12 +555,7 @@
             "Loose",
             "Leak",
             "Flush"
-          ],
-          "choiceTypes": {
-            "Loose": "concern",
-            "Leak": "concern",
-            "Flush": "concern"
-          }
+          ]
         },
         {
           "name": "Tub / shower",
@@ -556,23 +563,14 @@
             "Diverter",
             "Shower head",
             "Leaks"
-          ],
-          "choiceTypes": {
-            "Diverter": "description",
-            "Shower head": "description",
-            "Leaks": "concern"
-          }
+          ]
         },
         {
           "name": "Ventilation",
           "options": [
             "Noisy",
             "Fan non available"
-          ],
-          "choiceTypes": {
-            "Noisy": "concern",
-            "Fan non available": "concern"
-          }
+          ]
         }
       ]
     },
@@ -583,12 +581,12 @@
         {
           "name": "Sink & disposal",
           "options": [
-            "Disposal",
-            "Leak"
+            "Leak",
+            "Disposal"
           ],
           "choiceTypes": {
-            "Disposal": "description",
-            "Leak": "concern"
+            "Leak": "concern",
+            "Disposal": "description"
           }
         },
         {
@@ -609,14 +607,95 @@
             "Electric",
             "No Functional",
             "Anti-Tipping"
-          ]
+          ],
+          "choiceTypes": {
+            "Gas": "description",
+            "Electric": "description",
+            "No Functional": "concern",
+            "Anti-Tipping": "concern"
+          }
         },
         {
           "name": "Ventilation",
           "options": [
             "Non",
             "Damaged"
+          ],
+          "choiceTypes": {
+            "Non": "normal",
+            "Damaged": "concern"
+          }
+        }
+      ]
+    },
+    {
+      "name": "SD & CO",
+      "disclaimer": "",
+      "items": [
+        {
+          "name": "Smoke Detectors",
+          "options": [
+            "Functional",
+            "Non working",
+            "Damaged"
           ]
+        },
+        {
+          "name": "Carbon Monoxide",
+          "options": [
+            "Functional",
+            "Not required",
+            "Missing"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Stairway",
+      "disclaimer": "",
+      "items": [
+        {
+          "name": "Railing",
+          "options": [
+            "Loose",
+            "Missing",
+            "Baluster Spacing > 4 inches",
+            "Too Low"
+          ],
+          "choiceTypes": {
+            "Loose": "concern",
+            "Missing": "concern",
+            "Baluster Spacing > 4 inches": "concern",
+            "Too Low": "concern"
+          }
+        },
+        {
+          "name": "Step",
+          "options": [
+            "Tread min 10\"",
+            "Too high > 7 3/4 \""
+          ],
+          "choiceTypes": {
+            "Tread min 10\"": "concern",
+            "Too high > 7 3/4 \"": "concern"
+          }
+        },
+        {
+          "name": "Stairway Light",
+          "options": [
+            "3-way Required",
+            "Not working",
+            "Missing"
+          ],
+          "choiceTypes": {
+            "3-way Required": "concern",
+            "Not working": "concern",
+            "Missing": "concern"
+          }
+        },
+        {
+          "name": "Headroom",
+          "options": []
         }
       ]
     },
@@ -643,30 +722,18 @@
           "name": "Floors",
           "options": [
             "Wood",
+            "Carpet",
             "Laminate",
-            "Carpet"
-          ]
-        },
-        {
-          "name": "Doors & windows",
-          "options": [
-            "Touch",
-            "Lock/Latching",
-            "Panel"
+            "Uneven",
+            "Squeaky"
           ],
           "choiceTypes": {
-            "Touch": "concern",
-            "Lock/Latching": "concern",
-            "Panel": "description"
+            "Wood": "description",
+            "Carpet": "description",
+            "Laminate": "description",
+            "Uneven": "concern",
+            "Squeaky": "concern"
           }
-        },
-        {
-          "name": "Stairs & railings",
-          "options": [
-            "Railing",
-            "Light",
-            "Steps"
-          ]
         }
       ]
     },
@@ -680,7 +747,12 @@
             "Entered",
             "Hatch only",
             "Not accessible"
-          ]
+          ],
+          "choiceTypes": {
+            "Entered": "description",
+            "Hatch only": "description",
+            "Not accessible": "normal"
+          }
         },
         {
           "name": "Insulation",
@@ -697,18 +769,24 @@
             "Ridge vent",
             "Soffit vent",
             "Gable vent",
-            "Fan"
-          ]
-        },
-        {
-          "name": "Moisture observations",
-          "options": [
-            "Attic Fan",
-            "Bio-Growth"
+            "Attic Fan"
           ],
           "choiceTypes": {
-            "Attic Fan": "description",
-            "Bio-Growth": "concern"
+            "Ridge vent": "description",
+            "Soffit vent": "description",
+            "Gable vent": "description",
+            "Attic Fan": "normal"
+          }
+        },
+        {
+          "name": "Moisture",
+          "options": [
+            "Bio-Growth",
+            "Animal Acitvity"
+          ],
+          "choiceTypes": {
+            "Bio-Growth": "concern",
+            "Animal Acitvity": "concern"
           }
         }
       ]

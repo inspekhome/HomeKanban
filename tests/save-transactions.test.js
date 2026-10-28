@@ -2,7 +2,7 @@
 const test=require('node:test'),assert=require('node:assert/strict');
 const {seed,categories}=require('../app/seed'),{workspaceClient}=require('./helpers/workspace-client.cjs');
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
-function client(existing=true){const state=seed();if(existing)state.noteLibrary=[{id:'existing-fast',title:'Original.',text:'Original.',category:categories[3],background:'white'}];return workspaceClient({state});}
+function client(existing=true){const state=seed();state.noteLibrary=existing?[{id:'existing-fast',title:'Original.',text:'Original.',category:categories[3],background:'white'}]:[];return workspaceClient({state});}
 
 for(const existing of [true,false])test(`Fast note ${existing?'edit':'creation'} keeps later typing, formatting and background changes after a pending save`,async()=>{
  const c=client(existing);c.h.openFastNote(existing?'existing-fast':null);c.form={text:'First saved words.'};const first=c.h.saveLibraryNote();

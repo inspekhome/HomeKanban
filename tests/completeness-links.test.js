@@ -2,11 +2,11 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const {seed}=require('../app/seed'),{issues,issueDetails}=require('../app/report'),{createApp}=require('../app/server');
 function fixture(){
- const state=seed(),template=state.templates[0],sections=structuredClone(template.sections);
+ const state=seed(),template=state.templates[0],sections=structuredClone(template.sections),roof=sections.find(s=>s.name==='Roof');
  for(const s of sections)for(const i of s.items)i.rating='I';
  const r={id:'check-demo',address:'DEMONSTRATION',client:'Demo Client',date:'2026-10-25',email:'',phone:'',time:'',weather:'',notes:'',scope:'Software demonstration only.',notice:template.notice,status:'draft',inspector:{...state.profile,name:'Demo Inspector'},sections,findings:[
   {id:'summary-empty',origin:'summary',location:'',text:'',category:'Notes',photos:[],includeInSummary:true},
-  {id:'roof-empty',origin:'checklist',sectionId:sections[2].id,itemId:sections[2].items[0].id,location:'Roof access',text:'',category:'Notes',photos:[],includeInSummary:false}
+  {id:'roof-empty',origin:'checklist',sectionId:roof.id,itemId:roof.items[0].id,location:'Roof access',text:'',category:'Notes',photos:[],includeInSummary:false}
  ]};state.reports.push(r);return {state,r};
 }
 function client(state){

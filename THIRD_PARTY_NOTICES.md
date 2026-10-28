@@ -23,8 +23,8 @@ The browser editor is bundled locally from the exact versions pinned in `scripts
 
 ## Inspection content and exclusions
 
-No InterNACHI narrative collection, proprietary inspection-software content, reference videos, customer reports, customer photographs, API keys or personal backups are included in the public distribution. A new workspace starts with a blank inspector profile, no reports and an empty Fast notes library.
+A new workspace starts with a blank inspector profile, no reports, the owner-supplied Maryland-based System Template, and 15 selected Fast notes. On October 28, 2026, the project owner confirmed permission to publicly redistribute all 15 notes and requested preservation of their original wording. Some selected wording overlaps previously imported InterNACHI material; this distribution relies on the owner's confirmation, not an independent grant of rights from InterNACHI. The full imported narrative document collection, reference videos, customer reports, customer photographs, API keys and personal backups are excluded.
 
-Users retain responsibility for the material they import, including narrative libraries, photos and company logos. HomeKanban's MIT License does not grant rights to that material. The software is not affiliated with or endorsed by InterNACHI or the makers of reference products.
+The MIT license for HomeKanban's application code does not relicense third-party narrative wording. Users retain responsibility for the material they import, including narrative libraries, photos and company logos. HomeKanban's MIT License does not grant rights to that material. The software is not affiliated with or endorsed by InterNACHI or the makers of reference products.
 
 This is a component and distribution review, not a legal opinion, trademark search or guarantee against every intellectual-property claim. New dependencies, imported wording, contributed assets and runtime upgrades must be reviewed before a later release.

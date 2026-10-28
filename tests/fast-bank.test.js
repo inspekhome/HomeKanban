@@ -1,13 +1,21 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const {createApp,validateState}=require('../app/server'),{seed,categories}=require('../app/seed'),Wording=require('../app/public/wording');
-function client(){
+function client(notes=[]){
  const state=seed(),nodes=new Map();let serial=0,form={text:''},allow=true,fail=false;
+ state.noteLibrary=structuredClone(notes);
  const node=k=>{if(!nodes.has(k))nodes.set(k,{dataset:{},classList:{toggle(){}},addEventListener(){},querySelectorAll:()=>[],focus(){},showModal(){this.open=true;},close(){this.open=false;}});return nodes.get(k);};
  const ctx=vm.createContext({state,categories,Wording,$:node,clone:structuredClone,e:Wording.escape,uid:()=>`fast-${++serial}`,wordingMarkup:()=>'',mountWording(){},disposeWording(){},readWording:()=>structuredClone(form),window:{addEventListener(){}},document:{addEventListener(){}},route:'fast-notes',dirty:0,saved:0,inFlight:null,render(){},status(){},toast(){},saveNow:async()=>{if(fail)throw Error('Test save failure');validateState(state);},commitWorkspaceEdit:async apply=>{const draft=structuredClone(state);apply(draft);if(fail)throw Error('Test save failure');validateState(draft);apply(state);}});
  vm.runInContext(fs.readFileSync(require.resolve('../app/public/bank.js'),'utf8')+fs.readFileSync(require.resolve('../app/public/notes.js'),'utf8')+';confirmNote=async()=>approve();globalThis.h={openFastNote,saveLibraryNote,closeLibrary,deleteLibraryNote,insertBankText,bankFind,updateLibraryStyle,background:value=>libraryEditor.background=value};',Object.assign(ctx,{approve:()=>allow}));
  return {h:ctx.h,state,node,set form(v){form=v;},set approve(v){allow=v;},set fail(v){fail=v;}};
 }
+test('the shipped Fast notes are usable and remain independently editable',async()=>{
+ const defaults=seed().noteLibrary,c=client(defaults),first=c.state.noteLibrary[0];
+ const reportCopy={category:'Notes',text:'',photos:[],location:'Exterior',includeInSummary:false};c.h.insertBankText(reportCopy,first);
+ assert.equal(reportCopy.text,defaults[0].text);assert.equal(reportCopy.textRuns,undefined);assert.equal(c.state.noteLibrary[0].textRuns[0].bold,true);
+ c.h.openFastNote(first.id);c.form={text:'My customized wording.'};await c.h.saveLibraryNote();assert.equal(c.state.noteLibrary.length,15);assert.equal(c.state.noteLibrary[0].text,'My customized wording.');assert.equal(reportCopy.text,defaults[0].text);
+ await c.h.deleteLibraryNote(first.id);assert.equal(c.state.noteLibrary.length,14);assert.equal(seed().noteLibrary.length,15);assert.equal(seed().noteLibrary[0].text,defaults[0].text);
+});
 test('personal wording can be created, edited, cancelled and deleted without changing report copies',async()=>{
  const c=client();c.form={text:'TEST leak.',textRuns:[{text:'TEST leak.',bold:true,color:'#b42318'}]};c.h.openFastNote();c.h.background('blue');await c.h.saveLibraryNote();
  const first=structuredClone(c.state.noteLibrary[0]);assert.equal(first.title,'TEST leak.');assert.equal(first.background,'blue');assert.equal(first.textRuns[0].bold,true);

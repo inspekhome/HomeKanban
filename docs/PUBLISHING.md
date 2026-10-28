@@ -18,8 +18,8 @@ Build with Node.js 24.19.0 for Windows x64 and Windows .NET Framework 4.x:
 
 ```powershell
 $env:HOMEKANBAN_NODE = 'C:\path\to\node.exe'
-powershell -NoProfile -File scripts/build.ps1 -Version 0.18.58 -OutputDirectory dist\HomeKanban-Windows-v0.18.58-Public
-node scripts/smoke-package.js dist/HomeKanban-Windows-v0.18.58-Public
+powershell -NoProfile -File scripts/build.ps1 -Version 0.18.59 -OutputDirectory dist\HomeKanban-Windows-v0.18.59-Public
+node scripts/smoke-package.js dist/HomeKanban-Windows-v0.18.59-Public
 ```
 
 The build requires a new output directory and ZIP filename. It includes the application, launcher, Node runtime, user guide, MIT License and third-party notices. It does not copy inspection data. Use the entire ZIP for distribution; the EXE alone is not a standalone package.
@@ -32,7 +32,7 @@ Do not upload the installed data folder, old development ZIPs, `work`, screensho
 
 1. Run the tests from a fresh extracted source archive. Use synthetic report data.
 2. Run the packaged application test, including PDF generation with an installed browser.
-3. Verify the seed contains no personal profile, reports, Fast notes or imported narrative corpus.
+3. Verify the seed contains only the approved System Template and 15 Fast notes, with a blank profile and no reports, photos, credentials or inspection results. Compare both baseline files to their approved fingerprints; do not package a working database.
 4. Recheck licensing whenever dependencies or assets change. Match the Node license to the actual runtime version.
 5. Inspect the archive contents and publish its SHA-256. Hashes identify a file; they do not establish that it is safe.
 
@@ -40,6 +40,6 @@ The current release has not completed a clean-machine Windows 10/11 matrix and i
 
 ## Maintained System Template
 
-`app/data/system-template.json` is the owner-approved baseline captured on October 26, 2026: 15 sections, 59 components, with choice order, purpose colors, scope and sample report notice preserved. Keep this baseline in future releases unless the owner explicitly requests a replacement. Do not rebuild it from a working database during routine packaging.
+`app/data/system-template.json` is the owner-approved baseline captured on October 28, 2026 from the owner's Maryland template: 18 sections, 65 components and 205 choices. It retains the template's wording, choice order, purpose colors, scope and report notice. `app/data/fast-notes.json` contains the 15 selected Fast notes from the same snapshot, including their original wording, order and formatting. On October 28, the owner explicitly confirmed that all 15 notes may be publicly redistributed and requested that the original wording be retained. Keep this baseline in future releases unless the owner explicitly requests a replacement. Do not rebuild either file from a working database during routine packaging. Personal identifiers and inspection results are excluded using an explicit field allowlist.
 
-`app/seed.js` assigns fresh IDs and empty inspection results when a new workspace is created. Existing databases and report snapshots are never replaced with this baseline. Users should Duplicate the System Template and customize their own copy. The scope placeholder and sample notice need review for each inspector's own practice.
+`app/seed.js` assigns fresh IDs to the template, its sections/components and all 15 Fast notes when a new workspace is created, with empty inspection results. Existing databases, personal Fast notes (including intentionally empty libraries) and report snapshots are never replaced with these defaults. Users should Duplicate the System Template and customize their own copy. The Maryland-based scope, notice and example notes need review for each inspector's own practice and location; the default wording is not a certification of compliance.

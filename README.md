@@ -1,14 +1,14 @@
 # HomeKanban — Windows home inspection reports
 
-Current published release: **0.18.58**. An English-language, offline-first workspace for a solo home inspector. This is a trial release, not a certified inspection or regulatory-compliance product.
+Current published release: **0.18.59**. An English-language, offline-first workspace for a solo home inspector. This is a trial release, not a certified inspection or regulatory-compliance product.
 
 **Free to use, including for commercial inspections.** HomeKanban's code and documentation are [MIT licensed](LICENSE). No HomeKanban subscription or account is required. Optional AI providers and web hosts have separate terms and may charge fees. See [third-party notices](THIRD_PARTY_NOTICES.md).
 
-**[Download HomeKanban v0.18.58 for Windows](https://github.com/inspekhome/HomeKanban/releases/download/v0.18.58/HomeKanban-Windows-v0.18.58.zip)** · [Release notes and checksum](https://github.com/inspekhome/HomeKanban/releases/tag/v0.18.58) · [User Guide](docs/USER-GUIDE.md)
+**[Download HomeKanban v0.18.59 for Windows](https://github.com/inspekhome/HomeKanban/releases/download/v0.18.59/HomeKanban-Windows-v0.18.59.zip)** · [Release notes and checksum](https://github.com/inspekhome/HomeKanban/releases/tag/v0.18.59) · [User Guide](docs/USER-GUIDE.md)
 
 Download the Windows ZIP above and extract the entire folder before opening `HomeKanban.exe`. The GitHub **Code > Download ZIP** button downloads source code, not the ready-to-run application.
 
-The download includes the inspector-authored **System Template** with 15 sections, 59 components, and color-coded choices: Material / description (green), Issue / concern (amber), and Others (gray). Select **Duplicate** to make your own working template. The bundled baseline is maintained across releases; existing workspaces and report snapshots are not overwritten.
+The download includes **System Template**, based on the creator's Maryland template: 18 sections, 65 components and 205 color-coded choices, together with its Scope & limitations and report notice. Material / description choices are green, Issue / concern choices amber, and Others gray. Select **Duplicate** to make your own working template and review its wording for your own practice and location. New workspaces also include 15 reusable Fast notes with the creator's original order and highlighting. Existing workspaces and report snapshots are not overwritten.
 
 Recent improvements include status boxes on the right in the editor and all report exports, all-choice exports, section and choice reordering, compact controls, Add note aligned with Limitation, direct save-and-exit, persistent workspace recovery, and one-click AI Revise using editable AI Instructions. AI requires your own configured provider; live-provider acceptance is still pending.
 
@@ -26,7 +26,7 @@ Windows x64 is the intended target. A clean-machine Windows 10/11 installation m
 
 - **User info:** one inspector/business profile. Each new report captures a profile snapshot.
 - **Templates:** scope and limitations, report notice, sections, components, and material choices. Sections support dragging and up/down arrows. Existing reports retain their snapshots.
-- **Fast notes:** one shared library for all templates and reports, up to 50 entries and 350 words per entry. Add, edit, format, and reorder reusable wording. Newly inserted wording enters report notes as plain text. The public package includes no proprietary narrative collection.
+- **Fast notes:** one shared library for all templates and reports, up to 50 entries and 350 words per entry. Add, edit, format, and reorder reusable wording. Newly inserted wording enters report notes as plain text. New workspaces start with 15 owner-authorized examples that can be edited or deleted. Only these selected examples are included, not the imported narrative document collection.
 - **Reports:** one editor containing Property details, text Summary, Summary and pictures, and System checks. Use I / NI / NP / D. Clicking a selected section status again clears that section. NI requires an actual reason before finalization.
 - **New Note / Edit Note:** movable and resizable window; linked text, category, and up to 30 photos; rotate and annotate photos; optionally include checklist notes in both summaries. Summary-created notes always remain included.
 - **Report library:** Open, PDF Preview, Export PDF, Export to Web Hosting, Copy, Delete. Copy retains the checklist structure, scope, and notice, while clearing property details, results, findings, and photos.
@@ -38,7 +38,7 @@ Check completeness identifies missing fields and jumps to their source. Mark fin
 
 PDF and HTML share the same report renderer and linked finding data. PDF export waits for a complete PDF and tries another installed supported browser if rendering fails. PDF Preview also supports browser Print → Save as PDF.
 
-Version **0.18.58** matches report-editor and template checklist choices to PDF Preview: 11 px choice text and 13 px inspection-status boxes. Additional notes / materials and Limitation keep their existing widths with compact text and heights. New/Edit Note uses 18 px titles, 16 px Fast notes, Photos and narrative headings, and 12 px narrative input and helper text. Matching header/footer buttons and the draft-status message beside Cancel keep the dialog compact.
+Version **0.18.59** supplies the creator's Maryland template and 15 Fast notes as defaults for new workspaces. Existing customized templates, notes and reports remain unchanged on upgrade. It retains the previous typography improvements, matching report-editor and template checklist choices to PDF Preview: 11 px choice text and 13 px inspection-status boxes. Additional notes / materials and Limitation keep their existing widths with compact text and heights. New/Edit Note uses 18 px titles, 16 px Fast notes, Photos and narrative headings, and 12 px narrative input and helper text. Matching header/footer buttons and the draft-status message beside Cancel keep the dialog compact.
 
 Standard of Practice, Scope & limitations supports Bold, Italic, Underline and 10/12/14 pt sizes. Formatting carries through templates, report copies, PDF Preview, PDF and Web Report.
 
@@ -66,12 +66,12 @@ With Node.js 24.19.0 on PATH, from the repository root:
 New-Item -ItemType Directory -Force work | Out-Null
 npm ci --prefix scripts/editor --ignore-scripts
 node --test tests/*.test.js
-powershell -NoProfile -File scripts/build.ps1 -Version 0.18.58
-node scripts/smoke-package.js dist/HomeKanban-Windows-v0.18.58
+powershell -NoProfile -File scripts/build.ps1 -Version 0.18.59
+node scripts/smoke-package.js dist/HomeKanban-Windows-v0.18.59
 ```
 
 Tests use isolated workspaces under `work`; a few tests require local loopback access, Windows DPAPI, and Edge/Chrome. npm is only needed for editor development and tests; Windows users do not need it. The packaged runtime can be used if Node is not on PATH. Set `HOMEKANBAN_NODE` for a different packaging runtime.
 
-The regression suite contains 274 automated tests, including scope formatting, editor selection, save/backup/restore/restart, hosted-print and Check status cases. The 0.18.52 update is also checked in an isolated browser workspace using synthetic data. Release verification also covers an isolated Windows-package PDF smoke test and a Cloudflare workerd/Miniflare R2 integration check using synthetic data. Live account deployment remains a separate setup step. Packaging changes are additionally checked against an explicit public-file manifest. Passing tests does not establish that the product has no defects or replace clean-machine acceptance testing.
+The regression suite contains 277 automated tests, including scope formatting, editor selection, save/backup/restore/restart, hosted-print and Check status cases. The 0.18.52 update is also checked in an isolated browser workspace using synthetic data. Release verification also covers an isolated Windows-package PDF smoke test and a Cloudflare workerd/Miniflare R2 integration check using synthetic data. Live account deployment remains a separate setup step. Packaging changes are additionally checked against an explicit public-file manifest. Passing tests does not establish that the product has no defects or replace clean-machine acceptance testing.
 
 See [Publishing](docs/PUBLISHING.md) for clean source and Windows packages. Private working material, inspection databases, historical screenshots, reports, backups, reference videos and external narrative documents are excluded. Never attach client data or API keys to public issues.

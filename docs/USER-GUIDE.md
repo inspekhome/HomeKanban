@@ -1,6 +1,6 @@
 # HomeKanban User Guide
 
-Version 0.18.58 · Windows x64 · English interface
+Version 0.18.59 · Windows x64 · English interface
 
 HomeKanban is a free, offline-first report-writing workspace for individual home inspectors. One local workspace holds your profile, templates, Fast notes and reports. You do not need a HomeKanban account or subscription. Optional AI and online publishing require your own services and may cost money.
 
@@ -23,11 +23,11 @@ Under **System Themes**, select **Blue Gray**, **Indigo**, **Sage**, **Peach**, 
 
 Every new report captures your current profile. Changing User info does not silently rewrite older reports. In a report, **Update from current profile** replaces that report's inspector details with the current profile when you choose to do so.
 
-The circle at the top right shows your Report logo when available; otherwise it shows the first and last name initials (for example, Wenwei Yao → WY). A single-word name uses its first two characters, and a blank name shows HI. Click the circle to open User info. Choose or remove your logo there; the circle updates immediately.
+The circle at the top right shows your Report logo when available; otherwise it shows the first and last name initials (for example, Alex Morgan → AM). A single-word name uses its first two characters, and a blank name shows HI. Click the circle to open User info. Choose or remove your logo there; the circle updates immediately.
 
 ## 3. Prepare Templates
 
-Open **Templates**. New workspaces include **System Template**, with 15 sections, 59 components and 189 color-coded choices. Select **Duplicate** to create your own working copy, such as **Everyday Use Template**, then **Edit template**. The bundled template is the maintained starting point for future releases. Existing customized templates are preserved during updates.
+Open **Templates**. New workspaces include **System Template**, based on the creator's Maryland template, with 18 sections, 65 components and 205 color-coded choices. Its Scope & limitations and report notice are included; review them for your own practice and location. Select **Duplicate** to create your own working copy, such as **Everyday Use Template**, then **Edit template**. The bundled template is the maintained starting point for future releases. Existing customized templates are preserved during updates.
 
 - Edit the template name, **Standard of Practice, Scope & limitations** and report notice. Select scope text to apply **Bold**, *Italic*, Underline, or a font size of **10 pt**, **12 pt**, or **14 pt**. **Default** keeps the normal size for the editor or exported report. This field has no text-color controls. **Clear formatting** removes formatting from the selected text.
 - Use **Add Section** to add a system. Rename sections and edit their notices.
@@ -119,7 +119,7 @@ Open **Fast notes**, between Templates and User info. This is one shared library
 
 Choose **Add Fast Note**, enter your reusable wording, and save it. Use the edit and delete controls to maintain entries. You can format library text, choose a background color, and reorder entries by dragging or with the arrows. Put frequent entries near the top to find them quickly in the note editor.
 
-The library allows **50 entries**, with **350 words maximum per entry**. A clean installation starts with an empty library. Add wording you wrote yourself or have permission to use; no proprietary narrative collection is included.
+The library allows **50 entries**, with **350 words maximum per entry**. A new workspace starts with 15 owner-authorized Fast notes, preserving the original order, emphasis and background colors. These are editable examples: check each statement against the actual inspection before use. You can change or delete them, and add wording you wrote yourself or have permission to use. Upgrading an existing workspace does not replace its library or restore notes you deleted.
 
 ## 9. Save, check and finalize
 
