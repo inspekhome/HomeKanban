@@ -3,6 +3,7 @@ import Bold from 'quill/formats/bold.js';
 import Italic from 'quill/formats/italic.js';
 import Underline from 'quill/formats/underline.js';
 import { ColorStyle } from 'quill/formats/color.js';
+import { SizeStyle } from 'quill/formats/size.js';
 import Clipboard from 'quill/modules/clipboard.js';
 
 // Keep external wording plain and let the existing photo attachment handler
@@ -24,5 +25,6 @@ class PlainClipboard extends Clipboard {
   }
 }
 
-Quill.register({ 'formats/bold': Bold, 'formats/italic': Italic, 'formats/underline': Underline, 'formats/color': ColorStyle, 'modules/clipboard': PlainClipboard }, true);
+SizeStyle.whitelist = ['10pt', '12pt', '14pt'];
+Quill.register({ 'formats/bold': Bold, 'formats/italic': Italic, 'formats/underline': Underline, 'formats/color': ColorStyle, 'formats/size': SizeStyle, 'modules/clipboard': PlainClipboard }, true);
 export { Quill, Delta };

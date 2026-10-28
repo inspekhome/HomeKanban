@@ -1,18 +1,18 @@
 # HomeKanban — Windows home inspection reports
 
-Current published release: **0.18.42**. An English-language, offline-first workspace for a solo home inspector. This is a trial release, not a certified inspection or regulatory-compliance product.
+Current published release: **0.18.58**. An English-language, offline-first workspace for a solo home inspector. This is a trial release, not a certified inspection or regulatory-compliance product.
 
 **Free to use, including for commercial inspections.** HomeKanban's code and documentation are [MIT licensed](LICENSE). No HomeKanban subscription or account is required. Optional AI providers and web hosts have separate terms and may charge fees. See [third-party notices](THIRD_PARTY_NOTICES.md).
 
-**[Download HomeKanban v0.18.42 for Windows](https://github.com/inspekhome/HomeKanban/releases/download/v0.18.42/HomeKanban-Windows-v0.18.42.zip)** · [Release notes and checksum](https://github.com/inspekhome/HomeKanban/releases/tag/v0.18.42) · [User Guide](docs/USER-GUIDE.md)
+**[Download HomeKanban v0.18.58 for Windows](https://github.com/inspekhome/HomeKanban/releases/download/v0.18.58/HomeKanban-Windows-v0.18.58.zip)** · [Release notes and checksum](https://github.com/inspekhome/HomeKanban/releases/tag/v0.18.58) · [User Guide](docs/USER-GUIDE.md)
 
 Download the Windows ZIP above and extract the entire folder before opening `HomeKanban.exe`. The GitHub **Code > Download ZIP** button downloads source code, not the ready-to-run application.
 
-Version **0.18.42** includes the inspector-authored **System Template** with 15 sections, 59 components, and color-coded choices: Material / description (green), Issue / concern (amber), and Others (gray). Select **Duplicate** to make your own working template. The bundled baseline is maintained across releases; existing workspaces and report snapshots are not overwritten.
+The download includes the inspector-authored **System Template** with 15 sections, 59 components, and color-coded choices: Material / description (green), Issue / concern (amber), and Others (gray). Select **Duplicate** to make your own working template. The bundled baseline is maintained across releases; existing workspaces and report snapshots are not overwritten.
 
 Recent improvements include status boxes on the right in the editor and all report exports, all-choice exports, section and choice reordering, compact controls, Add note aligned with Limitation, direct save-and-exit, persistent workspace recovery, and one-click AI Revise using editable AI Instructions. AI requires your own configured provider; live-provider acceptance is still pending.
 
-Version **0.18.42** fixes four save/recovery defects: typing during a Fast note save stays in the editor, cancelled failed edits do not leak into later saves, retrying report creation does not create duplicates, and saved workspaces up to 100 MiB can be restored from their backups. It also includes Dark Mode, a locally bundled Quill editor with undo/redo, a clickable profile avatar, compact Note editing, and multilingual Voice Input through a separately configured OpenAI API key. Voice Input and AI Revise require internet access and provider fees may apply. Cloudflare publishing is not connected.
+This release retains the four save/recovery fixes introduced in **0.18.42**: typing during a Fast note save stays in the editor, cancelled failed edits do not leak into later saves, retrying report creation does not create duplicates, and saved workspaces up to 100 MiB can be restored from their backups. It also includes Dark Mode, a locally bundled Quill editor with undo/redo, a clickable profile avatar, compact Note editing, and multilingual Voice Input through a separately configured OpenAI API key. Voice Input and AI Revise require internet access and provider fees may apply. Optional Cloudflare publishing and termination are now connected; each inspector configures and manages their own account.
 
 ## Run
 
@@ -38,7 +38,11 @@ Check completeness identifies missing fields and jumps to their source. Mark fin
 
 PDF and HTML share the same report renderer and linked finding data. PDF export waits for a complete PDF and tries another installed supported browser if rendering fails. PDF Preview also supports browser Print → Save as PDF.
 
-**Export to Web Hosting is a slide control for a future Cloudflare integration; publishing and termination are not connected in this version.** Using it shows a connection message and does not upload a report or create a public URL. PDF Preview and Export PDF work locally. Client email and phone are omitted from report exports by default.
+Version **0.18.58** matches report-editor and template checklist choices to PDF Preview: 11 px choice text and 13 px inspection-status boxes. Additional notes / materials and Limitation keep their existing widths with compact text and heights. New/Edit Note uses 18 px titles, 16 px Fast notes, Photos and narrative headings, and 12 px narrative input and helper text. Matching header/footer buttons and the draft-status message beside Cancel keep the dialog compact.
+
+Standard of Practice, Scope & limitations supports Bold, Italic, Underline and 10/12/14 pt sizes. Formatting carries through templates, report copies, PDF Preview, PDF and Web Report.
+
+**Optional web publishing is available through your own Cloudflare Worker and private R2 storage.** Configure it in **AI & settings → Publish a web report**, then slide to publish or terminate individual reports in Report Library. Check status gives a specific published, terminated or unable-to-verify result. There is no automatic expiration. The hosted Print / Save PDF fix requires existing hosting users to deploy the updated Worker once; preserve its binding and Secret. Existing report links then work without re-uploading. See [Web Hosting Setup](docs/WEB-HOSTING.md) for setup, access, costs and recovery. PDF Preview and Export PDF remain local. Client email and phone are omitted from exports by default.
 
 Only an explicitly submitted note is sent to the configured HTTPS AI provider. AI Revise applies the polished text directly; review the result and use Undo AI revision if needed. API keys are encrypted for the Windows user with DPAPI and excluded from report exports and JSON backups. Restoring on another Windows user/computer requires re-entering the key. AI calls require internet access and may incur provider charges.
 
@@ -62,12 +66,12 @@ With Node.js 24.19.0 on PATH, from the repository root:
 New-Item -ItemType Directory -Force work | Out-Null
 npm ci --prefix scripts/editor --ignore-scripts
 node --test tests/*.test.js
-powershell -NoProfile -File scripts/build.ps1 -Version 0.18.42
-node scripts/smoke-package.js dist/HomeKanban-Windows-v0.18.42
+powershell -NoProfile -File scripts/build.ps1 -Version 0.18.58
+node scripts/smoke-package.js dist/HomeKanban-Windows-v0.18.58
 ```
 
 Tests use isolated workspaces under `work`; a few tests require local loopback access, Windows DPAPI, and Edge/Chrome. npm is only needed for editor development and tests; Windows users do not need it. The packaged runtime can be used if Node is not on PATH. Set `HOMEKANBAN_NODE` for a different packaging runtime.
 
-The current application passed 234 automated tests and an isolated Windows-package PDF smoke test on the development machine. Packaging changes are additionally checked against an explicit public-file manifest. Passing tests does not establish that the product has no defects or replace clean-machine acceptance testing.
+The regression suite contains 274 automated tests, including scope formatting, editor selection, save/backup/restore/restart, hosted-print and Check status cases. The 0.18.52 update is also checked in an isolated browser workspace using synthetic data. Release verification also covers an isolated Windows-package PDF smoke test and a Cloudflare workerd/Miniflare R2 integration check using synthetic data. Live account deployment remains a separate setup step. Packaging changes are additionally checked against an explicit public-file manifest. Passing tests does not establish that the product has no defects or replace clean-machine acceptance testing.
 
 See [Publishing](docs/PUBLISHING.md) for clean source and Windows packages. Private working material, inspection databases, historical screenshots, reports, backups, reference videos and external narrative documents are excluded. Never attach client data or API keys to public issues.

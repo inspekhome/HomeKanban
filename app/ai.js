@@ -1,5 +1,5 @@
 'use strict';
-const DEFAULT_AI_INSTRUCTIONS='Polish the entire note in clear, concise, professional English. Correct spelling, grammar, punctuation, and awkward wording. Preserve the original meaning and all inspection details.';
+const DEFAULT_AI_INSTRUCTIONS='Rewrite the entire note in clear, concise, professional English. Correct spelling and grammar. Preserve all observations, locations, measurements, uncertainties, limitations, and recommendations. Translate non-English text into English. Do not add facts or conclusions.';
 const MAX_AI_INSTRUCTIONS=10000;
 function normalizeAIInstructions(value){
  if(typeof value!=='string'||value.length>MAX_AI_INSTRUCTIONS){const error=new Error('AI instructions must be text of up to 10,000 characters.');error.status=400;throw error;}

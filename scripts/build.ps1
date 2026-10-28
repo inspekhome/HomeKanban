@@ -1,5 +1,5 @@
 param(
-    [ValidatePattern('^\d+\.\d+\.\d+$')][string]$Version = '0.18.42',
+    [ValidatePattern('^\d+\.\d+\.\d+$')][string]$Version = '0.18.58',
     [string]$OutputDirectory,
     [string]$NodeLicense
 )
@@ -35,6 +35,7 @@ foreach ($relative in $appFiles) {
 & $nodeSource (Join-Path $PSScriptRoot 'bundle-frontend.js') $packageRoot
 if ($LASTEXITCODE -ne 0) { throw 'Frontend bundling failed.' }
 Copy-Item -LiteralPath (Join-Path $projectRoot 'docs\USER-GUIDE.md') -Destination (Join-Path $packageRoot 'USER-GUIDE.md') -Force
+Copy-Item -LiteralPath (Join-Path $projectRoot 'docs\WEB-HOSTING.md') -Destination (Join-Path $packageRoot 'WEB-HOSTING.md') -Force
 foreach ($notice in @('LICENSE', 'THIRD_PARTY_NOTICES.md')) { Copy-Item -LiteralPath (Join-Path $projectRoot $notice) -Destination (Join-Path $packageRoot $notice) }
 Copy-Item -LiteralPath $NodeLicense -Destination (Join-Path $packageRoot 'runtime\LICENSE.txt')
 $compiler = Join-Path $env:WINDIR 'Microsoft.NET\Framework64\v4.0.30319\csc.exe'

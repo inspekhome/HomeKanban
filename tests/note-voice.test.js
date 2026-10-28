@@ -12,9 +12,17 @@ function harness({transcribe,getUserMedia}={}){
  const c=Voice.create({getUserMedia:getUserMedia||(async()=>({getTracks:()=>[track]})),Recorder,transcribe:async(blob,signal)=>{uploads.push({blob,signal});return transcribe?transcribe(blob,signal):'The pipe is leaking. 水管漏水。';},isCurrent:()=>valid,onText:t=>text.push(t),onState:s=>states.push(s),onMessage:m=>messages.push(m),setTimer:(fn,ms)=>{const id=++next;timers.set(id,{fn,ms});return id;},clearTimer:id=>timers.delete(id)});
  return {c,instances,text,states,messages,timers,uploads,track,invalidate:()=>valid=false};
 }
-test('voice toolbar has no language menu and describes the actual OpenAI transcription service',()=>{
+test('compact voice controls keep accessible help and live feedback outside the formatting toolbar',()=>{
  const ctx=vm.createContext({NoteVoice:Voice,Wording:require('../app/public/wording'),document:{addEventListener(){}}});vm.runInContext(fs.readFileSync(require.resolve('../app/public/wording-editor'),'utf8'),ctx);
- const html=ctx.wordingMarkup('note-text','Note / report narrative',{text:'Existing wording'});assert.ok(html.indexOf('Clear formatting')<html.indexOf('data-note-action="voice"'));assert.match(html,/OpenAI/);assert.match(html,/detected automatically/);assert.doesNotMatch(html,/browser's preferred language|<select/);assert.doesNotMatch(ctx.wordingMarkup('library-note-text','Wording'),/data-note-action="voice"/);
+ const {JSDOM}=require('../scripts/editor/node_modules/jsdom');
+ const html=ctx.wordingMarkup('note-text','Note / report narrative',{text:'Existing wording'},'',true)+ctx.wordingToolbar('note-text','Note / report narrative',true),dom=new JSDOM(html),doc=dom.window.document;
+ try{
+  const button=doc.querySelector('[data-note-action="voice"]');assert.equal(button.getAttribute('aria-label'),'Start voice input');assert.equal(button.getAttribute('aria-controls'),'note-text');assert.ok(button.closest('.note-narrative-heading'));
+  assert.match(doc.getElementById(button.getAttribute('aria-describedby')).textContent,/Voice input.*Internet.*API key.*API fees apply/);
+  assert.equal(doc.getElementById('note-voice-status').getAttribute('aria-live'),'polite');assert.equal(doc.querySelectorAll('[data-wording-toolbar="note-text"]').length,1);assert.equal(doc.querySelector('.wording-color-swatches>span'),null);
+  assert.equal(doc.querySelector('.wording-field .wording-toolbar'),null);assert.equal(doc.querySelector('#note-text').textContent,'Existing wording');
+  assert.doesNotMatch(html,/<select/);assert.doesNotMatch(ctx.wordingMarkup('library-note-text','Wording'),/data-note-action="voice"/);
+ }finally{dom.window.close();}
 });
 test('recording sends nothing until Stop, inserts mixed language text once, and releases capture',async()=>{
  const h=harness();assert.equal(h.instances.length,0);await h.c.start();await h.c.start();assert.equal(h.instances.length,1);assert.equal(h.uploads.length,0);assert.equal(h.c.active,true);

@@ -61,7 +61,7 @@ body:has(dialog[open]){overflow:hidden}
 #note-dialog,#library-dialog{width:calc(100vw - 32px);max-width:1320px;max-height:calc(100dvh - 32px);padding:0;overflow:auto;background:#fff}
 .note-heading{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px 24px;background:#edf3f8;border-bottom:1px solid #cddce8}.note-heading h2{margin:4px 0 0;font-size:23px;line-height:1.4}.note-heading .eyebrow{font-size:11px}
 .note-layout{display:grid;grid-template-columns:245px minmax(0,1fr);align-items:start}.note-library{padding:20px 16px;background:#f3f7fa;position:sticky;top:0;max-height:calc(100dvh - 145px);overflow:auto;border-right:1px solid var(--line)}.note-writing{padding:22px 26px;min-width:0}.note-writing>.grid{margin:0 0 20px;gap:16px}
-#note-dialog h3{font-size:18px;margin:0}.note-library>.help{margin:8px 0 14px}.note-library>button{margin-top:16px}.common-note{margin-top:12px;background:#fff;border:1px solid var(--line);border-left:4px solid #7096b2;padding:12px;border-radius:6px}.common-category-0{border-left-color:#a96658}.common-category-1{border-left-color:#ad925b}.common-category-2{border-left-color:#52859e}.common-category-3{border-left-color:#8796a3}.common-note h4{margin:0;font-size:15px}.common-note p{font-size:14px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;max-height:170px;overflow:auto}.common-note small{font-size:12px;color:#52697d}.common-note .actions{justify-content:flex-start;gap:8px;margin-top:10px}
+#note-dialog h3{font-size:16px;margin:0}.note-library>.help{margin:8px 0 14px}.note-library>button{margin-top:16px}.common-note{margin-top:12px;background:#fff;border:1px solid var(--line);border-left:4px solid #7096b2;padding:12px;border-radius:6px}.common-category-0{border-left-color:#a96658}.common-category-1{border-left-color:#ad925b}.common-category-2{border-left-color:#52859e}.common-category-3{border-left-color:#8796a3}.common-note h4{margin:0;font-size:15px}.common-note p{font-size:14px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;max-height:170px;overflow:auto}.common-note small{font-size:12px;color:#52697d}.common-note .actions{justify-content:flex-start;gap:8px;margin-top:10px}
 #note-dialog input,#note-dialog textarea,#note-dialog select,#library-dialog input,#library-dialog textarea,#library-dialog select{font-size:16px;line-height:1.6;min-width:0;max-width:100%}#note-dialog .field,#library-dialog .field{font-size:14px;color:#52697d;min-width:0}#note-dialog button,#library-dialog button{font-size:14px}#note-dialog .help,#library-dialog .help{font-size:14px;color:#52697d;line-height:1.65}#note-dialog .field>span,#library-dialog .field>span{margin-bottom:6px}#note-text{min-height:240px;line-height:1.8;resize:vertical}
 .note-row{display:flex;justify-content:space-between;gap:12px;align-items:center}.note-photo-section{margin-bottom:22px;border:1px solid #d2dfeb;border-radius:8px;padding:16px;background:#f8fafc}.note-photo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.note-photo-grid figure{min-width:0;margin:0;background:white;padding:10px;border:1px solid var(--line);border-radius:6px}.note-photo-preview{display:block;width:100%;padding:0;border:0;background:#edf2f6}.note-photo-preview img{width:100%;height:210px;object-fit:contain;display:block}.note-photo-grid .field{margin-top:10px}.note-photo-grid .actions{justify-content:flex-start;gap:8px;margin-top:10px}.note-drop-hint{padding:18px;text-align:center;border:1px dashed #8ba9c1;border-radius:6px;font-size:14px;color:#52697d}
 .note-categories{border:0;padding:0;margin:20px 0;display:flex;gap:10px;flex-wrap:wrap}.note-categories legend{font-size:14px;color:#52697d;margin-bottom:8px}.note-categories label{display:flex;align-items:center;gap:8px;font-size:14px;border:1px solid var(--line);border-radius:6px;padding:9px 10px}.note-categories label:has(input:checked){background:#e4eef7;border-color:#7396b2}.note-categories input,.note-summary-toggle input{width:20px;height:20px;flex-shrink:0;accent-color:#315f83}.note-summary-toggle{display:flex;align-items:center;gap:10px;font-size:16px}.note-tools{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:20px}.note-footer{display:flex;justify-content:space-between;gap:16px;align-items:center;position:sticky;bottom:0;background:#edf3f8;padding:14px 24px;border-top:1px solid #cddce8;z-index:2}.note-footer .actions{margin:0;flex-wrap:nowrap}.note-footer button{min-width:90px}.note-footer .help{margin:0}
@@ -184,7 +184,7 @@ body:has(dialog[open]){overflow:hidden}
 #note-dialog{position:fixed;inset:auto;margin:0;max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px);overflow:hidden;box-sizing:border-box}
 #note-dialog[open]{display:grid;grid-template-rows:auto minmax(0,1fr)}
 #note-dialog .note-heading{padding:8px 20px;gap:12px;min-width:0}
-#note-dialog .note-heading h2{margin:0}
+#note-dialog .note-heading h2{margin:0;font-size:18px}
 #note-dialog .note-heading .help{margin-top:2px}
 #note-dialog .note-heading>div:first-child{min-width:0;overflow-wrap:anywhere}
 #note-dialog .note-heading{cursor:grab;touch-action:none;user-select:none}
@@ -248,7 +248,7 @@ body:has(dialog[open]){overflow:hidden}
 .wording-editor[data-background="blue"]{background:#e0edf9}
 .wording-editor[data-background="pink"]{background:#f9e1e9}
 #note-dialog .fast-note-row{padding:12px;gap:8px;flex-wrap:wrap}
-#note-dialog .fast-note-row>.bank-insert{flex-basis:100%;font-size:16px}
+#note-dialog .fast-note-row>.bank-insert{flex-basis:100%}
 #note-dialog .fast-note-row .bank-card-controls{margin-left:auto}
 @media(max-width:600px){.fast-note-row{padding:14px;gap:10px}.fast-notes-page{padding:14px}.fast-note-form{padding:16px}#library-dialog .note-heading{padding:16px}.fast-note-row>.bank-formatted-text{font-size:17px}}
 
@@ -266,7 +266,7 @@ body:has(dialog[open]){overflow:hidden}
 #note-dialog .note-library{padding:12px}
 #note-dialog .note-library h3{margin:0 0 8px}
 #note-dialog .fast-note-row{display:block;padding:0;margin:0 0 6px;overflow:hidden}
-#note-dialog .fast-note-row>.bank-insert{display:block;width:100%;padding:10px;line-height:1.5;font-size:16px}
+#note-dialog .fast-note-row>.bank-insert{display:block;width:100%;padding:10px;line-height:1.5;font-size:12px!important}
 #note-dialog .fast-note-row>.bank-insert:hover{text-decoration:none;background:#ffffff22}
 #note-dialog .fast-note-row:focus-within{outline:2px solid #315f83;outline-offset:1px}
 #note-dialog .fast-notes-empty{padding:10px 0;font-size:15px}
@@ -340,18 +340,20 @@ html[data-theme="black-gray"] #note-dialog [data-note-action="ai"]{border-color:
 html[data-theme="black-gray"] #note-dialog [data-note-action="ai"]:hover:not(:disabled){border-color:#91abc2d9;background:linear-gradient(135deg,#6c8299cc,#526b83db 48%,#405c74d6)}
 @media(prefers-reduced-motion:reduce){#note-dialog [data-note-action="ai"]{transition:none}}
 #note-dialog .note-photo-grid .field input{margin-top:0}
-#note-message:empty{display:none}
-#note-dialog .note-categories{margin:10px 0}
-#note-dialog .note-categories legend{margin-bottom:6px}
+#note-dialog #note-message{display:block;flex:1;min-width:0;font:12px/1.4 var(--note-utility-font);overflow-wrap:anywhere}
+#note-dialog #note-message:empty{display:none}
+/* Move the category buttons up; transfer the former legend row to the gap below. */
+#note-dialog .note-categories{margin:10px 0;padding-bottom:calc(1.55em + 6px)}
+#note-dialog .note-categories legend.visually-hidden{margin:-1px;padding:0}
 #note-dialog .note-tools{margin-top:10px}
-#note-dialog .note-ai-control .help span{display:block}
+#note-dialog .note-ai-control:only-child{margin-left:auto}
 
 /* Photo drop area also opens the picker; captions keep readable text with less padding. */
 #note-dialog .note-drop-hint{display:block;width:100%;background:transparent;cursor:pointer}
 #note-dialog .note-drop-hint:hover{background:#edf3f8;border-color:#527b9a}
 #note-dialog .note-drop-hint:focus-visible{outline:2px solid #315f83;outline-offset:3px}
 #note-dialog .note-photo-section{padding:8px 12px;margin-bottom:10px}
-#note-dialog .note-photo-section .note-row h3{margin:0;font-size:15px}
+#note-dialog .note-photo-section .note-row h3{margin:0;font-size:16px}
 #note-dialog #note-photos{margin-top:8px}
 #note-dialog .note-drop-hint{padding:12px 10px;font-size:13px;line-height:1.5}
 #note-dialog .note-photo-grid input[data-note-caption]{height:32px;padding:4px 8px;font-size:16px;line-height:22px}
@@ -541,6 +543,12 @@ html[data-theme]:not([data-theme="blue-gray"]) .report-tool::after{background:va
 .web-hosting-label{position:relative;display:block;font-size:9px;font-weight:500;line-height:1;white-space:nowrap;text-align:center;text-shadow:0 1px 0 #ffffff45;pointer-events:none}
 .web-hosting-slider.is-dragging .web-hosting-label{opacity:.55}
 .web-hosting-slider:disabled{opacity:.75;cursor:wait}.web-hosting-slider:disabled .web-hosting-thumb{cursor:wait}
+.hosting-report-info{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin-top:8px;max-width:300px;font-size:11px;color:var(--muted)}
+.hosting-report-info button{font-size:11px;min-height:26px;padding:3px 7px}.hosting-warning{color:#ad6630}
+.hosting-enable{display:flex;align-items:center;gap:10px;margin-top:18px}.hosting-enable input{width:18px;height:18px}
+.hosting-details{margin-top:22px}.hosting-details summary{cursor:pointer;font-weight:600}
+.hosting-history-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+#hosting-settings input[type=password],#hosting-settings input[type=url]{max-width:100%}
 @media(prefers-reduced-motion:reduce){.web-hosting-slider,.web-hosting-thumb{transition:none}}
 
 /* Dark Mode replaces Black & Gray. Retain its preference ID for existing workspaces.
@@ -675,3 +683,69 @@ button.avatar img{display:block;width:100%;height:100%;min-height:0;object-fit:c
 .wording-editor.ql-editor{tab-size:4;white-space:pre-wrap;text-align:left}
 
 .wording-editor.ql-editor p{margin:0;padding:0}
+
+/* Keep note writing prominent; occasional formatting tools sit below the categories. */
+#note-dialog{--note-utility-font:"Arial Narrow","Aptos Narrow",Arial,sans-serif}
+#note-dialog .note-narrative-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px 12px;margin-bottom:6px}
+#note-dialog .note-narrative-heading h3{margin:0 0 0 13px;font-size:16px;font-weight:700;color:var(--ink);line-height:1.4}
+#note-dialog .note-photo-section{margin-bottom:6px}
+#note-dialog .note-voice-tools{min-width:0;gap:7px;max-width:100%;margin-left:auto}
+#note-dialog .note-voice-hint{min-width:0;font:12px/1.35 var(--note-utility-font);color:var(--muted);text-align:right}
+#note-dialog .note-voice-button{flex:0 0 30px;width:30px;height:30px;min-width:30px;min-height:30px;padding:0;gap:0;border-radius:50%}
+#note-dialog .note-voice-button svg{width:16px;height:16px}
+.note-voice-stop,.note-voice-retry{display:none}
+.note-voice-button[data-voice-state="listening"] svg,.note-voice-button[data-voice-state="stopping"] svg,.note-voice-button[data-voice-state="retry"] svg{display:none}
+.note-voice-button[data-voice-state="listening"] .note-voice-stop,.note-voice-button[data-voice-state="stopping"] .note-voice-stop,.note-voice-button[data-voice-state="retry"] .note-voice-retry{display:block}
+#note-dialog .note-voice-cancel{flex-shrink:0;font:12px/1.3 var(--note-utility-font);padding:4px 6px}
+#note-dialog .note-voice-info{padding:0;border:0;background:transparent;font:12px/1.4 var(--note-utility-font)}
+#note-dialog .note-voice-info:not(:has(p:not(:empty))){display:none}
+#note-dialog .note-voice-info p{margin:4px 0 6px}
+#note-dialog #note-text{border-top:1px solid #c9d7e3;border-radius:6px;font-size:12px}
+html:root[data-theme="black-gray"] #note-dialog #note-text{border-top-color:#43505e}
+#note-dialog .note-tools{align-items:flex-start;gap:10px 16px}
+#note-dialog .note-secondary-tools{flex:1 1 320px;min-width:0}
+#note-dialog .note-format-toolbar{padding:0;border:0;background:transparent;gap:5px;border-radius:0}
+#note-dialog .note-format-toolbar button{font-family:var(--note-utility-font);font-size:12px;min-height:22px;height:22px;padding:2px 5px}
+#note-dialog .note-format-toolbar button[data-wording-command][aria-pressed]{display:grid;place-items:center;width:22px;min-width:22px;max-width:22px;flex:0 0 22px;padding:0;line-height:1}
+#note-dialog .note-format-toolbar .wording-color-swatches{gap:4px}
+#note-dialog .note-format-toolbar .color-swatch{width:16px;height:16px;min-width:16px;min-height:16px;max-height:16px;flex-basis:16px;padding:0}
+#note-dialog .note-secondary-tools .note-summary-control{margin-top:9px}
+#note-dialog .note-summary-toggle{font:12px/1.4 var(--note-utility-font);gap:7px}
+#note-dialog .note-ai-control{flex:0 1 auto;max-width:100%;margin-left:auto}
+#note-dialog .note-tools .help{margin-top:5px;font:12px/1.4 var(--note-utility-font)}
+#note-dialog .note-ai-control .help{white-space:nowrap}
+#note-dialog .note-tools button:not(.color-swatch),#note-dialog .note-footer>.help,#note-dialog .note-window-tip{font-family:var(--note-utility-font);font-size:12px}
+#note-dialog .note-ai-control button[data-note-action="ai"]{font-family:inherit;font-size:12px;font-weight:400}
+#note-dialog .note-window-controls>button,#note-dialog .note-footer .actions>button{width:104px;min-width:104px;height:42px;min-height:42px;padding:9px 15px;line-height:22px;white-space:nowrap}
+#note-dialog .note-footer .actions{margin-left:auto}
+@media(max-width:550px){#note-dialog .note-ai-control .help{white-space:normal}}
+
+/* Prominent saved-key indicators; never display or refill the secret itself. */
+.api-settings-heading{flex-wrap:wrap;align-items:center;gap:16px}
+.api-key-status{display:flex;flex-direction:column;gap:3px;max-width:100%;padding:11px 16px;border:1px solid var(--line);border-radius:9px;background:var(--light);color:var(--ink);line-height:1.4}
+.api-key-status strong{font-size:16px;font-weight:650}
+.api-key-status>span{font-size:14px}
+.api-key-status strong>span{display:inline-block;margin-right:5px;font-size:20px;line-height:1;vertical-align:-1px}
+.api-key-status.is-saved{background:#edf6f0;border-color:#9abca6;color:#245b3b}
+.api-key-status.is-missing{background:#fff7e8;border-color:#dac293;color:#75501e}
+html:root[data-theme="black-gray"] .api-key-status{background:#293440;border-color:#506173;color:#d9e0e7}
+html:root[data-theme="black-gray"] .api-key-status.is-saved{background:#263d33;border-color:#628d73;color:#c3e4cf}
+html:root[data-theme="black-gray"] .api-key-status.is-missing{background:#3b3225;border-color:#9e8353;color:#eed5a8}
+
+/* Scope keeps the existing default size; explicit pt sizes travel with its text. */
+.scope-field .scope-editor{min-height:150px;max-height:440px;font-size:13px;line-height:1.65;padding:10px 12px;color:var(--ink)}
+.report-editor .scope-field .scope-editor{font-size:16px}
+.scope-format-toolbar{gap:6px;padding:6px 8px}
+.scope-format-toolbar button{font-size:12px;min-height:28px;padding:3px 7px}
+.scope-format-toolbar button[aria-pressed]{width:28px;height:28px;padding:0}
+.scope-format-toolbar select{font-size:13px;min-height:28px;padding:3px 6px!important}
+.scope-format-toolbar label{margin:0;font-size:12px}
+
+/* Match checklist controls to PDF Preview while keeping the editing column widths. */
+.report-editor .checklist-card .chip.choice-chip,.template-component .template-choice-preview .chip.choice-chip{gap:5px;padding:3px 6px;border-radius:3px;font-size:11px;line-height:1.5}
+.report-editor .checklist-card .choice-mark,.template-choice-preview .choice-mark{flex-basis:11px;width:11px;height:11px;font-size:10px}
+.report-editor .checklist-card .chips,.template-component .template-choice-preview{gap:5px}
+.report-editor .checklist-card .status-box{width:13px;height:13px;border-radius:2px;font-size:10px}
+.report-editor .checklist-card .rating:not(.active) .status-box{font-size:8px}
+.report-editor .checklist-card .section-rating{min-height:24.5px;height:24.5px;padding:3px 0;font-size:11px;line-height:1.5}
+.report-editor .checklist-card .check-notes input{font-size:11px;line-height:1.5;padding:3px 6px}

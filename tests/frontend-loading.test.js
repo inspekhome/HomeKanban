@@ -15,13 +15,13 @@ test('the page uses only established script routes, and they load all editor dep
  loadBrowserScripts(names.map(name=>readFrontendAsset(publicDir,name)));
 });
 test('an immediate state response cannot render before the deferred bank and note scripts load',async()=>{
- const {seed,categories,ratings}=require('../app/seed'),nodes=new Map(),events=new Map();let requests=0;
+ const {seed,categories,ratings}=require('../app/seed'),nodes=new Map(),events=new Map(),requests=[];
  const node=key=>{if(!nodes.has(key))nodes.set(key,{content:'test-token',addEventListener(){},querySelectorAll:()=>[],classList:{toggle(){}}});return nodes.get(key);};
- const context=vm.createContext({document:{documentElement:{dataset:{}},readyState:'interactive',querySelector:node,addEventListener:(name,fn)=>events.set(name,fn)},window:{addEventListener(){}},fetch:async()=>{requests++;return {ok:true,headers:{get:()=> 'application/json'},json:async()=>({state:seed(),revision:0,categories,ratings,dataDir:'test'})};},setTimeout,clearTimeout});
- vm.runInContext(readFrontendAsset(publicDir,'app.js'),context);await Promise.resolve();assert.equal(requests,0);
+ const context=vm.createContext({document:{documentElement:{dataset:{}},readyState:'interactive',querySelector:node,getElementById:()=>null,addEventListener:(name,fn)=>events.set(name,fn)},window:{addEventListener(){}},fetch:async url=>{requests.push(url);return {ok:true,headers:{get:()=> 'application/json'},json:async()=>url==='/api/hosting'?{configured:false,enabled:false,publications:[]}:{state:seed(),revision:0,categories,ratings,dataDir:'test'}};},setTimeout,clearTimeout});
+ vm.runInContext(readFrontendAsset(publicDir,'app.js'),context);await Promise.resolve();assert.equal(requests.length,0);
  for(const name of ['bank.js','notes.js'])vm.runInContext(readFrontendAsset(publicDir,name),context);
- events.get('DOMContentLoaded')();await new Promise(resolve=>setImmediate(resolve));assert.equal(requests,1);assert.ok(node('#main').innerHTML.includes('Report library'));assert.equal(node('#save-status').textContent,'✓ Local data loaded');
- await context.boot();assert.equal(requests,2);assert.equal(node('#save-status').textContent,'✓ Local data loaded');
+ events.get('DOMContentLoaded')();await new Promise(resolve=>setImmediate(resolve));assert.deepEqual(requests,['/api/hosting','/api/state']);assert.ok(node('#main').innerHTML.includes('Report library'));assert.equal(node('#save-status').textContent,'✓ Local data loaded');
+ await context.boot();assert.equal(requests.length,4);assert.equal(node('#save-status').textContent,'✓ Local data loaded');
 });
 test('packaged scripts work when an older server serves them directly, and a new server never bundles them twice',()=>{
  const dir=fs.mkdtempSync(path.resolve('work/frontend-package-test-'));fs.cpSync(publicDir,dir,{recursive:true});bundleFrontend(publicDir,dir);

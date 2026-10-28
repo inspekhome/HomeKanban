@@ -18,8 +18,8 @@ Build with Node.js 24.19.0 for Windows x64 and Windows .NET Framework 4.x:
 
 ```powershell
 $env:HOMEKANBAN_NODE = 'C:\path\to\node.exe'
-powershell -NoProfile -File scripts/build.ps1 -Version 0.18.42 -OutputDirectory dist\HomeKanban-Windows-v0.18.42-Public
-node scripts/smoke-package.js dist/HomeKanban-Windows-v0.18.42-Public
+powershell -NoProfile -File scripts/build.ps1 -Version 0.18.58 -OutputDirectory dist\HomeKanban-Windows-v0.18.58-Public
+node scripts/smoke-package.js dist/HomeKanban-Windows-v0.18.58-Public
 ```
 
 The build requires a new output directory and ZIP filename. It includes the application, launcher, Node runtime, user guide, MIT License and third-party notices. It does not copy inspection data. Use the entire ZIP for distribution; the EXE alone is not a standalone package.

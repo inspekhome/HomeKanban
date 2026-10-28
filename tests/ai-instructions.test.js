@@ -52,7 +52,7 @@ test('every AI call reads the latest saved instructions independently of note te
 function settingsUI(api){
  const nodes=new Map(),$=key=>{if(!nodes.has(key))nodes.set(key,{value:'',textContent:'',disabled:true});return nodes.get(key);};
  const source=fs.readFileSync(require.resolve('../app/public/app.js'),'utf8');
- const start=source.indexOf('async function loadSettings()'),end=source.indexOf('\nfunction ',source.indexOf('async function saveAIInstructions()',start));
+ const start=source.indexOf('function showKeyStatus('),end=source.indexOf('\nfunction ',source.indexOf('async function saveAIInstructions()',start));
  const context=vm.createContext({$,api,route:'settings',toast(){}});vm.runInContext(source.slice(start,end),context);return {context,$};
 }
 test('the instructions field loads safely as text and stays disabled against an older backend',async()=>{

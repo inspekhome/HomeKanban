@@ -1,6 +1,6 @@
 # HomeKanban User Guide
 
-Version 0.18.42 · Windows x64 · English interface
+Version 0.18.58 · Windows x64 · English interface
 
 HomeKanban is a free, offline-first report-writing workspace for individual home inspectors. One local workspace holds your profile, templates, Fast notes and reports. You do not need a HomeKanban account or subscription. Optional AI and online publishing require your own services and may cost money.
 
@@ -29,14 +29,14 @@ The circle at the top right shows your Report logo when available; otherwise it 
 
 Open **Templates**. New workspaces include **System Template**, with 15 sections, 59 components and 189 color-coded choices. Select **Duplicate** to create your own working copy, such as **Everyday Use Template**, then **Edit template**. The bundled template is the maintained starting point for future releases. Existing customized templates are preserved during updates.
 
-- Edit the template name, **Scope & limitations** and report notice.
+- Edit the template name, **Standard of Practice, Scope & limitations** and report notice. Select scope text to apply **Bold**, *Italic*, Underline, or a font size of **10 pt**, **12 pt**, or **14 pt**. **Default** keeps the normal size for the editor or exported report. This field has no text-color controls. **Clear formatting** removes formatting from the selected text.
 - Use **Add Section** to add a system. Rename sections and edit their notices.
 - Drag the six-square handles beside section rows, or use their up/down arrows, to change inspection order. Templates keep their section numbers.
 - Add or remove components. Select **Edit choices & colors** to add choices, change their wording, or remove them. Each choice has a purpose: **Material / description** (green), **Issue / concern** (amber), or **Others** (gray), in that menu order. Others replaces the former Normal condition label; existing choices retain their category assignments and use the updated colors.
 - In **Edit choices & colors**, drag a choice's square-dot handle or use its up/down arrows to change the order. **Alt+Up** and **Alt+Down** also work on a focused handle. The wording and purpose color move together. Choose **Save choices** to apply the order; **Cancel** discards changes in this dialog. New reports inherit the saved choice order; existing reports keep their snapshot.
 - Select **Save template**.
 
-Use **Duplicate** to create another version of a template. New reports copy the selected template, including its scope and limitations. Existing reports retain their original snapshot; later template edits do not change them.
+Use **Duplicate** to create another version of a template. New reports copy the selected template, including its scope text and formatting. PDF Preview, PDF export and Web Report preserve this formatting. Existing reports retain their original snapshot; later template edits do not change them. To change an existing report's scope, edit its corresponding field in Property details.
 
 The included checklist is a starting point. Adapt it to the inspection you are actually performing and the applicable requirements; the software does not certify inspection compliance.
 
@@ -140,7 +140,7 @@ Return to **Reports**. The library's actions are ordered as follows:
 | Open | Continue editing the report. |
 | PDF Preview | View the printable report; the browser Print dialog can save a PDF. |
 | Export PDF | Generate and download the report using an installed supported browser. |
-| Export to Web Hosting | Slide control reserved for future publishing; Cloudflare is not connected yet. |
+| Export to Web Hosting | Publish or terminate one report using your configured Cloudflare Worker and private R2 storage. |
 | Copy | Start a new report with the same checklist structure, scope and notice; property details, findings, photos and recorded results are cleared. |
 | Delete | Remove the report after confirmation. |
 
@@ -148,13 +148,17 @@ PDF Preview, exported PDFs and exported web reports use the same selected status
 
 Review the exported PDF before sending it. If you change the report, export a new file; an older download does not update automatically.
 
-**Export to Web Hosting** is a soft glass slide toggle in muted green. Drag its round handle all the way to the right to publish. After a confirmed publication, the toggle turns a muted rose color and reads **Terminate Web Hosting**; drag its handle left to take the report offline. There is no second confirmation dialog. An incomplete drag resets the handle. Keyboard users can focus the toggle and use Right/Left, Space, or Enter. Cloudflare upload and termination are not connected in this version, so a completed slide shows a connection message and keeps the original status; it never simulates a successful publication. Report Library actions use two rows: Open, PDF Preview, and Export PDF above Export to Web Hosting, Copy, and Delete. The compact toggle has a single-line label. There is no separate Download HTML button. A public hosting link is not automatically password-protected. Do not put client reports in the public HomeKanban source-code repository.
+**Export to Web Hosting** is a soft glass slide toggle in muted green. Drag its round handle all the way to the right to publish. After a confirmed publication, the toggle turns a muted rose color and reads **Terminate Web Hosting**; drag its handle left to take the report offline. There is no second confirmation dialog. An incomplete drag resets the handle. Keyboard users can focus the toggle and use Right/Left, Space, or Enter. Configure your own Cloudflare Worker and private R2 bucket in AI & settings first; see [Web Hosting Setup](WEB-HOSTING.md). After publication, use Copy link to share the report. If an operation is interrupted, use Check status or Terminate; HomeKanban never simulates success. Report Library actions use two rows: Open, PDF Preview, and Export PDF above Export to Web Hosting, Copy, and Delete. The compact toggle has a single-line label. There is no separate Download HTML button. A public hosting link is not automatically password-protected. Do not put client reports in the public HomeKanban source-code repository.
 
 ## 11. Optional AI writing assistance
 
-In **AI & settings**, configure an OpenAI-compatible HTTPS Chat Completions endpoint, model ID and your own API key. Save the settings. In a note, request assistance only when you want that selected finding text sent to the provider.
+In **AI & settings**, configure an OpenAI-compatible HTTPS Chat Completions endpoint, model ID and your own API key. Save the settings. A prominent **✓ Key encrypted & saved** indicator confirms local storage, with **No need to enter it again.** below it. The same indicator appears for Voice Input. Saved keys remain hidden, and the empty key field says that the key is already saved; leave it blank to keep the existing key. This confirms storage, not an online connection or available API credit. In a note, request assistance only when you want that selected finding text sent to the provider.
 
-In the **AI Instructions** card, write your own instructions in English or Chinese and click **Save AI instructions**. They control the tone, amount of detail, organization and desired word count for every AI revision in all reports. You can save them before configuring an API key. For example: "Keep the wording concise and correct spelling and grammar." Or: "Use more than 50 English words, with clear, precise wording, while preserving all observations." Leaving the box blank and saving restores the default instructions.
+In the **AI Instructions** card, write your own instructions in English or Chinese and click **Save** at the right of the card heading. They control the tone, amount of detail, organization and desired word count for every AI revision in all reports. You can save them before configuring an API key. For example: "Keep the wording concise and correct spelling and grammar." Or: "Use more than 50 English words, with clear, precise wording, while preserving all observations." Leaving the box blank and saving restores the default instructions.
+
+The default instructions are:
+
+> Rewrite the entire note in clear, concise, professional English. Correct spelling and grammar. Preserve all observations, locations, measurements, uncertainties, limitations, and recommendations. Translate non-English text into English. Do not add facts or conclusions.
 
 Each AI request reads the latest saved instructions from this computer. Saving instructions does not rewrite existing notes. The AI is instructed to preserve facts and uncertainty even when asked for more words; a length target must not result in invented inspection details. Review the result. Instructions are stored with local AI settings, separately from report templates, and are not included in report exports or workspace JSON backups.
 

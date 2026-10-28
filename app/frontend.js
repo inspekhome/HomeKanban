@@ -2,7 +2,7 @@
 const fs=require('node:fs'),path=require('node:path');
 // Keep the established script URLs usable while an older local server is still running.
 // Packaged files contain their dependencies; development serves the same bundles on demand.
-const bundles={'app.js':['workspace-limits.js','wording.js','web-publishing.js','app.js'],'notes.js':['vendor/editor.js','wording-editor.js','photo-editor.js','note-voice.js','notes.js']};
+const bundles={'app.js':['workspace-limits.js','wording.js','web-publishing.js','hosting-ui.js','app.js'],'notes.js':['vendor/editor.js','wording-editor.js','photo-editor.js','note-voice.js','notes.js']};
 function readFrontendAsset(publicDir,name){
  const source=fs.readFileSync(path.join(publicDir,name),'utf8'),parts=bundles[name];
  if(!parts)return source;
