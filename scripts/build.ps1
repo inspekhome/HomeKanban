@@ -1,5 +1,5 @@
 param(
-    [ValidatePattern('^\d+\.\d+\.\d+$')][string]$Version = '0.18.66',
+    [ValidatePattern('^\d+\.\d+\.\d+$')][string]$Version = '0.18.69',
     [string]$OutputDirectory,
     [string]$NodeLicense
 )

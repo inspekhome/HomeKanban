@@ -13,8 +13,8 @@ test('the shipped Fast notes are usable and remain independently editable',async
  const defaults=seed().noteLibrary,c=client(defaults),first=c.state.noteLibrary[0];
  const reportCopy={category:'Notes',text:'',photos:[],location:'Exterior',includeInSummary:false};c.h.insertBankText(reportCopy,first);
  assert.equal(reportCopy.text,defaults[0].text);assert.equal(reportCopy.textRuns,undefined);assert.equal(c.state.noteLibrary[0].textRuns[0].bold,true);
- c.h.openFastNote(first.id);c.form={text:'My customized wording.'};await c.h.saveLibraryNote();assert.equal(c.state.noteLibrary.length,15);assert.equal(c.state.noteLibrary[0].text,'My customized wording.');assert.equal(reportCopy.text,defaults[0].text);
- await c.h.deleteLibraryNote(first.id);assert.equal(c.state.noteLibrary.length,14);assert.equal(seed().noteLibrary.length,15);assert.equal(seed().noteLibrary[0].text,defaults[0].text);
+ c.h.openFastNote(first.id);c.form={text:'My customized wording.'};await c.h.saveLibraryNote();assert.equal(c.state.noteLibrary.length,11);assert.equal(c.state.noteLibrary[0].text,'My customized wording.');assert.equal(reportCopy.text,defaults[0].text);
+ await c.h.deleteLibraryNote(first.id);assert.equal(c.state.noteLibrary.length,10);assert.equal(seed().noteLibrary.length,11);assert.equal(seed().noteLibrary[0].text,defaults[0].text);
 });
 test('personal wording can be created, edited, cancelled and deleted without changing report copies',async()=>{
  const c=client();c.form={text:'TEST leak.',textRuns:[{text:'TEST leak.',bold:true,color:'#b42318'}]};c.h.openFastNote();c.h.background('blue');await c.h.saveLibraryNote();

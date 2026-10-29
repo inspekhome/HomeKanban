@@ -43,7 +43,8 @@ button.addEventListener('click',async function(){
 });
 })();`;
 let printPolicy;
-async function reportHeaders(){
+async function reportHeaders(paymentStatus){
+ if(paymentStatus!=='paid')return headers;
  if(!printPolicy)printPolicy=crypto.subtle.digest('SHA-256',new TextEncoder().encode(PRINT_SCRIPT)).then(bytes=>{
   const hash=btoa(String.fromCharCode(...new Uint8Array(bytes)));
   return headers['Content-Security-Policy']+"; script-src 'sha256-"+hash+"'; script-src-attr 'none'";
@@ -67,8 +68,23 @@ function replaceMarker(stream,marker,replacement){
   flush(controller){pending+=decoder.decode();emit(controller,true);}
  }));
 }
-function printableReport(stream){
+function printableReport(stream,paymentStatus){
  const button='<button onclick="window.print()">Print / Save PDF</button>';
+ if(paymentStatus!=='paid'){
+  const toolbar='<div class="toolbar">Home inspection report &nbsp; '+button+'</div>';
+  const reminder=`<style>
+.toolbar{display:none!important}
+.homekanban-payment-reminder{position:fixed;z-index:1000;top:clamp(72px,12vh,112px);left:16px;right:16px;box-sizing:border-box;min-height:108px;padding:20px 28px;border:1px solid #d6a847;border-left:6px solid #b67c17;border-radius:10px;background:#ffedb7;color:#5b3b09;box-shadow:0 5px 18px #3d2d142e;font:18px/1.5 Arial,sans-serif;text-align:center;pointer-events:none;overflow-wrap:anywhere}
+.homekanban-payment-reminder strong{display:block;margin-bottom:4px;font-size:23px;line-height:1.3}
+@media(max-width:650px){.homekanban-payment-reminder{top:max(64px,env(safe-area-inset-top));left:8px;right:8px;min-height:0;padding:16px 18px;font-size:15px;line-height:1.45}.homekanban-payment-reminder strong{font-size:20px}}
+@media(max-height:420px){.homekanban-payment-reminder{top:32px;min-height:0;padding:10px 16px;font-size:14px}.homekanban-payment-reminder strong{font-size:18px}}
+@media print{.homekanban-payment-reminder{display:none!important}}
+</style><aside class="homekanban-payment-reminder" aria-label="Payment reminder"><strong>Payment Reminder:</strong> Payment for this inspection is still outstanding. Please arrange payment at your convenience.</aside>`;
+  // Remove the hosted toolbar and its print action, including on older snapshots.
+  // This controls our UI; it cannot prevent the browser's own print or screenshot tools.
+  stream=replaceMarker(replaceMarker(stream,toolbar,''),button,'');
+  return replaceMarker(stream,'<body>','<body>'+reminder);
+ }
  return replaceMarker(replaceMarker(stream,button,'<button type="button" data-homekanban-print>Print / Save PDF</button>'),'</body>','<script>'+PRINT_SCRIPT+'</script></body>');
 }
 function result(value,status=200) { return new Response(JSON.stringify(value),{status,headers:{...headers,'Content-Type':'application/json; charset=utf-8'}}); }
@@ -114,7 +130,7 @@ function validateManifest(input) {
   return files;
 }
 function publicStatus(record) {
-  return {status:record?.status||'missing',created:record?.created||null,files:record?.files?.length||0,uploaded:record?.uploaded?.length||0};
+  return {status:record?.status||'missing',created:record?.created||null,files:record?.files?.length||0,uploaded:record?.uploaded?.length||0,...(record&&record.status!=='revoked'?{paymentStatus:record.paymentStatus||'unpaid'}:{})};
 }
 async function revoke(bucket,id) {
   // A permanent tombstone prevents a delayed begin/commit from restoring an old link.
@@ -140,7 +156,7 @@ async function admin(request,env,url) {
   const bucket=env.REPORTS;if(!bucket)fail('Bind the private R2 bucket as REPORTS.',503);
   if(url.pathname==='/api/v1/connection'&&request.method==='GET'){
     await bucket.head('homekanban/connection-check');
-    return result({service:'HomeKanban',protocol:VERSION,storage:'connected'});
+    return result({service:'HomeKanban',protocol:VERSION,storage:'connected',capabilities:['payment-status-v1']});
   }
   if(url.pathname==='/api/v1/publications'&&request.method==='GET'){
     const cursor=url.searchParams.get('cursor');if(cursor&&cursor.length>4096)fail('Invalid cursor.');
@@ -152,16 +168,17 @@ async function admin(request,env,url) {
     }
     return result({records,cursor:page.truncated?page.cursor:null});
   }
-  const match=url.pathname.match(/^\/api\/v1\/publications\/([a-f0-9]{64})(?:\/(commit|files\/[^/]+))?$/);
+  const match=url.pathname.match(/^\/api\/v1\/publications\/([a-f0-9]{64})(?:\/(commit|payment|files\/[^/]+))?$/);
   if(!match)fail('Not found.',404);
   const [,id,operation]=match;
   if(!operation&&request.method==='DELETE')return result(await revoke(bucket,id));
   let current=await read(bucket,id);
   if(!operation&&request.method==='GET')return result(publicStatus(current?.value));
   if(!operation&&request.method==='POST'){
-    const files=validateManifest(await json(request));
+    const input=await json(request),files=validateManifest(input),paymentStatus=input.paymentStatus??'unpaid';
+    if(!['paid','unpaid'].includes(paymentStatus))fail('Invalid payment status.');
     if(!current){
-      const value={status:'staging',created:new Date().toISOString(),files,uploaded:[]};
+      const value={status:'staging',created:new Date().toISOString(),files,uploaded:[],paymentStatus};
       await write(bucket,id,value,null);current=await read(bucket,id);
     }
     if(current?.value.status==='revoked')fail('This link was terminated. Publish with a new link.',409);
@@ -169,6 +186,18 @@ async function admin(request,env,url) {
     return result(publicStatus(current.value));
   }
   if(!current||current.value.status==='revoked')fail('Publication is unavailable.',409);
+  if(operation==='payment'&&request.method==='PUT'){
+    const input=await json(request);
+    if(!input||!['paid','unpaid'].includes(input.paymentStatus))fail('Invalid payment status.');
+    // Update only the control record. A concurrent revocation must always win.
+    for(let attempt=0;attempt<12;attempt++){
+      current=await read(bucket,id);
+      if(current?.value.status!=='published')fail('Publication is unavailable.',409);
+      const next={...current.value,paymentStatus:input.paymentStatus};
+      if(await write(bucket,id,next,current))return result(publicStatus(next));
+    }
+    fail('Publication changed. Retry the payment update.',409);
+  }
   if(operation?.startsWith('files/')&&request.method==='PUT'){
     if(current.value.status!=='staging')fail('Published files cannot be changed.',409);
     const name=operation.slice(6),file=current.value.files.find(f=>f.name===name);
@@ -214,7 +243,7 @@ async function serve(request,env,url) {
   // Re-check after fetching the object so a revocation racing with a read wins.
   record=await read(env.REPORTS,id);if(record?.value.status!=='published'){await object.body?.cancel();return unavailable();}
   if(request.method==='HEAD')await object.body?.cancel();
-  return new Response(request.method==='HEAD'?null:photo?object.body:printableReport(object.body),{headers:{...(photo?headers:await reportHeaders()),'Content-Type':TYPES[name.split('.').at(-1)]}});
+  return new Response(request.method==='HEAD'?null:photo?object.body:printableReport(object.body,record.value.paymentStatus),{headers:{...(photo?headers:await reportHeaders(record.value.paymentStatus)),'Content-Type':TYPES[name.split('.').at(-1)]}});
 }
 export default {
   async fetch(request,env){

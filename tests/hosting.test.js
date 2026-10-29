@@ -30,6 +30,63 @@ function local(c,db=new DatabaseSync(':memory:')){
  return {hosting,db,disk,protect};
 }
 function connect(hosting,enabled=true){return hosting.saveSettings({endpoint:ADDRESS,key:KEY,enabled});}
+
+test('unpaid hosting floats a reminder without print controls; paid restores the toolbar at the same URL without changing files or PDFs',async()=>{
+ const c=await cloud(),r=report(),s=await staged(c,undefined,r);await s.upload();await c.request(s.base+'/commit','POST',{});
+ const stored=await(await c.bucket.get('homekanban/data/'+s.id+'/index.html')).text();
+ assert.ok(!stored.includes('Payment Reminder'));assert.ok(!reportHTML({...r,paymentStatus:'unpaid'}).includes('Payment Reminder'));
+ let response=await c.request('/r/'+s.id+'/','GET',undefined,null),html=await response.text();
+ assert.match(html,/Payment Reminder:<\/strong> Payment for this inspection is still outstanding\. Please arrange payment at your convenience\./);
+ assert.ok(!html.includes('Pay now'));assert.ok(!html.includes('Home inspection report'));
+ assert.ok(!html.includes('Print / Save PDF'));assert.ok(!html.includes('window.print'));assert.ok(!html.includes('<script>'));
+ assert.match(html,/position:fixed/);assert.match(html,/top:clamp\(72px,12vh,112px\)/);
+ assert.ok(!response.headers.get('Content-Security-Policy').includes('script-src '));
+ assert.equal((await c.request(s.base+'/payment','PUT',{paymentStatus:'paid'},null)).status,401);
+ assert.equal((await c.request(s.base+'/payment','PUT',{paymentStatus:'paid'})).status,200);
+ html=await(await c.request('/r/'+s.id+'/','GET',undefined,null)).text();assert.ok(!html.includes('Payment Reminder'));
+ assert.match(html,/<div class="toolbar">Home inspection report/);assert.match(html,/<button type="button" data-homekanban-print>Print \/ Save PDF<\/button>/);
+ assert.equal((await c.request(s.base+'/payment','PUT',{paymentStatus:'unpaid'})).status,200);
+ html=await(await c.request('/r/'+s.id+'/')).text();assert.match(html,/Payment Reminder/);assert.ok(!html.includes('Print / Save PDF'));
+ for(const value of [null,'<script>',true])assert.equal((await c.request(s.base+'/payment','PUT',{paymentStatus:value})).status,400);
+ assert.equal(await(await c.bucket.get('homekanban/data/'+s.id+'/index.html')).text(),stored);
+});
+test('new paid publications and legacy records use the correct reminder without changing other reports',async()=>{
+ const c=await cloud(),r={...report(),paymentStatus:'paid'},paid=await staged(c,undefined,r),legacy=await staged(c);
+ for(const s of [paid,legacy]){await s.upload();await c.request(s.base+'/commit','POST',{});}
+ const key='homekanban/control/'+legacy.id+'.json',old=await(await c.bucket.get(key)).json();delete old.paymentStatus;await c.bucket.put(key,JSON.stringify(old));
+ assert.ok(!(await(await c.request('/r/'+paid.id+'/')).text()).includes('Payment Reminder'));
+ assert.match(await(await c.request('/r/'+legacy.id+'/')).text(),/Payment Reminder/);
+ await c.request(paid.base+'/payment','PUT',{paymentStatus:'unpaid'});await c.request(paid.base,'DELETE');
+ assert.equal((await c.request(paid.base+'/payment','PUT',{paymentStatus:'paid'})).status,409);
+ assert.equal((await c.request('/r/'+paid.id+'/')).status,404);assert.equal((await c.request('/r/'+legacy.id+'/')).status,200);
+});
+test('termination racing a payment update cannot resurrect a report',async()=>{
+ const c=await cloud(),s=await staged(c);await s.upload();await c.request(s.base+'/commit','POST',{});let intercepted=false;
+ c.bucket.beforePut=async(key,value)=>{if(!intercepted&&key.includes('/control/')&&JSON.parse(value).paymentStatus==='paid'){intercepted=true;await c.request(s.base,'DELETE');}};
+ assert.equal((await c.request(s.base+'/payment','PUT',{paymentStatus:'paid'})).status,409);assert.equal((await c.request('/r/'+s.id+'/')).status,404);
+});
+test('local payment sync is revision guarded, works with uploads disabled and survives lost cloud responses',async()=>{
+ const c=await cloud(),real=c.fetchImpl;let fail=false;c.fetchImpl=async(url,options)=>{const response=await real(url,options);if(fail&&url.endsWith('/payment'))throw Error('Response lost');return response;};
+ const l=local(c);try{
+  connect(l.hosting);const p=await l.hosting.publish('report-one',1);l.disk.state.reports[0].paymentStatus='paid';l.disk.revision=2;
+  await assert.rejects(l.hosting.syncPayment('report-one',1),/another window/);
+  l.hosting.saveSettings({endpoint:ADDRESS,enabled:false});fail=true;
+  await assert.rejects(l.hosting.syncPayment('report-one',2),/Could not contact/);
+  let local=l.hosting.localState().publications[0];assert.equal(local.status,'published');assert.equal(local.paymentSync,'pending');assert.equal(local.paymentStatus,'unpaid');
+  assert.ok(!(await(await c.request('/r/'+p.id+'/')).text()).includes('Payment Reminder'));
+  fail=false;await l.hosting.check(p.id);local=l.hosting.localState().publications[0];assert.equal(local.paymentStatus,'paid');assert.equal(local.paymentSync,'synced');
+  l.disk.state.reports[0].paymentStatus='unpaid';l.disk.revision++;
+  assert.equal((await l.hosting.syncPayment('report-one',3)).synced,1);assert.match(await(await c.request('/r/'+p.id+'/')).text(),/Payment Reminder/);
+ }finally{l.db.close();}
+});
+test('legacy Worker is detected before report files upload and payment sync stays visibly pending',async()=>{
+ const c=await cloud(),real=c.fetchImpl;let legacy=false;c.fetchImpl=async(url,options)=>legacy&&url.endsWith('/connection')?Response.json({service:'HomeKanban',protocol:'1',storage:'connected'}):real(url,options);
+ const l=local(c);try{connect(l.hosting);await l.hosting.publish('report-one',1);legacy=true;l.disk.state.reports[0].paymentStatus='paid';
+  await assert.rejects(l.hosting.syncPayment('report-one',1),/Update your Cloudflare Worker/);assert.equal(l.hosting.localState().publications[0].paymentSync,'pending');
+  l.disk.state.reports.push(report('new-report'));const before=c.bucket.objects.size;
+  await assert.rejects(l.hosting.publish('new-report',1),/Update your Cloudflare Worker/);assert.equal(c.bucket.objects.size,before);
+ }finally{l.db.close();}
+});
 test('hosting endpoint rejects redirects, account credentials, local addresses and URL paths',()=>{
  assert.equal(endpoint(ADDRESS+'/'),ADDRESS);
  for(const value of ['http://x.example.workers.dev','https://127.0.0.1','https://evil.invalid','https://user:key@x.example.workers.dev','https://x.example.workers.dev:123','https://x.example.workers.dev/r/private','https://x.example.workers.dev?x=1','https://x.example.workers.dev#secret'])assert.throws(()=>endpoint(value));
@@ -144,7 +201,7 @@ test('lost commit response is recorded as uncertain and reconciles to the actual
  }finally{l.db.close();}
 });
 test('failed initial upload remains recoverable even when remote status is missing; termination creates a tombstone',async()=>{
- const c=await cloud(),real=c.fetchImpl;let fail=true;c.fetchImpl=async(url,options)=>{if(fail)throw Error('offline');return real(url,options);};
+ const c=await cloud(),real=c.fetchImpl;let fail=true;c.fetchImpl=async(url,options)=>{if(fail&&!url.endsWith('/connection'))throw Error('offline');return real(url,options);};
  const l=local(c);try{
   connect(l.hosting);await assert.rejects(l.hosting.publish('report-one',1));const p=l.hosting.localState().publications[0];
   fail=false;assert.equal((await l.hosting.check(p.id)).status,'uncertain');
@@ -175,4 +232,36 @@ test('hosting API keeps credentials out of normal settings, reports and backups,
   assert.equal(c.calls.length,0);const check=await fetch(url+'/api/hosting/connection',{method:'POST',headers,body:'{}'});assert.equal(check.status,200);
   const source=await fetch(url+'/api/hosting/worker',{headers});assert.equal(source.status,200);assert.match(await source.text(),/HOMEKANBAN_PUBLISH_KEY/);
  }finally{await app.close();fs.rmSync(dir,{recursive:true,force:true});}
+});
+
+test('payment survives local save, backup restore and restart; the HTTP route requires authentication and current revision',async()=>{
+ const c=await cloud(),dir=fs.mkdtempSync(path.join(os.tmpdir(),'homekanban-payment-http-'));
+ let app=createApp({dataDir:dir,port:0,hostingFetch:c.fetchImpl}),url=await app.start();
+ try{
+  const token=(await(await fetch(url)).text()).match(/name="solo-token" content="([a-f0-9]+)"/)[1],headers={'X-Solo-Token':token,'Content-Type':'application/json'};
+  const state=seed();state.reports=[{...report(),paymentStatus:'paid'}];
+  const api=async(route,method='GET',body)=>fetch(url+route,{method,headers,body:body?JSON.stringify(body):undefined});
+  let current=await(await api('/api/state')).json();
+  assert.equal((await api('/api/state','PUT',{state,revision:current.revision})).status,200);
+  const backup=await(await api('/api/backup')).json();assert.equal(backup.state.reports[0].paymentStatus,'paid');
+  const route='/api/hosting/reports/report-one/payment';
+  assert.equal((await fetch(url+route,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'})).status,401);
+  assert.equal((await fetch(url+route,{method:'POST',headers:{...headers,Origin:'https://evil.invalid'},body:'{}'})).status,403);
+  assert.equal((await api(route,'POST',{revision:-1})).status,409);
+  assert.equal((await api(route,'POST',{revision:backup.revision})).status,200);assert.equal(c.calls.length,0);
+  state.reports[0].paymentStatus='unpaid';assert.equal((await api('/api/state','PUT',{state,revision:backup.revision})).status,200);
+  current=await(await api('/api/state')).json();assert.equal((await api('/api/restore','POST',{backup,revision:current.revision})).status,200);
+  await app.close();app=createApp({dataDir:dir,port:0,hostingFetch:c.fetchImpl});url=await app.start();
+  assert.equal(app.read().state.reports[0].paymentStatus,'paid');assert.equal(c.calls.length,0);
+ }finally{await app.close();fs.rmSync(dir,{recursive:true,force:true});}
+});
+
+test('a payment change in another window during cloud sync is left pending, never falsely confirmed',async()=>{
+ const c=await cloud(),real=c.fetchImpl;let l,change=false;
+ c.fetchImpl=async(url,options)=>{const response=await real(url,options);if(change&&url.endsWith('/payment')){l.disk.state.reports[0].paymentStatus='unpaid';l.disk.revision++;}return response;};
+ l=local(c);try{
+  connect(l.hosting);const p=await l.hosting.publish('report-one',1);l.disk.state.reports[0].paymentStatus='paid';l.disk.revision=2;change=true;
+  await assert.rejects(l.hosting.syncPayment('report-one',2),/changed or was not confirmed/);
+  const saved=l.hosting.localState().publications[0];assert.equal(saved.id,p.id);assert.equal(saved.paymentStatus,'paid');assert.equal(saved.paymentSync,'pending');
+ }finally{l.db.close();}
 });

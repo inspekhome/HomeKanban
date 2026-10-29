@@ -1,20 +1,22 @@
 # HomeKanban — Windows home inspection reports
 
-Current published release: **0.18.66**. An English-language, offline-first workspace for a solo home inspector. This is a trial release, not a certified inspection or regulatory-compliance product.
+Current published release: **0.18.69**. An English-language, offline-first workspace for a solo home inspector. This is a trial release, not a certified inspection or regulatory-compliance product.
 
 **Free to use, including for commercial inspections.** HomeKanban's code and documentation are [MIT licensed](LICENSE). No HomeKanban subscription or account is required. Optional AI providers and web hosts have separate terms and may charge fees. See [third-party notices](THIRD_PARTY_NOTICES.md).
 
-**[Download HomeKanban v0.18.66 for Windows](https://github.com/inspekhome/HomeKanban/releases/download/v0.18.66/HomeKanban-Windows-v0.18.66.zip)** · [Release notes and checksum](https://github.com/inspekhome/HomeKanban/releases/tag/v0.18.66) · [User Guide](docs/USER-GUIDE.md)
+**[Download HomeKanban v0.18.69 for Windows](https://github.com/inspekhome/HomeKanban/releases/download/v0.18.69/HomeKanban-Windows-v0.18.69.zip)** · [Release notes and checksum](https://github.com/inspekhome/HomeKanban/releases/tag/v0.18.69) · [User Guide](docs/USER-GUIDE.md)
 
 Download the Windows ZIP above and extract the entire folder before opening `HomeKanban.exe`. The GitHub **Code > Download ZIP** button downloads source code, not the ready-to-run application.
 
-The download includes **System Template**, based on the creator's Maryland template: 18 sections, 65 components and 205 color-coded choices, together with its Scope & limitations and report notice. Material / description choices are green, Issue / concern choices amber, and Others gray. Select **Duplicate** to make your own working template and review its wording for your own practice and location. New workspaces also include 15 reusable Fast notes with the creator's original order and highlighting. Existing workspaces and report snapshots are not overwritten.
+The download includes **System Template**, based on the creator's Maryland template: 18 sections, 65 components and 205 color-coded choices, together with its Scope & limitations and report notice. Material / description choices are green, Issue / concern choices amber, and Others gray. Select **Duplicate** to make your own working template and review its wording for your own practice and location. New workspaces also include 11 reusable Fast notes with the creator's original order and highlighting. Existing workspaces and report snapshots are not overwritten.
 
 Recent improvements include status boxes on the right in the editor and all report exports, all-choice exports, section and choice reordering, compact controls, Add note aligned with Limitation, direct save-and-exit, persistent workspace recovery, and one-click AI Revise using editable AI Instructions. AI requires your own configured provider; live-provider acceptance is still pending.
 
 This release retains the four save/recovery fixes introduced in **0.18.42**: typing during a Fast note save stays in the editor, cancelled failed edits do not leak into later saves, retrying report creation does not create duplicates, and saved workspaces up to 100 MiB can be restored from their backups. It also includes Dark Mode, a locally bundled Quill editor with undo/redo, a clickable profile avatar, compact Note editing, and multilingual Voice Input through a separately configured OpenAI API key. Voice Input and AI Revise require internet access and provider fees may apply. Optional Cloudflare publishing and termination are now connected; each inspector configures and manages their own account.
 
-Version **0.18.66** adds locally bundled Oswald typography for offline UI and report exports, the Sage theme, compact checklist and Property details spacing, and a direct Summary shortcut. Scope remains editable in templates and read-only in reports. The established rounded buttons and layout are retained.
+Version **0.18.69** removes four Fast note samples with substantial overlap with the previously imported narrative collection. New workspaces include 11 examples; existing personal libraries are preserved. It also includes the recent Paid / Unpaid controls, hosted payment reminders, and the Copy link icon.
+
+The release retains locally bundled Oswald typography for offline UI and report exports, the Sage theme, compact checklist and Property details spacing, and a direct Summary shortcut. Scope remains editable in templates and read-only in reports. The established rounded buttons and layout are retained.
 
 ## Run
 
@@ -28,7 +30,7 @@ Windows x64 is the intended target. A clean-machine Windows 10/11 installation m
 
 - **User info:** one inspector/business profile. Each new report captures a profile snapshot.
 - **Templates:** scope and limitations, report notice, sections, components, and material choices. Sections support dragging and up/down arrows. Existing reports retain their snapshots.
-- **Fast notes:** one shared library for all templates and reports, up to 50 entries and 350 words per entry. Add, edit, format, and reorder reusable wording. Newly inserted wording enters report notes as plain text. New workspaces start with 15 owner-authorized examples that can be edited or deleted. Only these selected examples are included, not the imported narrative document collection.
+- **Fast notes:** one shared library for all templates and reports, up to 50 entries and 350 words per entry. Add, edit, format, and reorder reusable wording. Newly inserted wording enters report notes as plain text. New workspaces start with 11 owner-authorized examples that can be edited or deleted. Only these selected examples are included, not the imported narrative document collection.
 - **Reports:** one editor containing Property details, text Summary, Summary and pictures, and System Checks. Use I / NI / NP / D. Clicking a selected section status again clears that section. NI requires an actual reason before finalization.
 - **New Note / Edit Note:** movable and resizable window; linked text, category, and up to 30 photos; rotate and annotate photos; optionally include checklist notes in both summaries. Summary-created notes always remain included.
 - **Report library:** Open, PDF Preview, Export PDF, Export to Web Hosting, Copy, Delete. Copy retains the checklist structure, scope, and notice, while clearing property details, results, findings, and photos.
@@ -40,7 +42,7 @@ The Summary shortcut jumps to the text summary. Mark finalized identifies missin
 
 PDF and HTML share the same report renderer and linked finding data. PDF export waits for a complete PDF and tries another installed supported browser if rendering fails. PDF Preview also supports browser Print → Save as PDF.
 
-Version **0.18.59** supplies the creator's Maryland template and 15 Fast notes as defaults for new workspaces. Existing customized templates, notes and reports remain unchanged on upgrade. It retains the previous typography improvements, matching report-editor and template checklist choices to PDF Preview: 11 px choice text and 13 px inspection-status boxes. Additional notes / materials and Limitation keep their existing widths with compact text and heights. New/Edit Note uses 18 px titles, 16 px Fast notes, Photos and narrative headings, and 12 px narrative input and helper text. Matching header/footer buttons and the draft-status message beside Cancel keep the dialog compact.
+The current public defaults contain the creator's Maryland-based template and 11 reviewed Fast notes. Existing customized templates, notes and reports remain unchanged on upgrade. It retains the previous typography improvements, matching report-editor and template checklist choices to PDF Preview: 11 px choice text and 13 px inspection-status boxes. Additional notes / materials and Limitation keep their existing widths with compact text and heights. New/Edit Note uses 18 px titles, 16 px Fast notes, Photos and narrative headings, and 12 px narrative input and helper text. Matching header/footer buttons and the draft-status message beside Cancel keep the dialog compact.
 
 In Templates, Standard of Practice, Scope & limitations supports Bold, Italic, Underline and 10/12/14 pt sizes. Reports display their saved scope as read-only. Formatting carries through templates, report copies, PDF Preview, PDF and Web Report.
 
@@ -68,8 +70,8 @@ With Node.js 24.19.0 on PATH, from the repository root:
 New-Item -ItemType Directory -Force work | Out-Null
 npm ci --prefix scripts/editor --ignore-scripts
 node --test tests/*.test.js
-powershell -NoProfile -File scripts/build.ps1 -Version 0.18.66
-node scripts/smoke-package.js dist/HomeKanban-Windows-v0.18.66
+powershell -NoProfile -File scripts/build.ps1 -Version 0.18.69
+node scripts/smoke-package.js dist/HomeKanban-Windows-v0.18.69
 ```
 
 Tests use isolated workspaces under `work`; a few tests require local loopback access, Windows DPAPI, and Edge/Chrome. npm is only needed for editor development and tests; Windows users do not need it. The packaged runtime can be used if Node is not on PATH. Set `HOMEKANBAN_NODE` for a different packaging runtime.

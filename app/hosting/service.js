@@ -61,14 +61,42 @@ function createHosting({db,protect,read,renderHTML,fetchImpl=fetch}){
     return lock(async()=>{
       const value=await remote(settings(),'/api/v1/connection');
       if(value.service!=='HomeKanban'||value.protocol!=='1'||value.storage!=='connected')fail('The Worker code or R2 binding is not ready.',502);
-      return {ok:true,message:'Connected. Your private R2 storage is ready.'};
+      return {ok:true,message:'Connected. Your private R2 storage is ready.'+(!(Array.isArray(value.capabilities)&&value.capabilities.includes('payment-status-v1'))?' Update your Cloudflare Worker code to enable payment reminders.':'')};
     });
   }
   function updateRemote(record,value){
     if(value.status==='published')record.status='published';
     else if(value.status==='revoked'){record.status='unpublished';record.cleaned=record.cleaned===true;}
     else record.status='uncertain';
+    if(['paid','unpaid'].includes(value.paymentStatus))record.paymentStatus=value.paymentStatus;
+    else delete record.paymentStatus;
+    if(record.status==='published'){
+      const report=read().state.reports.find(r=>r.id===record.reportId);
+      record.paymentSync=report&&record.paymentStatus===(report.paymentStatus||'unpaid')?'synced':'pending';
+    }
     record.checked=new Date().toISOString();put(record);return visible(record);
+  }
+  async function syncPayment(reportId,revision){
+    return lock(async()=>{
+      const snapshot=read();
+      if(snapshot.revision!==revision)fail('The report changed in another window. Refresh before updating payment status.',409);
+      const report=snapshot.state.reports.find(r=>r.id===reportId);if(!report)fail('Report not found.',404);
+      const paymentStatus=report.paymentStatus||'unpaid',cfg=settings();
+      const publications=records().filter(p=>p.reportId===reportId&&p.status!=='unpublished');
+      for(const record of publications){
+        record.paymentSync='pending';put(record);
+        if(record.endpoint!==cfg.endpoint)fail('Reconnect the Worker used for this publication.');
+        const capabilities=await remote(cfg,'/api/v1/connection');
+        if(!Array.isArray(capabilities.capabilities)||!capabilities.capabilities.includes('payment-status-v1'))fail('Update your Cloudflare Worker code using Copy Worker code in AI & settings, then retry the payment update.',409);
+        const base='/api/v1/publications/'+record.id;
+        const result=await remote(cfg,base+'/payment','PUT',{paymentStatus});
+        if(result.status!=='published'||result.paymentStatus!==paymentStatus)fail('Online payment status has not been confirmed. Retry the payment update.',502);
+        const confirmed=await remote(cfg,base);
+        updateRemote(record,confirmed);
+        if(confirmed.status!=='published'||confirmed.paymentStatus!==paymentStatus||record.paymentSync!=='synced')fail('Online payment status changed or was not confirmed. Check status and retry the payment update.',409);
+      }
+      return {synced:publications.length,paymentStatus};
+    });
   }
   async function check(id){
     return lock(async()=>{
@@ -102,8 +130,10 @@ function createHosting({db,protect,read,renderHTML,fetchImpl=fetch}){
       const report=snapshot.state.reports.find(report=>report.id===reportId);if(!report)fail('Report not found.',404);
       const previous=records().find(record=>record.reportId===reportId&&record.status!=='unpublished');
       if(previous)fail('This report already has a publication or an uncertain attempt. Check its status or terminate it first.',409);
+      const capability=await remote(cfg,'/api/v1/connection');
+      if(!Array.isArray(capability.capabilities)||!capability.capabilities.includes('payment-status-v1'))fail('Update your Cloudflare Worker code using Copy Worker code in AI & settings before publishing payment reminders.',409);
       const bundle=packageReport(report,renderHTML),record={id:randomBytes(32).toString('hex'),reportId,endpoint:cfg.endpoint,label:report.address||'Untitled report',snapshot:bundle.snapshot,status:'publishing',created:new Date().toISOString(),cleaned:false};
-      put(record); // Persist the intent before any external request, including across restart.
+      put(record); // Persist the intent before the first external write, including across restart.
       try {
         const base='/api/v1/publications/'+record.id;
         const ready=await remote(cfg,base,'POST',bundle.manifest);
@@ -116,7 +146,7 @@ function createHosting({db,protect,read,renderHTML,fetchImpl=fetch}){
         if(committed.status!=='published')fail('Publication has not been confirmed.',502);
         const confirmed=await remote(cfg,base);
         if(confirmed.status!=='published')fail('Publication has not been confirmed.',502);
-        record.status='published';record.checked=new Date().toISOString();put(record);return visible(record);
+        return updateRemote(record,confirmed);
       } catch(error){record.status='uncertain';put(record);throw error;}
     });
   }
@@ -147,13 +177,17 @@ function createHosting({db,protect,read,renderHTML,fetchImpl=fetch}){
       let match=route.match(/^\/api\/hosting\/reports\/([a-zA-Z0-9-]+)\/publish$/);
       if(match&&method==='POST')send(200,await publish(match[1],body.revision));
       else {
-        match=route.match(/^\/api\/hosting\/publications\/([a-f0-9]{64})\/(check|terminate)$/);
-        if(!match||method!=='POST')fail('Hosting endpoint not found.',404);
-        send(200,await (match[2]==='check'?check(match[1]):terminate(match[1])));
+        match=route.match(/^\/api\/hosting\/reports\/([a-zA-Z0-9-]+)\/payment$/);
+        if(match&&method==='POST')send(200,await syncPayment(match[1],body.revision));
+        else {
+          match=route.match(/^\/api\/hosting\/publications\/([a-f0-9]{64})\/(check|terminate)$/);
+          if(!match||method!=='POST')fail('Hosting endpoint not found.',404);
+          send(200,await (match[2]==='check'?check(match[1]):terminate(match[1])));
+        }
       }
     }
     return true;
   }
-  return {handle,localState,saveSettings,publish,terminate,check,connection,recover,get busy(){return busy;}};
+  return {handle,localState,saveSettings,publish,terminate,check,connection,recover,syncPayment,get busy(){return busy;}};
 }
 module.exports={createHosting,endpoint};

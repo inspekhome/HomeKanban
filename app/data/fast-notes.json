@@ -32,57 +32,6 @@
     "background": "pink"
   },
   {
-    "title": "asphalt composition shingles covering the roof of this home had severe deteriora",
-    "category": "Notes",
-    "text": "asphalt composition shingles covering the roof of this home had severe deterioration visible throughout the roof and appeared to be at or near the end of their long-term service life at the time of the inspection.\nYou should consult with a qualified roofing contractor before the expiration of your Inspection Objection Deadline to discuss options and costs for replacement;",
-    "textRuns": [
-      {
-        "text": "asphalt",
-        "bold": true,
-        "color": "#b42318"
-      },
-      {
-        "text": " composition "
-      },
-      {
-        "text": "shingles ",
-        "bold": true,
-        "color": "#b42318"
-      },
-      {
-        "text": "covering the roof of this home had severe deterioration visible throughout the roof and appeared to be at or near the end of their long-term service life at the time of the inspection.\nYou should consult with a qualified roofing contractor before the expiration of your Inspection Objection Deadline to discuss options and costs for replacement;"
-      }
-    ],
-    "background": "green"
-  },
-  {
-    "title": "the shingles were old, appeared to be well past the mid point of their long-term",
-    "category": "Notes",
-    "text": "the shingles were old, appeared to be well past the mid point of their long-term service life and may need to be replaced soon. Budget for replacement is recommended;",
-    "textRuns": [
-      {
-        "text": "the "
-      },
-      {
-        "text": "shingles",
-        "bold": true,
-        "color": "#b42318"
-      },
-      {
-        "text": " were old, appeared to be well past the "
-      },
-      {
-        "text": "mid point",
-        "bold": true,
-        "color": "#b42318"
-      },
-      {
-        "text": " of their long-term service life and may need to be replaced soon. Budget for replacement is recommended;"
-      }
-    ],
-    "background": "yellow"
-  },
-  {
     "title": "the underground storm drainage system or storm drain system is beyond the scope ",
     "category": "Notes",
     "text": "the underground storm drainage system or storm drain system is beyond the scope of this home inspection. Check with owner or evaluate by a landscape professional/contractor is needed; (The underground drainage system is important and needs regular check and service. A clogged under ground drain - especially from downspout extension pipe may result in wet base.)",
@@ -100,60 +49,6 @@
       }
     ],
     "background": "white"
-  },
-  {
-    "title": "the HVAC was old and appeared to be at the end of its useful life. The Inspector",
-    "category": "Notes",
-    "text": "the HVAC was old and appeared to be at the end of its useful life. The Inspector recommends that before the expiration of your Inspection Objection Deadline you consult with a qualified HVAC contractor to discuss options and costs for replacement;",
-    "textRuns": [
-      {
-        "text": "the "
-      },
-      {
-        "text": "HVAC",
-        "bold": true,
-        "color": "#b42318"
-      },
-      {
-        "text": " was "
-      },
-      {
-        "text": "old",
-        "bold": true,
-        "color": "#b42318"
-      },
-      {
-        "text": " and appeared to be at the end of its useful life. The Inspector recommends that before the expiration of your Inspection Objection Deadline you consult with a qualified HVAC contractor to discuss options and costs for replacement;"
-      }
-    ],
-    "background": "pink"
-  },
-  {
-    "title": "the hot water heater was old and appeared to be at the end of its useful life. T",
-    "category": "Notes",
-    "text": "the hot water heater was old and appeared to be at the end of its useful life. The Inspector recommends that before the expiration of your Inspection Objection Deadline you consult with a qualified contractor to discuss options and costs for replacement;",
-    "textRuns": [
-      {
-        "text": "the "
-      },
-      {
-        "text": "hot water heater",
-        "bold": true,
-        "color": "#b42318"
-      },
-      {
-        "text": " was "
-      },
-      {
-        "text": "old",
-        "bold": true,
-        "color": "#b42318"
-      },
-      {
-        "text": " and appeared to be at the end of its useful life. The Inspector recommends that before the expiration of your Inspection Objection Deadline you consult with a qualified contractor to discuss options and costs for replacement;"
-      }
-    ],
-    "background": "blue"
   },
   {
     "title": "hairline cracks are observed on the concrete foundation wall around this house. ",

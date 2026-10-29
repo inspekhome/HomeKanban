@@ -3,7 +3,8 @@
  let data={configured:false,enabled:false,endpoint:'',publications:[]},ready=false,options;
  const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const publication=id=>data.publications.filter(p=>p.reportId===id&&p.status!=='unpublished').sort((a,b)=>b.created.localeCompare(a.created))[0];
- const action=(name,label,id='')=>'<button type="button" class="small quiet" data-hosting-action="'+name+'" data-publication="'+escape(id)+'">'+label+'</button>';
+ const copyIcon='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h3"/></svg>';
+ const action=(name,label,id='')=>'<button type="button" class="small quiet'+(name==='copy-link'?' hosting-copy-link':'')+'" data-hosting-action="'+name+'" data-publication="'+escape(id)+'">'+(name==='copy-link'?'<span>'+label+'</span>'+copyIcon:label)+'</button>';
  const text=status=>({published:'Published',unpublished:'Terminated',publishing:'Publication not yet verified',terminating:'Termination not yet verified',uncertain:'Cloud status unknown'}[status]||'Cloud status unknown');
  async function load(){
    if(!options)return;
@@ -15,7 +16,8 @@
  }
  function info(reportId){
    const p=publication(reportId);if(!p)return '';
-   return '<div class="hosting-report-info"><span class="'+(p.status==='published'?'':'hosting-warning')+'">'+text(p.status)+'</span> '+action('check','Check status',p.id)+(p.status==='published'&&p.url?action('copy-link','Copy link',p.id)+'<a href="'+escape(p.url)+'" target="_blank" rel="noreferrer noopener">Open web report ↗</a>':'')+'</div>';
+   const report=options?.report?.(reportId),pending=report&&(p.paymentSync==='pending'||p.paymentStatus!==(report.paymentStatus||'unpaid'));
+   return '<div class="hosting-report-info"><span class="'+(p.status==='published'?'':'hosting-warning')+'">'+text(p.status)+'</span> '+action('check','Check status',p.id)+(p.status==='published'&&p.url?action('copy-link','Copy link',p.id)+'<a href="'+escape(p.url)+'" target="_blank" rel="noreferrer noopener">Open web report ↗</a>':'')+(pending?'<span class="hosting-warning">Payment reminder not synced.</span>'+action('retry-payment','Retry payment update',p.id):'')+'</div>';
  }
  function history(){
    const rows=data.publications.filter(p=>p.status!=='unpublished'||p.cleaned===false);
@@ -34,11 +36,11 @@
    '<div class="actions">'+action('generate-key','Generate key')+action('copy-key','Copy entered key')+action('copy-worker','Copy Worker code')+'</div>'+
    '<p class="help">One-time setup: copy the Worker code into Cloudflare, keep the REPORTS R2 binding, and add the generated key as a Secret named HOMEKANBAN_PUBLISH_KEY. Save the same key here. This is a dedicated publishing key, not your Cloudflare account API token.</p>'+
    '<label class="hosting-enable"><input id="hosting-enabled" type="checkbox" '+(data.enabled?'checked':'')+'> Allow report uploads</label>'+
-   '<p class="help">Turning uploads off does not remove reports already online. Termination and connection checks remain available. Keys are encrypted for your Windows account and excluded from report backups.</p>'+
+   '<p class="help">Turning uploads off does not remove reports already online. Payment updates, termination and connection checks remain available. Keys are encrypted for your Windows account and excluded from report backups.</p>'+
    '<div class="actions">'+action('save','Save hosting settings')+action('test','Test connection')+action('remove-key','Remove saved key')+'</div>'+
    '<p id="hosting-message" class="help" role="status">'+(ready?(data.hasKey?'Publishing key is saved.':'Save your connection before publishing.'):'Save your work and install the hosting backend update to enable this section.')+'</p>'+
    '<details class="hosting-details"><summary>Manage web publications & recovery</summary><p class="help">These controls also cover reports removed locally or restored from an older backup. Cloud report links are independent of local report backups. Reconnect to the same Worker and key, then use Recover web links after changing computers.</p>'+
-   action('recover','Recover web links')+'<div id="hosting-history">'+history()+'</div><p class="help">Terminating blocks new requests; it cannot recall screenshots or downloaded copies. Local edits do not automatically update a published report. Terminate, then publish again to issue a new link.</p></details></div>';
+   action('recover','Recover web links')+'<div id="hosting-history">'+history()+'</div><p class="help">Terminating blocks new requests; it cannot recall screenshots or downloaded copies. Paid / Unpaid updates the online payment reminder at the same link. Other local report edits require termination and republication with a new link.</p></details></div>';
  }
  function refreshHistory(){
    const box=document.querySelector('#hosting-history');if(box)box.innerHTML=history();
@@ -61,6 +63,13 @@
      options.toast(result.cleaned?'Web report terminated.':'Access terminated. File cleanup is pending; retry cleanup in AI & settings.');
      return {status:result.status};
    }finally{await load();refreshHistory();}
+ }
+ async function syncPayment(reportId){
+   await load();
+   if(!ready)throw Error('The hosting backend is unavailable. Check status after reconnecting.');
+   if(!publication(reportId))return {synced:0};
+   try{return await options.api('/api/hosting/reports/'+encodeURIComponent(reportId)+'/payment','POST',{revision:options.revision()});}
+   finally{await load();refreshHistory();}
  }
  async function copy(value){
    if(!value)throw Error('There is nothing to copy.');
@@ -94,8 +103,13 @@
          message('Checking publication status…');
          const result=await options.api('/api/hosting/publications/'+id+'/check','POST',{});
          const verified=result?.status==='published'||result?.status==='unpublished';
-         const feedback=result?.status==='published'?'Report is published.':result?.status==='unpublished'?'Web hosting is terminated.'+(result.cleaned===false?' File cleanup is pending; use Retry cleanup in AI & settings.':''):'Unable to verify status. The publication may be incomplete or missing. Check again, or terminate this publication before publishing again.';
-         await load();refreshHistory();message(feedback);options.toast(feedback,!verified);
+         const pending=result?.status==='published'&&result.paymentSync==='pending';
+         const feedback=result?.status==='published'?'Report is published.'+(pending?' Payment reminder not synced. Use Retry payment update.':''):result?.status==='unpublished'?'Web hosting is terminated.'+(result.cleaned===false?' File cleanup is pending; use Retry cleanup in AI & settings.':''):'Unable to verify status. The publication may be incomplete or missing. Check again, or terminate this publication before publishing again.';
+         await load();refreshHistory();message(feedback);options.toast(feedback,!verified||pending);
+       }
+       if(name==='retry-payment'){
+         const p=data.publications.find(p=>p.id===id);if(!p?.reportId)throw Error('The local report is unavailable.');
+         await options.saveNow();await syncPayment(p.reportId);options.toast('Online payment reminder updated.');
        }
        if(name==='terminate'){const result=await options.api('/api/hosting/publications/'+id+'/terminate','POST',{});await load();refreshHistory();options.toast(result.cleaned?'Web report terminated.':'Access terminated. File cleanup is pending; use Retry cleanup.');}
        if(name==='copy-link'){const p=data.publications.find(p=>p.id===id&&p.status==='published');await copy(p?.url);options.toast('Report link copied.');}
@@ -108,5 +122,5 @@
      finally{if(button.isConnected)button.disabled=false;}
    });
  }
- return Object.freeze({bind,load,button,info,settings,request});
+ return Object.freeze({bind,load,button,info,settings,request,syncPayment});
 });

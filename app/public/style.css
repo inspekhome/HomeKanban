@@ -547,6 +547,8 @@ html[data-theme]:not([data-theme="blue-gray"]) .report-tool::after{background:va
 .web-hosting-slider:disabled{opacity:.75;cursor:wait}.web-hosting-slider:disabled .web-hosting-thumb{cursor:wait}
 .hosting-report-info{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin-top:8px;max-width:300px;font-size:11px;color:var(--muted)}
 .hosting-report-info button{font-size:11px;min-height:26px;padding:3px 7px}.hosting-warning{color:#ad6630}
+html:root button.quiet.hosting-copy-link{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;background:transparent;border:0;box-shadow:none}
+.hosting-copy-link svg{display:block;flex:none;pointer-events:none}
 .hosting-enable{display:flex;align-items:center;gap:10px;margin-top:18px}.hosting-enable input{width:18px;height:18px}
 .hosting-details{margin-top:22px}.hosting-details summary{cursor:pointer;font-weight:600}
 .hosting-history-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
@@ -864,3 +866,11 @@ main:has(.template-layout) :is(input[data-template-field="name"],input[data-scop
 .report-editor #system-checks .checklist-card{--component-label-size:12px}
 .report-editor #system-checks .checklist-heading>b{font-size:var(--component-label-size);padding-left:8px}
 .report-editor #system-checks .checklist-card>.section-title>h3{font-size:calc(var(--component-label-size) + 2px)}
+
+/* Payment controls share the library button size and retain the rounded UI. */
+.library-actions button.payment-status{min-width:61px;border:1px solid;font-weight:600}
+.library-actions button.payment-status.is-unpaid{background:#fff2c5;border-color:#dfca82;color:#725712}
+.library-actions button.payment-status.is-paid{background:#dcefe1;border-color:#a8ceb2;color:#285d39}
+.library-actions button.payment-status:hover{filter:brightness(.97)}
+html[data-theme="black-gray"] .library-actions button.payment-status.is-unpaid{background:#4e4325;border-color:#8c7842;color:#f1dc9b}
+html[data-theme="black-gray"] .library-actions button.payment-status.is-paid{background:#284737;border-color:#4a765c;color:#bde3ca}

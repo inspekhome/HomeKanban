@@ -34,7 +34,7 @@ async function main(){
   assert.equal((await fetch(url+'/wording-editor.js')).status,200);
   assert.equal((await fetch(url+'/api/narratives',{headers:{'X-Solo-Token':token}})).status,404);
   assert.ok(!fs.existsSync(path.join(packageRoot,'app/data/narratives.json')));
-  assert.equal(data.state.noteLibrary.length,15);
+  assert.equal(data.state.noteLibrary.length,11);
   assert.deepEqual(data.state.noteLibrary.map(({id,...note})=>note),require(path.join(packageRoot,'app/data/fast-notes.json')));
   assert.ok(!script.includes("rating==='NT'"));
   assert.ok(fs.statSync(path.join(packageRoot,'HomeKanban.exe')).size>0);

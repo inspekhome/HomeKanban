@@ -20,9 +20,9 @@ test('a fresh workspace has only the approved defaults, a blank profile and no i
  const noteKeys=new Set(['title','category','text','textRuns','background','system','topic']);
  for(const note of fastNotes)for(const key of Object.keys(note))assert.ok(noteKeys.has(key),'Unexpected field in public Fast notes: '+key);
 });
-test('the 15 approved Fast notes retain their exact order, wording and formatting within the library limits',()=>{
- assert.equal(createHash('sha256').update(JSON.stringify(fastNotes)).digest('hex'),'07318db705c170bd99cd85b8835ccd9d884fe837785b2c906dcd27c439f23388');
- const s=seed();assert.equal(s.noteLibrary.length,15);assert.doesNotThrow(()=>Wording.validateFastNotes(s.noteLibrary));
+test('the 11 reviewed public Fast notes retain their exact order, wording and formatting within the library limits',()=>{
+ assert.equal(createHash('sha256').update(JSON.stringify(fastNotes)).digest('hex'),'e2c63c5997f3d24d08ede1b1b248ee7393dc83ce20561a79820b350a004f863e');
+ const s=seed();assert.equal(s.noteLibrary.length,11);assert.doesNotThrow(()=>Wording.validateFastNotes(s.noteLibrary));
  for(const note of s.noteLibrary){assert.doesNotThrow(()=>Wording.validate(note));assert.ok(Wording.wordCount(note.text)<=350);assert.ok(note.textRuns.some(r=>r.bold&&r.color==='#b42318'));}
  assert.equal(s.noteLibrary[0].background,'blue');assert.equal(s.noteLibrary[1].background,'pink');
 });
@@ -30,7 +30,7 @@ test('editing seeded defaults cannot change the maintained files or another work
  const a=seed(),b=seed(),before=JSON.stringify([baseline,fastNotes]);a.templates[0].sections[0].items[1].options.push('Custom private option');a.templates[0].sections[0].items[1].choiceTypes.Concrete='normal';
  a.noteLibrary[0].text='Changed personal note';a.noteLibrary[0].textRuns[0].color='#245c99';a.noteLibrary.reverse();
  const ids=s=>[...s.templates.flatMap(t=>[t.id,...t.sections.flatMap(section=>[section.id,...section.items.map(i=>i.id)])]),...s.noteLibrary.map(n=>n.id)];
- assert.equal(new Set(ids(a)).size,99);assert.ok(ids(b).every(id=>!ids(a).includes(id)));
+ assert.equal(new Set(ids(a)).size,95);assert.ok(ids(b).every(id=>!ids(a).includes(id)));
  assert.equal(JSON.stringify([baseline,fastNotes]),before);assert.ok(!b.templates[0].sections[0].items[1].options.includes('Custom private option'));assert.equal(b.templates[0].sections[0].items[1].choiceTypes.Concrete,'description');assert.deepEqual(b.noteLibrary.map(withoutId),fastNotes);
 });
 for(const emptyLibrary of [false,true])test('reopening an existing workspace preserves custom templates and '+(emptyLibrary?'an intentionally empty library':'edited Fast notes and report snapshots'),async()=>{

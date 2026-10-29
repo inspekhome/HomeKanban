@@ -119,7 +119,7 @@ Open **Fast notes**, between Templates and User info. This is one shared library
 
 Choose **Add Fast Note**, enter your reusable wording, and save it. Use the edit and delete controls to maintain entries. You can format library text, choose a background color, and reorder entries by dragging or with the arrows. Put frequent entries near the top to find them quickly in the note editor.
 
-The library allows **50 entries**, with **350 words maximum per entry**. A new workspace starts with 15 owner-authorized Fast notes, preserving the original order, emphasis and background colors. These are editable examples: check each statement against the actual inspection before use. You can change or delete them, and add wording you wrote yourself or have permission to use. Upgrading an existing workspace does not replace its library or restore notes you deleted.
+The library allows **50 entries**, with **350 words maximum per entry**. A new workspace starts with 11 owner-authorized Fast notes, preserving the original order, emphasis and background colors. These are editable examples: check each statement against the actual inspection before use. You can change or delete them, and add wording you wrote yourself or have permission to use. Upgrading an existing workspace does not replace its library or restore notes you deleted.
 
 ## 9. Save, check and finalize
 
@@ -141,14 +141,16 @@ Return to **Reports**. The library's actions are ordered as follows:
 | PDF Preview | View the printable report; the browser Print dialog can save a PDF. |
 | Export PDF | Generate and download the report using an installed supported browser. |
 | Export to Web Hosting | Publish or terminate one report using your configured Cloudflare Worker and private R2 storage. |
-| Copy | Start a new report with the same checklist structure, scope and notice; property details, findings, photos and recorded results are cleared. |
+| Paid / Unpaid | Record payment manually. Yellow means Unpaid; green means Paid. Click to switch. Existing and new reports default to Unpaid. A published report's payment reminder updates at the same link. |
 | Delete | Remove the report after confirmation. |
 
 PDF Preview, exported PDFs and exported web reports use the same selected status colors as the editor: **I green, NI orange-yellow, NP gray, D red**, with white checkmarks. Unselected report boxes remain unfilled.
 
 Review the exported PDF before sending it. If you change the report, export a new file; an older download does not update automatically.
 
-**Export to Web Hosting** is a soft glass slide toggle in muted green. Drag its round handle all the way to the right to publish. After a confirmed publication, the toggle turns a muted rose color and reads **Terminate Web Hosting**; drag its handle left to take the report offline. There is no second confirmation dialog. An incomplete drag resets the handle. Keyboard users can focus the toggle and use Right/Left, Space, or Enter. Configure your own Cloudflare Worker and private R2 bucket in AI & settings first; see [Web Hosting Setup](WEB-HOSTING.md). After publication, use Copy link to share the report. If an operation is interrupted, use Check status or Terminate; HomeKanban never simulates success. Report Library actions use two rows: Open, PDF Preview, and Export PDF above Export to Web Hosting, Copy, and Delete. The compact toggle has a single-line label. There is no separate Download HTML button. A public hosting link is not automatically password-protected. Do not put client reports in the public HomeKanban source-code repository.
+**Export to Web Hosting** is a soft glass slide toggle in muted green. Drag its round handle all the way to the right to publish. After a confirmed publication, the toggle turns a muted rose color and reads **Terminate Web Hosting**; drag its handle left to take the report offline. There is no second confirmation dialog. An incomplete drag resets the handle. Keyboard users can focus the toggle and use Right/Left, Space, or Enter. Configure your own Cloudflare Worker and private R2 bucket in AI & settings first; see [Web Hosting Setup](WEB-HOSTING.md). After publication, use Copy link to share the report. If an operation is interrupted, use Check status or Terminate; HomeKanban never simulates success. Report Library actions use two rows: Open, PDF Preview, and Export PDF above Export to Web Hosting, Paid / Unpaid, and Delete. The compact toggle has a single-line label. There is no separate Download HTML button. A public hosting link is not automatically password-protected. Do not put client reports in the public HomeKanban source-code repository.
+
+**Payment status:** All new and existing reports start as **Unpaid** (yellow). Click to mark **Paid** (green) after receiving payment; click again to reverse a mistake. For a hosted report, this updates the payment reminder at the same URL without uploading the photos again. Unpaid web reports show: “Payment Reminder: Payment for this inspection is still outstanding. Please arrange payment at your convenience.” Paid reports omit the reminder. There is no payment link, payment processing, or automatic payment verification. PDF Preview and exported PDFs stay unchanged. A failed cloud update keeps the local status and displays **Payment reminder not synced** with **Retry payment update**. An internet connection is needed only when updating an existing online publication.
 
 ## 11. Optional AI writing assistance
 

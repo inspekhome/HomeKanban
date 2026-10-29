@@ -12,6 +12,6 @@ function packageReport(report,renderHTML){
   assets.set('index.html',{name:'index.html',body,sha256:digest(body),bytes:body.length});
   const files=[...assets.values()];
   if(files.length>1000||files.some(file=>file.bytes>12*1024*1024)||files.reduce((sum,file)=>sum+file.bytes,0)>100*1024*1024)throw Error('This web report exceeds the hosting limit (100 MB total, 12 MB per file, 1,000 files). Reduce its size before publishing.');
-  return {files,manifest:{files:files.map(({body,...file})=>file)},snapshot:digest(JSON.stringify(report))};
+  return {files,manifest:{files:files.map(({body,...file})=>file),paymentStatus:report.paymentStatus||'unpaid'},snapshot:digest(JSON.stringify(report))};
 }
 module.exports={packageReport,digest};

@@ -34,7 +34,7 @@ test('hosting requests are scoped to the selected report and cannot publish, sav
 });
 
 test('local HTML download remains tied to the selected report and library action order is preserved',async()=>{
- const c=client(),before=structuredClone(c.state),html=c.h.html();const markers=['data-action="open-report"','data-action="preview"','data-action="pdf"','data-web-hosting-slider','data-action="duplicate-report"','data-action="delete-report"'];let previous=-1;for(const marker of markers){const index=html.indexOf(marker);assert.ok(index>previous);previous=index;}
+ const c=client(),before=structuredClone(c.state),html=c.h.html();const markers=['data-action="open-report"','data-action="preview"','data-action="pdf"','data-web-hosting-slider','data-action="toggle-payment"','data-action="delete-report"'];let previous=-1;for(const marker of markers){const index=html.indexOf(marker);assert.ok(index>previous);previous=index;}
  await c.click({action:'html',id:'second-report'});assert.deepEqual(c.downloads,[['/api/reports/second-report/html?download=1','index.html']]);assert.equal(c.networkCalls,0);assert.deepEqual(structuredClone(c.state),before);
 });
 

@@ -1,5 +1,5 @@
 {
-  "version": "0.18.66",
+  "version": "0.18.69",
   "files": [
     "tests/system-template-protection.test.js",
     "tests/scope-format.test.js",
@@ -71,7 +71,7 @@
     "tests/photo-arrow-groups.test.js",
     "tests/photo-editor.test.js",
     "tests/photo-inline.test.js",
-    "tests/report-copy.test.js",
+    "tests/report-payment.test.js",
     "tests/report-empty-details.test.js",
     "tests/report-photos.test.js",
     "tests/section-ratings.test.js",

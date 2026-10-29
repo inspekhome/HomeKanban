@@ -6,10 +6,10 @@ const {MemoryR2}=require('./helpers/memory-r2.cjs');
 const source=require('node:fs').readFileSync(require('node:path').join(__dirname,'../app/hosting/worker.mjs'),'utf8');
 const modulePromise=import('data:text/javascript;base64,'+Buffer.from(source+'\nexport { PRINT_SCRIPT, replaceMarker };').toString('base64'));
 const sha=value=>createHash('sha256').update(value).digest('base64');
-test('legacy published snapshots gain a working print control and an exact script hash without changing stored bytes',async()=>{
+test('paid published snapshots gain a working print control and an exact script hash without changing stored bytes',async()=>{
  const {default:worker,PRINT_SCRIPT}=await modulePromise,bucket=new MemoryR2(),id='a'.repeat(64),key='b'.repeat(64);
  const original='<!doctype html><html><body><button onclick="window.print()">Print / Save PDF</button><p>房屋 🏠</p></body></html>';
- const manifest={files:[{name:'index.html',bytes:Buffer.byteLength(original),sha256:createHash('sha256').update(original).digest('hex')}]};
+ const manifest={paymentStatus:'paid',files:[{name:'index.html',bytes:Buffer.byteLength(original),sha256:createHash('sha256').update(original).digest('hex')}]};
  const request=(route,method='GET',body)=>worker.fetch(new Request('https://synthetic.example.workers.dev'+route,{method,headers:{Authorization:'Bearer '+key},body:body===undefined?undefined:typeof body==='string'?body:JSON.stringify(body)}),{REPORTS:bucket,HOMEKANBAN_PUBLISH_KEY:key});
  const base='/api/v1/publications/'+id;
  assert.equal((await request(base,'POST',manifest)).status,200);
@@ -24,6 +24,11 @@ test('legacy published snapshots gain a working print control and an exact scrip
  assert.equal(await(await bucket.get('homekanban/data/'+id+'/index.html')).text(),original);
  const head=await request('/r/'+id+'/','HEAD');assert.equal(await head.text(),'');assert.equal(head.headers.get('Content-Security-Policy'),csp);
  const api=await request(base);assert.ok(!api.headers.get('Content-Security-Policy').includes('script-src '));
+ await request(base+'/payment','PUT',{paymentStatus:'unpaid'});
+ const unpaid=await request('/r/'+id+'/'),unpaidHTML=await unpaid.text();
+ assert.match(unpaidHTML,/Payment Reminder/);assert.ok(!unpaidHTML.includes('Print / Save PDF'));assert.ok(!unpaidHTML.includes('<script>'));assert.match(unpaidHTML,/房屋 🏠/);
+ assert.ok(!unpaid.headers.get('Content-Security-Policy').includes('script-src '));
+ const unpaidHead=await request('/r/'+id+'/','HEAD');assert.equal(await unpaidHead.text(),'');assert.equal(unpaidHead.headers.get('Content-Security-Policy'),unpaid.headers.get('Content-Security-Policy'));
  await request(base,'DELETE');assert.equal((await request('/r/'+id+'/')).status,404);
 });
 test('stream replacement preserves UTF-8, emoji and partial markers at every chunk boundary',async()=>{
