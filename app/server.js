@@ -125,6 +125,7 @@ function createApp({dataDir=defaultDataDirectory(),port=Number(process.env.HOMEK
     fail('Endpoint not found.',404);
    }
    if(!['GET','HEAD'].includes(req.method))fail('Method not allowed',405);
+   if(route==='/fonts/oswald-variable.ttf')return send(200,fs.readFileSync(path.join(PUBLIC,'fonts/oswald-variable.ttf')),'font/ttf');
    const branding={'/branding/homekanban-logo.svg':['homekanban-logo.svg','image/svg+xml'],'/branding/homekanban-house.png':['homekanban-house.png','image/png'],'/favicon.ico':['homekanban.ico','image/x-icon']};
    if(Object.hasOwn(branding,route)){const [name,type]=branding[route];return send(200,fs.readFileSync(path.join(PUBLIC,'branding',name)),type);}
    if(route==='/'||route==='/index.html')return send(200,fs.readFileSync(path.join(PUBLIC,'index.html'),'utf8').replace('__TOKEN__',token),'text/html; charset=utf-8',{'Set-Cookie':`solo_session=${token}; HttpOnly; SameSite=Strict; Path=/`,'Content-Security-Policy':"default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"});

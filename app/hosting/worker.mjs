@@ -12,7 +12,7 @@ const headers = {
   'CDN-Cache-Control':'no-store', 'Cloudflare-CDN-Cache-Control':'no-store',
   'X-Content-Type-Options':'nosniff', 'X-Robots-Tag':'noindex, nofollow, noarchive',
   'Referrer-Policy':'no-referrer', 'X-Frame-Options':'DENY',
-  'Content-Security-Policy':"default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
+  'Content-Security-Policy':"default-src 'none'; img-src 'self'; font-src data:; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
 };
 // Only this fixed script is allowed on report pages. Narrative content remains
 // escaped by the report renderer; arbitrary scripts and inline handlers stay blocked.

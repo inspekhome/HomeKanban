@@ -1,10 +1,10 @@
 # HomeKanban — Windows home inspection reports
 
-Current published release: **0.18.59**. An English-language, offline-first workspace for a solo home inspector. This is a trial release, not a certified inspection or regulatory-compliance product.
+Current published release: **0.18.66**. An English-language, offline-first workspace for a solo home inspector. This is a trial release, not a certified inspection or regulatory-compliance product.
 
 **Free to use, including for commercial inspections.** HomeKanban's code and documentation are [MIT licensed](LICENSE). No HomeKanban subscription or account is required. Optional AI providers and web hosts have separate terms and may charge fees. See [third-party notices](THIRD_PARTY_NOTICES.md).
 
-**[Download HomeKanban v0.18.59 for Windows](https://github.com/inspekhome/HomeKanban/releases/download/v0.18.59/HomeKanban-Windows-v0.18.59.zip)** · [Release notes and checksum](https://github.com/inspekhome/HomeKanban/releases/tag/v0.18.59) · [User Guide](docs/USER-GUIDE.md)
+**[Download HomeKanban v0.18.66 for Windows](https://github.com/inspekhome/HomeKanban/releases/download/v0.18.66/HomeKanban-Windows-v0.18.66.zip)** · [Release notes and checksum](https://github.com/inspekhome/HomeKanban/releases/tag/v0.18.66) · [User Guide](docs/USER-GUIDE.md)
 
 Download the Windows ZIP above and extract the entire folder before opening `HomeKanban.exe`. The GitHub **Code > Download ZIP** button downloads source code, not the ready-to-run application.
 
@@ -13,6 +13,8 @@ The download includes **System Template**, based on the creator's Maryland templ
 Recent improvements include status boxes on the right in the editor and all report exports, all-choice exports, section and choice reordering, compact controls, Add note aligned with Limitation, direct save-and-exit, persistent workspace recovery, and one-click AI Revise using editable AI Instructions. AI requires your own configured provider; live-provider acceptance is still pending.
 
 This release retains the four save/recovery fixes introduced in **0.18.42**: typing during a Fast note save stays in the editor, cancelled failed edits do not leak into later saves, retrying report creation does not create duplicates, and saved workspaces up to 100 MiB can be restored from their backups. It also includes Dark Mode, a locally bundled Quill editor with undo/redo, a clickable profile avatar, compact Note editing, and multilingual Voice Input through a separately configured OpenAI API key. Voice Input and AI Revise require internet access and provider fees may apply. Optional Cloudflare publishing and termination are now connected; each inspector configures and manages their own account.
+
+Version **0.18.66** adds locally bundled Oswald typography for offline UI and report exports, the Sage theme, compact checklist and Property details spacing, and a direct Summary shortcut. Scope remains editable in templates and read-only in reports. The established rounded buttons and layout are retained.
 
 ## Run
 
@@ -27,12 +29,12 @@ Windows x64 is the intended target. A clean-machine Windows 10/11 installation m
 - **User info:** one inspector/business profile. Each new report captures a profile snapshot.
 - **Templates:** scope and limitations, report notice, sections, components, and material choices. Sections support dragging and up/down arrows. Existing reports retain their snapshots.
 - **Fast notes:** one shared library for all templates and reports, up to 50 entries and 350 words per entry. Add, edit, format, and reorder reusable wording. Newly inserted wording enters report notes as plain text. New workspaces start with 15 owner-authorized examples that can be edited or deleted. Only these selected examples are included, not the imported narrative document collection.
-- **Reports:** one editor containing Property details, text Summary, Summary and pictures, and System checks. Use I / NI / NP / D. Clicking a selected section status again clears that section. NI requires an actual reason before finalization.
+- **Reports:** one editor containing Property details, text Summary, Summary and pictures, and System Checks. Use I / NI / NP / D. Clicking a selected section status again clears that section. NI requires an actual reason before finalization.
 - **New Note / Edit Note:** movable and resizable window; linked text, category, and up to 30 photos; rotate and annotate photos; optionally include checklist notes in both summaries. Summary-created notes always remain included.
 - **Report library:** Open, PDF Preview, Export PDF, Export to Web Hosting, Copy, Delete. Copy retains the checklist structure, scope, and notice, while clearing property details, results, findings, and photos.
 - **AI & settings:** optional API configuration, local backup and restore. No online account is required for the core workflow.
 
-Check completeness identifies missing fields and jumps to their source. Mark finalized checks completeness; it is not an assessment of the technical correctness of an inspection. Subsequent report edits return the report to draft.
+The Summary shortcut jumps to the text summary. Mark finalized identifies missing fields and links to their source; it is not an assessment of the technical correctness of an inspection. Subsequent report edits return the report to draft.
 
 ## PDF, web, and AI
 
@@ -40,7 +42,7 @@ PDF and HTML share the same report renderer and linked finding data. PDF export 
 
 Version **0.18.59** supplies the creator's Maryland template and 15 Fast notes as defaults for new workspaces. Existing customized templates, notes and reports remain unchanged on upgrade. It retains the previous typography improvements, matching report-editor and template checklist choices to PDF Preview: 11 px choice text and 13 px inspection-status boxes. Additional notes / materials and Limitation keep their existing widths with compact text and heights. New/Edit Note uses 18 px titles, 16 px Fast notes, Photos and narrative headings, and 12 px narrative input and helper text. Matching header/footer buttons and the draft-status message beside Cancel keep the dialog compact.
 
-Standard of Practice, Scope & limitations supports Bold, Italic, Underline and 10/12/14 pt sizes. Formatting carries through templates, report copies, PDF Preview, PDF and Web Report.
+In Templates, Standard of Practice, Scope & limitations supports Bold, Italic, Underline and 10/12/14 pt sizes. Reports display their saved scope as read-only. Formatting carries through templates, report copies, PDF Preview, PDF and Web Report.
 
 **Optional web publishing is available through your own Cloudflare Worker and private R2 storage.** Configure it in **AI & settings → Publish a web report**, then slide to publish or terminate individual reports in Report Library. Check status gives a specific published, terminated or unable-to-verify result. There is no automatic expiration. The hosted Print / Save PDF fix requires existing hosting users to deploy the updated Worker once; preserve its binding and Secret. Existing report links then work without re-uploading. See [Web Hosting Setup](docs/WEB-HOSTING.md) for setup, access, costs and recovery. PDF Preview and Export PDF remain local. Client email and phone are omitted from exports by default.
 
@@ -66,12 +68,12 @@ With Node.js 24.19.0 on PATH, from the repository root:
 New-Item -ItemType Directory -Force work | Out-Null
 npm ci --prefix scripts/editor --ignore-scripts
 node --test tests/*.test.js
-powershell -NoProfile -File scripts/build.ps1 -Version 0.18.59
-node scripts/smoke-package.js dist/HomeKanban-Windows-v0.18.59
+powershell -NoProfile -File scripts/build.ps1 -Version 0.18.66
+node scripts/smoke-package.js dist/HomeKanban-Windows-v0.18.66
 ```
 
 Tests use isolated workspaces under `work`; a few tests require local loopback access, Windows DPAPI, and Edge/Chrome. npm is only needed for editor development and tests; Windows users do not need it. The packaged runtime can be used if Node is not on PATH. Set `HOMEKANBAN_NODE` for a different packaging runtime.
 
-The regression suite contains 277 automated tests, including scope formatting, editor selection, save/backup/restore/restart, hosted-print and Check status cases. The 0.18.52 update is also checked in an isolated browser workspace using synthetic data. Release verification also covers an isolated Windows-package PDF smoke test and a Cloudflare workerd/Miniflare R2 integration check using synthetic data. Live account deployment remains a separate setup step. Packaging changes are additionally checked against an explicit public-file manifest. Passing tests does not establish that the product has no defects or replace clean-machine acceptance testing.
+The regression suite covers scope formatting, editor selection, save/backup/restore/restart, hosted-print and Check status cases. The 0.18.52 update is also checked in an isolated browser workspace using synthetic data. Release verification also covers an isolated Windows-package PDF smoke test and a Cloudflare workerd/Miniflare R2 integration check using synthetic data. Live account deployment remains a separate setup step. Packaging changes are additionally checked against an explicit public-file manifest. Passing tests does not establish that the product has no defects or replace clean-machine acceptance testing.
 
 See [Publishing](docs/PUBLISHING.md) for clean source and Windows packages. Private working material, inspection databases, historical screenshots, reports, backups, reference videos and external narrative documents are excluded. Never attach client data or API keys to public issues.

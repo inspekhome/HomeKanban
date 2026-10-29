@@ -48,14 +48,15 @@ test('startup and restore migrate old reports with a recoverable original snapsh
  }finally{await app.close();}
 });
 test('template scope migration preserves report snapshots and custom template wording',()=>{
- const {s,r}=fixture();delete s.templates[0].scope;
+ // A legacy template predates both scope text and its formatting runs.
+ const {s,r}=fixture();delete s.templates[0].scope;delete s.templates[0].scopeRuns;
  const custom=clone(s.templates[0]);custom.id=crypto.randomUUID();custom.name='Limited inspection';custom.scope='Only the agreed accessible systems.\nRecord actual limitations for each component.';s.templates.push(custom);
  const oldReport=clone(r);
  assert.equal(migrateState(s),true);assert.equal(s.templates[0].scope,'');assert.equal(custom.scope,'Only the agreed accessible systems.\nRecord actual limitations for each component.');assert.deepEqual(r,oldReport);assert.equal(migrateState(s),false);assert.doesNotThrow(()=>validateState(s));
  for(const invalid of [null,42,{},'x'.repeat(100001)]){custom.scope=invalid;assert.throws(()=>validateState(s));}
 });
 test('template scopes persist through save, backup, restore and restart without changing report scope',async()=>{
- const dir=fs.mkdtempSync(path.join(root,'scope-'));const {s,r}=fixture();delete s.templates[0].scope;
+ const dir=fs.mkdtempSync(path.join(root,'scope-'));const {s,r}=fixture();delete s.templates[0].scope;delete s.templates[0].scopeRuns;
  const db=new DatabaseSync(path.join(dir,'soloinspect.sqlite'));db.exec('CREATE TABLE documents (id INTEGER PRIMARY KEY, revision INTEGER NOT NULL, json TEXT NOT NULL)');db.prepare('INSERT INTO documents VALUES(1,4,?)').run(JSON.stringify(s));db.close();
  let app=createApp({dataDir:dir,port:0});let url=await app.start();
  try{

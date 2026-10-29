@@ -1,7 +1,7 @@
 {
   "name": "System Template",
-  "scope": "A home inspection performed in accordance with the Maryland SoPs:\n(A) Is intended to provide a client with objective information regarding the condition of the systems and components of a home as inspected at the time of the home inspection;\n(B) Acts to identify visible defects and conditions that, in the judgment of the home inspector, adversely affect the function or integrity of the items, components, and systems inspected, including those items or components near the end of their serviceable life;\n(C) May not be construed as a compliance inspection pursuant to any code or governmental regulation;\n(D) Is not an express or implied warranty or a guarantee of the adequacy, performance or useful life of any item, component, or system in, on, or about the inspected property;\n(E) Is based on the visual observation of the home inspector; and\n(F) Shall be performed in a time period sufficient to allow compliance with the other provisions of the Maryland SoPs.",
-  "notice": "Inspection Report:  (1) Contain the written opinions of the home inspector based upon the judgment and experience of the home inspector; (2) Identify the items, components, systems and certain terms included in the scope of the home inspection; (3) identify based on a visual inspection of the readily accessible areas whether the included items, components, and systems are performing their intended function or are determined to be significantly deficient; (3) provide the Client with objective information regarding the condition of the systems and components of the home as inspected at the time of the home inspection; (4)  Acts to identify visible defects and conditions that, in the judgment of the home inspector, adversely affect the function or integrity of the items, components, and systems inspected, including those items or components near the end of their serviceable life; and (5) May identify items in need of further evaluation.",
+  "scope": "YOUR OWN DISCLAIMER HERE:\nA home inspection performed in accordance with the (YOUR STATE SoPs):\n(A) Is intended to provide a client with objective information regarding the condition of the systems and components of a home as inspected at the time of the home inspection;\n(B) Acts to identify visible defects and conditions that, in the judgment of the home inspector, adversely affect the function or integrity of the items, components, and systems inspected, including those items or components near the end of their serviceable life;\n(C) May not be construed as a compliance inspection pursuant to any code or governmental regulation;\n(D) Is not an express or implied warranty or a guarantee of the adequacy, performance or useful life of any item, component, or system in, on, or about the inspected property;\n(E) Is based on the visual observation of the home inspector; and\n(F) Shall be performed in a time period sufficient to allow compliance with the other provisions of the (YOUR STATE SoPs).",
+  "notice": "SAMPLE NOTICE:\nInspection Report:  (1) Contain the written opinions of the home inspector based upon the judgment and experience of the home inspector; (2) Identify the items, components, systems and certain terms included in the scope of the home inspection; (3) identify based on a visual inspection of the readily accessible areas whether the included items, components, and systems are performing their intended function or are determined to be significantly deficient; (3) provide the Client with objective information regarding the condition of the systems and components of the home as inspected at the time of the home inspection; (4)  Acts to identify visible defects and conditions that, in the judgment of the home inspector, adversely affect the function or integrity of the items, components, and systems inspected, including those items or components near the end of their serviceable life; and (5) May identify items in need of further evaluation.",
   "sections": [
     {
       "name": "Structure",
@@ -790,6 +790,43 @@
           }
         }
       ]
+    }
+  ],
+  "scopeRuns": [
+    {
+      "text": "YOUR OWN DISCLAIMER HERE:\nA home inspection performed in accordance with the "
+    },
+    {
+      "text": "(YOUR STATE ",
+      "bold": true
+    },
+    {
+      "text": "SoPs",
+      "bold": true,
+      "italic": true
+    },
+    {
+      "text": ")",
+      "bold": true
+    },
+    {
+      "text": ":\n(A) Is intended to provide a client with objective information regarding the condition of the systems and components of a home as inspected at the time of the home inspection;\n(B) Acts to identify visible defects and conditions that, in the judgment of the home inspector, adversely affect the function or integrity of the items, components, and systems inspected, including those items or components near the end of their serviceable life;\n(C) May not be construed as a compliance inspection pursuant to any code or governmental regulation;\n(D) Is not an express or implied warranty or a guarantee of the adequacy, performance or useful life of any item, component, or system in, on, or about the inspected property;\n(E) Is based on the visual observation of the home inspector; and\n(F) Shall be performed in a time period sufficient to allow compliance with the other provisions of the "
+    },
+    {
+      "text": "(YOUR STATE ",
+      "bold": true
+    },
+    {
+      "text": "SoPs",
+      "bold": true,
+      "italic": true
+    },
+    {
+      "text": ")",
+      "bold": true
+    },
+    {
+      "text": "."
     }
   ]
 }

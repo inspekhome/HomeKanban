@@ -4,7 +4,7 @@ const fs=require('node:fs'),path=require('node:path'),{createHash}=require('node
 // Preview, PDF and web export must pick up updates even if the app stays open.
 // Hash the small renderer dependency set: copied files can retain their timestamps.
 function createReportLoader(root=__dirname){
- const files=['report.js','public/wording.js','seed.js','ratings.js'].map(file=>path.join(root,file));
+ const files=['report.js','public/wording.js','seed.js','ratings.js','fonts.js'].map(file=>path.join(root,file));
  let fingerprint,renderer;
  return ()=>{
   const hash=createHash('sha256');

@@ -1,6 +1,6 @@
 # HomeKanban User Guide
 
-Version 0.18.59 · Windows x64 · English interface
+Version 0.18.66 · Windows x64 · English interface
 
 HomeKanban is a free, offline-first report-writing workspace for individual home inspectors. One local workspace holds your profile, templates, Fast notes and reports. You do not need a HomeKanban account or subscription. Optional AI and online publishing require your own services and may cost money.
 
@@ -36,17 +36,17 @@ Open **Templates**. New workspaces include **System Template**, based on the cre
 - In **Edit choices & colors**, drag a choice's square-dot handle or use its up/down arrows to change the order. **Alt+Up** and **Alt+Down** also work on a focused handle. The wording and purpose color move together. Choose **Save choices** to apply the order; **Cancel** discards changes in this dialog. New reports inherit the saved choice order; existing reports keep their snapshot.
 - Select **Save template**.
 
-Use **Duplicate** to create another version of a template. New reports copy the selected template, including its scope text and formatting. PDF Preview, PDF export and Web Report preserve this formatting. Existing reports retain their original snapshot; later template edits do not change them. To change an existing report's scope, edit its corresponding field in Property details.
+Use **Duplicate** to create another version of a template. New reports copy the selected template, including its scope text and formatting. PDF Preview, PDF export and Web Report preserve this formatting. Existing reports retain their original snapshot; later template edits do not change them. In Property details, this field is read-only and preserves the selected template’s text and formatting. Make changes in Templates before creating a new report.
 
 The included checklist is a starting point. Adapt it to the inspection you are actually performing and the applicable requirements; the software does not certify inspection compliance.
 
 ## 4. Create a report
 
-Open **Reports**, choose **Create report**, and select a template. The report editor uses one page with Property details, summaries, and System checks.
+Open **Reports**, choose **Create report**, and select a template. The report editor uses one page with Property details, summaries, and System Checks.
 
 Enter the property address, client, inspection date and other details. Review the prefilled scope, notice and inspector profile. Client email and phone are omitted from PDF and web exports unless you select the option to include them.
 
-## 5. Complete System checks
+## 5. Complete System Checks
 
 Use the section directory to move through the report. Each component has four boxes on the right. The same layout is used in PDF Preview, exported PDFs, and standalone Web Reports, for reports made from any template:
 
@@ -61,7 +61,7 @@ Unselected boxes show pale letters. Selected boxes show a white checkmark on a c
 
 The status buttons at the top of a section apply that status to the section's components. Clicking a status already selected across the section clears that status. Review individual exceptions after bulk selection.
 
-The report section directory uses six small square dots instead of section numbers or count columns. Orange dots mean some inspection statuses are still blank. They turn green when every component has an **I**, **NI**, **NP** or **D** status, and return to orange if any selection is cleared. They track checklist statuses; **Check completeness** still checks other required information, such as reasons for **NI**. Summaries and Other observations remain fixed navigation links.
+The report section directory uses six small square dots instead of section numbers or count columns. Orange dots mean some inspection statuses are still blank. They turn green when every component has an **I**, **NI**, **NP** or **D** status, and return to orange if any selection is cleared. They track checklist statuses; **Mark finalized** still checks other required information, such as reasons for **NI**. Summaries and Other observations remain fixed navigation links.
 
 Drag a section's square-dot handle up or down to change the order in this report. Holding near the top or bottom of the directory scrolls it during dragging. You can also focus a handle and press **Alt+Up** or **Alt+Down**. Changes save automatically and apply to this report's editor, PDF Preview, PDF and Web Report. Templates and other reports keep their existing order. All notes, photos, choices and statuses stay linked to their original components.
 
@@ -69,7 +69,7 @@ Choose applicable materials and add notes or limitations. You can select multipl
 
 For **NI**, enter the actual reason the item could not be inspected. A material choice such as Not visible does not by itself record an inspection status or explain an inspection limitation.
 
-Use the **×** beside a component name to remove it from the current report. The template is unchanged. Linked notes and photos move to **Other observations** and remain in the summaries according to their existing inclusion setting. **Undo removal**, above the System checks sections, restores the most recent removal while this window remains open. The section directory keeps its completion colors without a separate count column.
+Use the **×** beside a component name to remove it from the current report. The template is unchanged. Linked notes and photos move to **Other observations** and remain in the summaries according to their existing inclusion setting. **Undo removal**, above the System Checks sections, restores the most recent removal while this window remains open. The section directory keeps its completion colors without a separate count column.
 
 A blank status means no status was recorded. Unchecked choices are displayed for reference and do not assert that the material or condition was observed. A component with no choices or notes has a blank details cell.
 
@@ -89,7 +89,7 @@ New Note and Edit Note start with Photos, followed by the narrative, matching th
 - Turn on **Add to summary** when a checklist note should appear in both summaries.
 - Choose **Add note** or **Update note** to keep the changes. Cancel discards that editing session's unsaved changes.
 
-Notes added directly in **Summary and pictures** always remain in both summaries; their Add to summary switch cannot be disabled. The summaries and System checks refer to the same note, so editing one updates the other linked occurrences.
+Notes added directly in **Summary and pictures** always remain in both summaries; their Add to summary switch cannot be disabled. The summaries and System Checks refer to the same note, so editing one updates the other linked occurrences.
 
 The text Summary shows narrative text. Summary and pictures shows the associated text and photographs. Click the report's links to move from a summary to the corresponding detailed note or checklist entry. The copy icon beside Summary copies text only.
 
@@ -125,7 +125,7 @@ The library allows **50 entries**, with **350 words maximum per entry**. A new w
 
 Edits are autosaved; **Save now** requests an immediate save. Confirm that saving completed before exiting, refreshing or upgrading.
 
-Choose **Check completeness** to find missing required information. Select a listed issue to jump to its source. Correct it and check again. **Mark finalized** also checks completeness. Later report changes return the report to draft.
+Use the **Summary** icon in the floating toolbar to jump directly to the text summary. It keeps your current edits and does not run a check. Choose **Mark finalized** when ready; it checks required information. Select a listed issue to jump to its source, correct it, and choose Mark finalized again. Later report changes return the report to draft.
 
 Completeness checks catch missing fields; they do not verify that your inspection conclusions, advice or legal coverage are correct. Review the entire report before delivery.
 
@@ -193,7 +193,7 @@ The current app stores the entire workspace, including photos, in one database d
 
 HomeKanban's code and documentation are MIT licensed. You may use it free of charge for personal or commercial inspections, modify it and redistribute it while preserving the required notices. There is no warranty. See LICENSE and THIRD_PARTY_NOTICES.md in the package. Separate AI services, hosting and imported content have their own terms.
 
-The report editor uses a compact System checks directory with room for approximately twelve characters per line. Longer section names wrap without being shortened or clipped. The directory sits closer to the left navigation so the right writing area has more space; completion colors and drag handles remain available.
+The report editor uses a compact System Checks directory with room for approximately twelve characters per line. Longer section names wrap without being shortened or clipped. The directory sits closer to the left navigation so the right writing area has more space; completion colors and drag handles remain available.
 
 ## 15. Save and recovery fixes in 0.18.42
 

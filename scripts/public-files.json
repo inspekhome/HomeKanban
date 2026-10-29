@@ -1,6 +1,7 @@
 {
-  "version": "0.18.59",
+  "version": "0.18.66",
   "files": [
+    "tests/system-template-protection.test.js",
     "tests/scope-format.test.js",
     "app/public/workspace-limits.js",
     "tests/save-transactions.test.js",
@@ -104,7 +105,12 @@
     "docs/WEB-HOSTING.md",
     "tests/hosting-ui.test.js",
     "tests/hosting-print.test.js",
-    "app/data/fast-notes.json"
+    "app/data/fast-notes.json",
+    "app/fonts.js",
+    "app/public/fonts/oswald-variable.ttf",
+    "app/public/fonts/OFL.txt",
+    "app/public/fonts/SOURCE.txt",
+    "tests/typography.test.js"
   ],
   "format": 1
 }

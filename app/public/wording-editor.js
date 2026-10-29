@@ -10,7 +10,11 @@ function wordingMarkup(id,label,note={text:''},descriptionId='',detachedToolbar=
  const heading=isNote?`<div class="note-narrative-heading"><h3 id="${id}-label">${Wording.escape(label)}</h3>${voice?NoteVoice.toolbar():''}</div>`:`<span id="${id}-label">${Wording.escape(label)}</span>`;
  return `<div class="wording-field field${scopeFormatting?' scope-field full':''}">${heading}${detachedToolbar?'':wordingToolbar(id,label,false,scopeFormatting)}${voice?NoteVoice.help():''}<div id="${id}" class="wording-editor${scopeFormatting?' scope-editor':''}" ${scopeFormatting?'data-wording-kind="scope"':''} contenteditable="true" role="textbox" aria-multiline="true" aria-labelledby="${id}-label" ${descriptionId?`aria-describedby="${Wording.escape(descriptionId)}"`:""} spellcheck="true">${Wording.render(note)}</div></div>`;
 }
-function scopeMarkup(record,kind){return wordingMarkup(kind+'-field-scope','Standard of Practice, Scope & limitations',Wording.scopeNote(record),'',false,true);}
+function scopeMarkup(record,kind){
+ const id=kind+'-field-scope',label='Standard of Practice, Scope & limitations',note=Wording.scopeNote(record);
+ if(kind==='report')return `<div class="wording-field field scope-field full"><span id="${id}-label">${Wording.escape(label)}</span><div id="${id}" class="wording-editor scope-editor scope-readonly" contenteditable="false" role="textbox" aria-readonly="true" aria-multiline="true" aria-labelledby="${id}-label" tabindex="0">${Wording.render(note)}</div></div>`;
+ return wordingMarkup(id,label,note,'',false,true);
+}
 function wordingColor(value){
  value=(value||'').toLowerCase();const rgb=value.match(/^rgb\(\s*(\d+),\s*(\d+),\s*(\d+)\s*\)$/);if(rgb)value='#'+rgb.slice(1).map(n=>Number(n).toString(16).padStart(2,'0')).join('');return Object.hasOwn(Wording.colors,value)?value:null;
 }

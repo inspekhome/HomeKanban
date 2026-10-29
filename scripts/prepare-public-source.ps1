@@ -1,7 +1,7 @@
 param([string]$OutputDirectory)
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
-if (-not $OutputDirectory) { $OutputDirectory = Join-Path $projectRoot 'dist\HomeKanban-Source-v0.18.59-Public' }
+if (-not $OutputDirectory) { $OutputDirectory = Join-Path $projectRoot 'dist\HomeKanban-Source-v0.18.66-Public' }
 $sourceRoot = [IO.Path]::GetFullPath($OutputDirectory)
 $archivePath = "$sourceRoot.zip"
 if ((Test-Path -LiteralPath $sourceRoot) -or (Test-Path -LiteralPath $archivePath)) { throw 'Choose a new output directory; existing source exports are never overwritten.' }

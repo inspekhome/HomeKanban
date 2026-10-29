@@ -37,7 +37,7 @@ test('selecting a missing narrative opens only that existing note and focuses it
  assert.equal(c.followCompletenessIssue(details[1]),true);assert.equal(opened.length,1);assert.equal(opened[0][0],'roof-empty');assert.equal(opened[0][3],'check-finding-roof-empty');assert.equal(node('#note-text').focused,true);assert.equal(node('#note-text').scrolled,true);
 });
 test('stale note targets never create a new empty note',()=>{
- const {state,r}=fixture(),{c,opened,notices}=client(state),detail=issueDetails(r)[1];r.findings.pop();assert.equal(c.followCompletenessIssue(detail),false);assert.equal(opened.length,0);assert.match(notices[0],/Run Check completeness again/);
+ const {state,r}=fixture(),{c,opened,notices}=client(state),detail=issueDetails(r)[1];r.findings.pop();assert.equal(c.followCompletenessIssue(detail),false);assert.equal(opened.length,0);assert.match(notices[0],/Click Mark finalized again/);
 });
 test('NI targets focus the limitation input rather than change its inspection status',()=>{
  const {state,r}=fixture();r.sections[0].items[0].rating='NI';const {c,node}=client(state),detail=issueDetails(r).find(d=>d.field==='limitation');const row=node('check-item-0-0');

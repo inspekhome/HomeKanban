@@ -4,7 +4,7 @@ const baseline=require('../app/data/system-template.json'),fastNotes=require('..
 const withoutId=({id,...value})=>value;
 test('the approved System Template baseline retains its wording, order and choice colors',()=>{
  // Update only when the owner explicitly approves a new public baseline.
- assert.equal(createHash('sha256').update(JSON.stringify(baseline)).digest('hex'),'e932c1298b77205fd938718dc2e3f17770cf3655326b817b956f2c643138dc37');
+ assert.equal(createHash('sha256').update(JSON.stringify(baseline)).digest('hex'),'0442a72f48e7efc8b5481f7f32065ab18cad7ee98741023e3597c82676824d65');
  const s=seed(),t=s.templates[0];assert.equal(t.name,'System Template');assert.equal(t.sections.length,18);assert.equal(t.sections.flatMap(s=>s.items).length,65);
  assert.equal(t.sections.flatMap(s=>s.items).reduce((n,i)=>n+i.options.length,0),205);assert.doesNotThrow(()=>validateState(s));
  assert.equal(t.scope,baseline.scope);assert.equal(t.notice,baseline.notice);

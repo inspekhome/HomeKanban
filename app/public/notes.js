@@ -39,7 +39,7 @@ const ReportPhotos=(()=>{
  async function open(card){
   if(sessions.has(card)||route!=='editor')return;
   const r=report(),finding=r?.findings.find(f=>f.id===card.dataset.photoFinding),photo=finding?.photos[Number(card.dataset.photoIndex)];if(!photo)return;
-  // The same photo occurs in Summary and System checks. Keep a single writer.
+  // The same photo occurs in Summary and System Checks. Keep a single writer.
   for(const existing of [...sessions.values()])if(existing.photo===photo)close(existing);
   const s={card,r,finding,photo,controller:null};sessions.set(card,s);
   const panel=card.querySelector('.report-photo-controls');panel.innerHTML=controls();panel.hidden=false;
@@ -167,7 +167,7 @@ function confirmNote(message,label='Discard changes'){
 }
 function noteChanged(){return !!noteEditor&&(!!noteEditor.photoDrafts?.size||!!noteEditor.inlinePhoto?.controller?.dirty||JSON.stringify(noteEditor.draft)!==noteEditor.original);}
 function noteHint(message){$('#note-message').textContent=message;}
-function noteDestination(r,draft){const ref=findingComponent(r,draft);return draft.origin==='summary'?'':ref?`${ref.section.name} / ${ref.item.name}`:'System checks / Other observations';}
+function noteDestination(r,draft){const ref=findingComponent(r,draft);return draft.origin==='summary'?'':ref?`${ref.section.name} / ${ref.item.name}`:'System Checks / Other observations';}
 function setNoteSummary(included){
  if(!noteEditor)return;
  if(noteEditor.summaryOnly){noteEditor.draft.includeInSummary=true;return;}

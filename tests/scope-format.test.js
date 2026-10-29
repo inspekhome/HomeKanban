@@ -7,6 +7,17 @@ function sample(){
  const r={id:'scope-format-test',scope:t.scope,scopeRuns:structuredClone(t.scopeRuns),notice:t.notice,client:'Fictional client',address:'SYNTHETIC SCOPE TEST',date:'2026-10-27',time:'',weather:'',notes:'',email:'',phone:'',status:'draft',inspector:structuredClone(state.profile),sections:structuredClone(t.sections),findings:[]};
  state.reports.push(r);return {state,t,r};
 }
+test('report scope is read-only with its saved formatting while template scope keeps editing controls',()=>{
+ const {r}=sample(),before=structuredClone(r);
+ const context=vm.createContext({Wording,document:{addEventListener(){}}});
+ vm.runInContext(fs.readFileSync(require.resolve('../app/public/wording-editor.js'),'utf8')+';globalThis.scopeView=scopeMarkup;',context);
+ const report=context.scopeView(r,'report'),template=context.scopeView(r,'template');
+ assert.match(report,/contenteditable="false"/);assert.match(report,/aria-readonly="true"/);
+ assert.ok(!report.includes('data-wording-toolbar'));assert.ok(!report.includes('data-wording-kind'));
+ assert.ok(report.includes(Wording.render(Wording.scopeNote(r))));
+ assert.match(template,/contenteditable="true"/);assert.match(template,/data-wording-toolbar="template-field-scope"/);
+ assert.ok(template.includes('data-wording-size'));assert.deepEqual(r,before);
+});
 test('scope validation allows legacy text and limited sizes but rejects color, markup, mismatches and oversize text',()=>{
  const {state,t,r}=sample();assert.doesNotThrow(()=>validateState(state));
  for(const record of [t,r]){

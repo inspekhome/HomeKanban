@@ -1,0 +1,13 @@
+Oswald variable font (weight 200–700)
+Copyright 2016 The Oswald Project Authors
+License: SIL Open Font License 1.1; see OFL.txt.
+
+Downloaded unchanged on 2026-10-28 from:
+https://raw.githubusercontent.com/google/fonts/main/ofl/oswald/Oswald%5Bwght%5D.ttf
+License source:
+https://raw.githubusercontent.com/google/fonts/main/ofl/oswald/OFL.txt
+SHA-256: 5b38c246e255a12f5712d640d56bcced0472466fc68983d2d0410ec0457c2817
+
+The file is renamed oswald-variable.ttf for a stable local asset path.
+It is served by the local app and embedded in standalone report HTML.
+HomeKanban does not request fonts from an external service at runtime.

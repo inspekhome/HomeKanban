@@ -7,7 +7,7 @@ const {ratings}=require('./ratings');
 // This reviewed baseline is versioned with the app. Seed only a new workspace;
 // never replace existing templates or report snapshots during an upgrade.
 function systemTemplate(){
- const template=structuredClone(baseline);template.id=randomUUID();
+ const template=structuredClone(baseline);template.id=randomUUID();template.isSystem=true;
  for(const section of template.sections){section.id=randomUUID();for(const item of section.items)Object.assign(item,{id:randomUUID(),selected:[],rating:'',note:'',limitation:''});}
  return template;
 }

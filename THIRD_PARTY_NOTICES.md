@@ -8,6 +8,7 @@ HomeKanban's application code and documentation are available under the MIT Lice
 | --- | --- | --- |
 | Node.js 24.19.0, Windows x64 | Runs the local server, including its built-in SQLite API | Node.js MIT license and the separate notices for its incorporated components; the complete upstream text is in `docs/NODE-LICENSE.txt` in source and `runtime/LICENSE.txt` in the Windows package. |
 | Quill 2.0.3 and bundled dependencies | Offline rich-text editing, selection, clipboard and undo history | Quill and Parchment use BSD-3-Clause; bundled utility libraries use MIT. Complete component versions and copyright/license texts are in `app/public/vendor/editor-LICENSES.txt`. |
+| Oswald variable font (200–700) | Offline interface and embedded report typography | Copyright 2016 The Oswald Project Authors; SIL Open Font License 1.1. Preserve `app/public/fonts/OFL.txt` and `SOURCE.txt`. The complete license is embedded with fonts in standalone reports. |
 | HomeKanban wordmark, house image and Windows icon | Application branding | Supplied by the project owner, who confirmed permission to publicly use and distribute them on 2026-10-25. Their provenance is recorded in `app/public/branding/SOURCE.txt`. Included under the project MIT License to the extent of the owner's rights. No trademark endorsement is granted. |
 
 The Node.js license file was compared with the [upstream v24.19.0 LICENSE](https://github.com/nodejs/node/blob/v24.19.0/LICENSE) on 2026-10-25 and matched after line-ending normalization. It includes the notices for libraries embedded in Node.js; do not replace it with just the short MIT paragraph.
@@ -18,7 +19,7 @@ The browser editor is bundled locally from the exact versions pinned in `scripts
 
 - Windows and .NET Framework: the launcher uses the operating system's installed framework and libraries.
 - Microsoft Edge or Google Chrome: the app uses an installed browser for its interface and PDF rendering. Browser binaries are not bundled. Their own terms apply.
-- System fonts: the app requests locally installed fonts; no font files are bundled.
+- System fallback fonts: Windows supplies fallback characters not covered by the bundled Oswald font; these system font files are not redistributed.
 - Optional AI providers and web hosts: these are separate services under their own terms. Internet access, accounts, usage charges and hosting charges are not covered by HomeKanban's free license.
 
 ## Inspection content and exclusions
