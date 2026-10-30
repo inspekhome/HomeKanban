@@ -1,6 +1,6 @@
 # HomeKanban User Guide
 
-Version 0.18.66 · Windows x64 · English interface
+Version 0.18.70 · Windows x64 · English interface
 
 HomeKanban is a free, offline-first report-writing workspace for individual home inspectors. One local workspace holds your profile, templates, Fast notes and reports. You do not need a HomeKanban account or subscription. Optional AI and online publishing require your own services and may cost money.
 
@@ -14,6 +14,8 @@ HomeKanban is a free, offline-first report-writing workspace for individual home
 The launcher requires Windows with .NET Framework 4.x. Node.js is included. Use an installed Microsoft Edge or Google Chrome for the interface and PDF export. This trial release is unsigned; a full clean-machine Windows 10/11 compatibility matrix is still pending.
 
 To reopen an already running workspace, open HomeKanban.exe again. When finished, select **Exit HomeKanban**. It saves pending changes and stops the app directly, without a confirmation dialog. If saving fails, the app stays open so you can retry. After a successful exit, menus are removed and the window is closed where the browser permits it. Otherwise, a Safely closed page remains; close that window manually. Closing the browser tab alone does not stop the app. On short desktop windows, the sidebar reserves visible space for Exit HomeKanban and lets the navigation list scroll separately.
+
+Report Library lists reports by creation time, newest first. Editing, saving, or finalizing an older report does not move it to the top. For reports created in older versions without a creation timestamp, the original report date is retained as a fixed sorting reference. The Date column continues to show the inspection date.
 
 ## 2. Set up User info
 

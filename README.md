@@ -1,10 +1,10 @@
 # HomeKanban — Windows home inspection reports
 
-Current published release: **0.18.69**. An English-language, offline-first workspace for a solo home inspector. This is a trial release, not a certified inspection or regulatory-compliance product.
+Current published release: **0.18.70**. An English-language, offline-first workspace for a solo home inspector. This is a trial release, not a certified inspection or regulatory-compliance product.
 
 **Free to use, including for commercial inspections.** HomeKanban's code and documentation are [MIT licensed](LICENSE). No HomeKanban subscription or account is required. Optional AI providers and web hosts have separate terms and may charge fees. See [third-party notices](THIRD_PARTY_NOTICES.md).
 
-**[Download HomeKanban v0.18.69 for Windows](https://github.com/inspekhome/HomeKanban/releases/download/v0.18.69/HomeKanban-Windows-v0.18.69.zip)** · [Release notes and checksum](https://github.com/inspekhome/HomeKanban/releases/tag/v0.18.69) · [User Guide](docs/USER-GUIDE.md)
+**[Download HomeKanban v0.18.70 for Windows](https://github.com/inspekhome/HomeKanban/releases/download/v0.18.70/HomeKanban-Windows-v0.18.70.zip)** · [Release notes and checksum](https://github.com/inspekhome/HomeKanban/releases/tag/v0.18.70) · [User Guide](docs/USER-GUIDE.md)
 
 Download the Windows ZIP above and extract the entire folder before opening `HomeKanban.exe`. The GitHub **Code > Download ZIP** button downloads source code, not the ready-to-run application.
 
@@ -14,7 +14,9 @@ Recent improvements include status boxes on the right in the editor and all repo
 
 This release retains the four save/recovery fixes introduced in **0.18.42**: typing during a Fast note save stays in the editor, cancelled failed edits do not leak into later saves, retrying report creation does not create duplicates, and saved workspaces up to 100 MiB can be restored from their backups. It also includes Dark Mode, a locally bundled Quill editor with undo/redo, a clickable profile avatar, compact Note editing, and multilingual Voice Input through a separately configured OpenAI API key. Voice Input and AI Revise require internet access and provider fees may apply. Optional Cloudflare publishing and termination are now connected; each inspector configures and manages their own account.
 
-Version **0.18.69** removes four Fast note samples with substantial overlap with the previously imported narrative collection. New workspaces include 11 examples; existing personal libraries are preserved. It also includes the recent Paid / Unpaid controls, hosted payment reminders, and the Copy link icon.
+Version **0.18.70** fixes Report Library ordering: newest-created reports appear first, and editing or saving an older report does not move it to the top. Reports from older versions without a creation timestamp retain their original report date as a fixed sorting reference. The Date column continues to show the inspection date.
+
+The public sample cleanup from **0.18.69** is retained: four Fast note samples with substantial overlap with the previously imported narrative collection are excluded. New workspaces include 11 examples; existing personal libraries are preserved. Paid / Unpaid controls, hosted payment reminders, and the Copy link icon are also retained.
 
 The release retains locally bundled Oswald typography for offline UI and report exports, the Sage theme, compact checklist and Property details spacing, and a direct Summary shortcut. Scope remains editable in templates and read-only in reports. The established rounded buttons and layout are retained.
 
@@ -33,7 +35,7 @@ Windows x64 is the intended target. A clean-machine Windows 10/11 installation m
 - **Fast notes:** one shared library for all templates and reports, up to 50 entries and 350 words per entry. Add, edit, format, and reorder reusable wording. Newly inserted wording enters report notes as plain text. New workspaces start with 11 owner-authorized examples that can be edited or deleted. Only these selected examples are included, not the imported narrative document collection.
 - **Reports:** one editor containing Property details, text Summary, Summary and pictures, and System Checks. Use I / NI / NP / D. Clicking a selected section status again clears that section. NI requires an actual reason before finalization.
 - **New Note / Edit Note:** movable and resizable window; linked text, category, and up to 30 photos; rotate and annotate photos; optionally include checklist notes in both summaries. Summary-created notes always remain included.
-- **Report library:** Open, PDF Preview, Export PDF, Export to Web Hosting, Copy, Delete. Copy retains the checklist structure, scope, and notice, while clearing property details, results, findings, and photos.
+- **Report library:** Open, PDF Preview, Export PDF, Export to Web Hosting, Paid / Unpaid, Delete. Reports stay in creation order, newest first, when edited or saved.
 - **AI & settings:** optional API configuration, local backup and restore. No online account is required for the core workflow.
 
 The Summary shortcut jumps to the text summary. Mark finalized identifies missing fields and links to their source; it is not an assessment of the technical correctness of an inspection. Subsequent report edits return the report to draft.
