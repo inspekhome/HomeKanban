@@ -1,6 +1,6 @@
 # HomeKanban — Windows home inspection reports
 
-Current published release: **0.18.70**. An English-language, offline-first workspace for a solo home inspector. This is a trial release, not a certified inspection or regulatory-compliance product.
+Current published release: **0.18.70**. Source and local build: **0.18.71**. An English-language, offline-first workspace for a solo home inspector. This is a trial release, not a certified inspection or regulatory-compliance product.
 
 **Free to use, including for commercial inspections.** HomeKanban's code and documentation are [MIT licensed](LICENSE). No HomeKanban subscription or account is required. Optional AI providers and web hosts have separate terms and may charge fees. See [third-party notices](THIRD_PARTY_NOTICES.md).
 
@@ -13,6 +13,8 @@ The download includes **System Template**, based on the creator's Maryland templ
 Recent improvements include status boxes on the right in the editor and all report exports, all-choice exports, section and choice reordering, compact controls, Add note aligned with Limitation, direct save-and-exit, persistent workspace recovery, and one-click AI Revise using editable AI Instructions. AI requires your own configured provider; live-provider acceptance is still pending.
 
 This release retains the four save/recovery fixes introduced in **0.18.42**: typing during a Fast note save stays in the editor, cancelled failed edits do not leak into later saves, retrying report creation does not create duplicates, and saved workspaces up to 100 MiB can be restored from their backups. It also includes Dark Mode, a locally bundled Quill editor with undo/redo, a clickable profile avatar, compact Note editing, and multilingual Voice Input through a separately configured OpenAI API key. Voice Input and AI Revise require internet access and provider fees may apply. Optional Cloudflare publishing and termination are now connected; each inspector configures and manages their own account.
+
+Version **0.18.71** introduces the navy business report cover: navy top and bottom rules, a gold accent, clearer address hierarchy, and a structured client/inspector information grid. Existing cover fields, contact visibility settings, report content and saved inspection data are preserved. Preview, PDF and new web exports share the same cover.
 
 Version **0.18.70** fixes Report Library ordering: newest-created reports appear first, and editing or saving an older report does not move it to the top. Reports from older versions without a creation timestamp retain their original report date as a fixed sorting reference. The Date column continues to show the inspection date.
 
