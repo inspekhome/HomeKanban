@@ -1,5 +1,5 @@
 {
-  "version": "0.18.70",
+  "version": "0.18.71",
   "files": [
     "tests/system-template-protection.test.js",
     "tests/scope-format.test.js",
