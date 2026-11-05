@@ -4,7 +4,7 @@ const {seed,categories}=require('../../app/seed'),Wording=require('../../app/pub
 function workspaceClient({state=seed(),revision=0,fetchImpl}={}){
  const nodes=new Map(),events=new Map(),requests=[],messages=[];let form={text:''},disk=structuredClone(state),diskRevision=revision;
  const node=key=>{
-  if(!nodes.has(key))nodes.set(key,{value:'',dataset:{},content:'test-token',style:{},classList:{toggle(){},remove(){}},querySelectorAll:()=>[],focus(){},setAttribute(){},removeAttribute(){},addEventListener:(name,fn)=>events.set(key+':'+name,fn),showModal(){this.open=true;},close(){this.open=false;}});
+  if(!nodes.has(key))nodes.set(key,{value:'',dataset:{},content:'test-token',style:{setProperty(k,v){this[k]=v;}},classList:{toggle(){},remove(){}},querySelectorAll:()=>[],focus(){},setAttribute(){},removeAttribute(){},addEventListener:(name,fn)=>events.set(key+':'+name,fn),showModal(){this.open=true;},close(){this.open=false;}});
   return nodes.get(key);
  };
  const fetch=fetchImpl||((url,options)=>new Promise(resolve=>requests.push({url,options,reply(status=200){
