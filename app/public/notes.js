@@ -99,6 +99,7 @@ function noteWindowPosition(size,p=noteWindowSettings()){
  const left=p.maximized?12:p.left??(window.innerWidth-size.width)/2,top=p.maximized?12:p.top??(window.innerHeight-size.height)/2;
  return {left:Math.round(Math.max(12,Math.min(window.innerWidth-size.width-12,left))),top:Math.round(Math.max(12,Math.min(window.innerHeight-size.height-12,top)))};
 }
+function noteWindowIcon(maximized=false){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true" focusable="false">${maximized?'<path d="M8 8V4h12v12h-4"/><rect x="4" y="8" width="12" height="12" rx="1"/>':'<rect x="4" y="4" width="16" height="16" rx="1"/>'}</svg>`;}
 function layoutNoteWindow(){
  const dialog=$('#note-dialog'),p=noteWindowSettings(),size=fitNoteWindow(p.maximized?noteWindowBounds():p);
  dialog.style.width=size.width+'px';dialog.style.height=size.height+'px';
@@ -106,7 +107,7 @@ function layoutNoteWindow(){
  dialog.classList.toggle('note-window-maximized',p.maximized);
  dialog.classList.toggle('note-window-narrow',size.width<1000);dialog.classList.toggle('note-window-small',size.width<600);
  const maximize=dialog.querySelector('[data-note-action="maximize-window"]');
- if(maximize){maximize.textContent=p.maximized?'Restore':'Maximize';maximize.setAttribute('aria-pressed',String(p.maximized));}
+ if(maximize){maximize.innerHTML=noteWindowIcon(p.maximized);maximize.setAttribute('aria-pressed',String(p.maximized));maximize.setAttribute('aria-label',p.maximized?'Restore note window':'Maximize note window');maximize.setAttribute('title',p.maximized?'Restore note window':'Maximize note window');}
  const grip=dialog.querySelector('[data-note-resize]');if(grip)grip.setAttribute('aria-label',`Resize note window, ${size.width} by ${size.height} pixels. Drag or use arrow keys.`);
  const move=dialog.querySelector('[data-note-move]');if(move)move.disabled=p.maximized;
  return size;
@@ -187,7 +188,7 @@ function openNote(findingId=null,sectionId=null,itemId=null,origin=null,source='
  const returnAnchor=origin||(draft.origin==='summary'?'finding-':'check-finding-')+draft.id;
  noteEditor={reportId:r.id,draft,original:JSON.stringify(draft),existing:!!existing,photoDrafts:new Map(),origin:returnAnchor,summaryOnly:draft.origin==='summary',busy:false};
  const destination=noteDestination(r,draft);
- $('#note-dialog').innerHTML=`<header class="note-heading"><div class="note-window-title"><button type="button" class="note-move-grip" data-note-move aria-label="Move note window" title="Drag the title bar to move. Focus this handle and use arrow keys to move with the keyboard."><span aria-hidden="true">✥</span></button><div><h2 id="note-title">${existing?'Edit Note':'New Note'}</h2><p class="help" id="note-destination" ${destination?'':'hidden'}>${e(destination)}</p></div></div><div class="note-window-controls">${noteAction('maximize-window','Maximize','aria-pressed="false"','small')}${noteAction('cancel','Close','aria-label="Close note editor"','quiet')}</div></header>
+ $('#note-dialog').innerHTML=`<header class="note-heading"><div class="note-window-title"><button type="button" class="note-move-grip" data-note-move aria-label="Move note window" title="Drag the title bar to move. Focus this handle and use arrow keys to move with the keyboard."><span aria-hidden="true">✥</span></button><div><div class="note-title-row"><h2 id="note-title">${existing?'Edit Note':'New Note'}</h2><div class="note-window-controls">${noteAction('maximize-window',noteWindowIcon(),'aria-pressed="false" aria-label="Maximize note window" title="Maximize note window"','note-window-icon')}${noteAction('cancel','<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18"/></svg>','aria-label="Close note editor" title="Close note editor"','quiet note-window-icon')}</div></div><p class="help" id="note-destination" ${destination?'':'hidden'}>${e(destination)}</p></div></div></header>
  <div class="note-layout bank-note-layout">${noteAction('toggle-note-bank','Fast notes','aria-expanded="false" aria-controls="note-bank-sidebar"','note-bank-toggle')}<aside id="note-bank-sidebar" class="note-library"><h3>Fast notes</h3>${bankMarkup('note')}</aside><div class="note-writing">
  <section class="note-photo-section" aria-labelledby="note-photos-title"><div class="note-row"><h3 id="note-photos-title">Photos</h3>${noteAction('add-photos','＋ Add photos','','small')}</div><input id="note-photo-file" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden><div id="note-photos"></div></section>
  ${wordingMarkup('note-text','Note / report narrative',draft,'',true)}

@@ -73,7 +73,7 @@ body:has(dialog[open]){overflow:hidden}
 #note-dialog .note-summary-switch:checked{background:#315f83;border-color:#315f83}.note-summary-switch:checked:before{transform:translateX(18px)}.note-summary-switch:focus-visible{outline:2px solid #315f83;outline-offset:3px}
 .library-manager{display:grid;grid-template-columns:245px minmax(0,1fr);gap:24px;padding:0 24px 24px}.library-manager>div{min-width:0}.library-manager aside{min-width:0;max-height:65vh;overflow:auto}.library-manager .field{margin-bottom:16px}#library-dialog>.help{margin:20px 24px}#library-note-text{min-height:240px}.library-select{width:100%;text-align:left;margin:8px 0;overflow-wrap:anywhere}#library-manager-list{margin-bottom:12px}.enlarged-note-photo{display:block;width:100%;max-height:65vh;object-fit:contain}
 .source-note-photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.source-note-photos figure{margin:0;min-width:0;background:white;border:1px solid var(--line);border-radius:6px;padding:10px}.source-note-photos img{display:block;width:100%;max-height:240px;object-fit:contain}.source-note-photos figcaption{font-size:14px;white-space:pre-wrap;overflow-wrap:anywhere;margin-top:8px;color:#52697d}.finding-links{align-items:center}
-@media(max-width:800px){.note-layout{grid-template-columns:190px minmax(0,1fr)}.note-writing{padding:18px}.note-photo-grid{grid-template-columns:minmax(0,1fr)}.note-heading,.note-footer{padding:14px 18px}.note-footer>.help{display:none}.note-footer{justify-content:flex-end}.note-writing>.grid{grid-template-columns:minmax(0,1fr)}.library-manager{grid-template-columns:180px minmax(0,1fr);padding:0 16px 20px;gap:16px}}
+@media(max-width:800px){.note-layout{grid-template-columns:190px minmax(0,1fr)}.note-writing{padding:18px}.note-heading,.note-footer{padding:14px 18px}.note-footer>.help{display:none}.note-footer{justify-content:flex-end}.note-writing>.grid{grid-template-columns:minmax(0,1fr)}.library-manager{grid-template-columns:180px minmax(0,1fr);padding:0 16px 20px;gap:16px}}
 @media(max-width:550px){#note-dialog,#library-dialog{width:calc(100vw - 12px);max-height:calc(100dvh - 12px)}.note-layout,.library-manager{display:flex;flex-direction:column}.note-library{position:static;max-height:225px;width:100%;border-right:0;border-bottom:1px solid var(--line)}.note-writing{width:100%;padding:16px 12px}.note-heading h2{font-size:19px}.note-photo-section{padding:10px}.note-categories{display:grid;grid-template-columns:minmax(0,1fr)}.note-tools{justify-content:flex-start}.library-manager>aside,.library-manager>div{width:100%}.library-manager aside{max-height:200px}.source-note-photos{grid-template-columns:minmax(0,1fr)}}
 
 /* The text summary is a compact numbered list, with one sequence per category. */
@@ -210,7 +210,7 @@ body:has(dialog[open]){overflow:hidden}
 #note-dialog.note-window-narrow .note-heading .help{font-size:12px}
 #note-dialog.note-window-narrow .note-writing{padding:10px 16px}
 #note-dialog.note-window-narrow .bank-search{grid-template-columns:minmax(0,1fr)}
-#note-dialog.note-window-narrow .note-writing>.grid,#note-dialog.note-window-narrow .note-photo-grid{grid-template-columns:minmax(0,1fr)}
+#note-dialog.note-window-narrow .note-writing>.grid{grid-template-columns:minmax(0,1fr)}
 #note-dialog.note-window-narrow .note-footer>.help{display:none}
 #note-dialog.note-window-narrow .note-footer{justify-content:flex-end}
 #note-dialog.note-window-small .note-layout{display:block;overflow:auto}
@@ -498,8 +498,7 @@ html[data-theme]:not([data-theme="blue-gray"]) .report-tool::after{background:va
 .choice-drag-handle:focus-visible{outline:2px solid var(--accent);outline-offset:1px}.choice-edit-row.dragging{opacity:.45}.choice-edit-row.drop-before{box-shadow:inset 0 3px #315f83}.choice-edit-row.drop-after{box-shadow:inset 0 -3px #315f83}
 .choice-swatch{height:32px;background:var(--choice-bg);border:1px solid var(--choice-border);border-radius:4px}
 .component-heading .check-name{gap:8px}.component-remove{padding:0;width:24px;min-width:24px;height:28px;border:0;background:transparent;color:#7c8e9d;font-size:21px;line-height:1}.component-remove:hover{color:#b42318;background:#fff1ef}
-.component-undo{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;margin-bottom:12px;background:var(--paper);border:1px solid var(--line);border-radius:6px;font-size:13px}.component-undo button{flex-shrink:0}
-@media(max-width:650px){.choice-edit-row{grid-template-columns:20px minmax(0,1fr) 22px auto}.choice-edit-row .choice-drag-handle{grid-column:1;grid-row:1/3;align-self:center}.choice-text-field{grid-column:2/-1}.choice-purpose-field{grid-column:2}.template-component-heading{flex-wrap:wrap}.component-undo{flex-wrap:wrap}}
+@media(max-width:650px){.choice-edit-row{grid-template-columns:20px minmax(0,1fr) 22px auto}.choice-edit-row .choice-drag-handle{grid-column:1;grid-row:1/3;align-self:center}.choice-text-field{grid-column:2/-1}.choice-purpose-field{grid-column:2}.template-component-heading{flex-wrap:wrap}}
 
 /* Six square dots provide a consistent reorder handle; report dots also show completion. */
 .square-grip-icon{display:block;width:9.6px;height:14.4px;fill:currentColor;pointer-events:none;flex-shrink:0}
@@ -874,3 +873,44 @@ main:has(.template-layout) :is(input[data-template-field="name"],input[data-scop
 .library-actions button.payment-status:hover{filter:brightness(.97)}
 html[data-theme="black-gray"] .library-actions button.payment-status.is-unpaid{background:#4e4325;border-color:#8c7842;color:#f1dc9b}
 html[data-theme="black-gray"] .library-actions button.payment-status.is-paid{background:#284737;border-color:#4a765c;color:#bde3ca}
+
+/* Keep note photos in pairs even in a narrow note window. */
+#note-dialog .note-photo-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+#note-dialog .note-photo-grid figure{padding:6px}
+#note-dialog .note-photo-surface{min-height:0;aspect-ratio:4/3}
+#note-dialog .note-photo-surface>img{position:absolute;inset:0;height:100%;max-height:none;min-height:0}
+#note-dialog .note-photo-surface.photo-inline-active{aspect-ratio:auto}
+
+/* Compact photo spacing; images and narrative share the writing pane scroll. */
+#note-dialog .note-photo-section{padding:4px 8px;margin-bottom:6px;max-height:none;overflow:visible}
+#note-dialog #note-photos{margin-top:4px}
+#note-dialog .note-photo-grid{gap:8px}
+#note-dialog .note-photo-grid figure{padding:4px}
+#note-dialog .note-photo-toolbar{margin-top:4px}
+#note-dialog .note-photo-surface.photo-inline-active{max-height:none}
+
+/* Keep note window actions beside the title, in both New Note and Edit Note. */
+#note-dialog .note-title-row{display:flex;align-items:center;gap:10px;flex-wrap:nowrap}
+#note-dialog .note-title-row h2{margin:0;white-space:nowrap}
+#note-dialog .note-window-controls,#note-dialog.note-window-small .note-window-controls{width:auto;margin-left:0;justify-content:flex-start;gap:5px}
+#note-dialog .note-window-controls>.note-window-icon{display:inline-flex;align-items:center;justify-content:center;width:30px;min-width:30px;height:30px;min-height:30px;padding:5px;line-height:1;border-radius:5px}
+#note-dialog .note-window-icon svg{display:block;width:18px;height:18px;pointer-events:none}
+
+/* The title occupies only the left column; the writing pane starts at the top. */
+#note-dialog:not(.note-window-small)[open]{grid-template-columns:clamp(200px,26%,330px) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto}
+#note-dialog:not(.note-window-small)>.note-heading{grid-column:1;grid-row:1;padding-left:12px;padding-right:8px;gap:4px}
+#note-dialog:not(.note-window-small)>.note-layout{display:contents}
+#note-dialog:not(.note-window-small) .note-library{grid-column:1;grid-row:2 / 4}
+#note-dialog:not(.note-window-small) .note-writing{grid-column:2;grid-row:1 / 3;padding-top:6px}
+#note-dialog:not(.note-window-small) .note-footer{grid-column:2;grid-row:3}
+#note-dialog .note-title-row{gap:6px}
+#note-dialog .note-window-title{gap:5px}
+/* Natural height fills the card width without cropping inspection evidence. */
+#note-dialog .note-photo-surface{display:block;aspect-ratio:auto;max-height:none;min-height:0}
+#note-dialog .note-photo-surface>img{position:static;display:block;width:100%;height:auto;max-height:none;min-height:0;object-fit:contain}
+
+/* Keep both window icons against the right edge of the left title column. */
+#note-dialog .note-window-title{width:100%}
+#note-dialog .note-window-title>div{flex:1;min-width:0}
+#note-dialog .note-title-row{width:100%}
+#note-dialog .note-title-row>.note-window-controls{margin-left:auto}
