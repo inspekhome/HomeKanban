@@ -1,10 +1,10 @@
 # HomeKanban — Windows home inspection reports
 
-Current published release: **0.18.70**. Source and local build: **0.18.71**. An English-language, offline-first workspace for a solo home inspector. This is a trial release, not a certified inspection or regulatory-compliance product.
+Current published release: **0.18.76**. An English-language, offline-first workspace for a solo home inspector. This is a trial release, not a certified inspection or regulatory-compliance product.
 
 **Free to use, including for commercial inspections.** HomeKanban's code and documentation are [MIT licensed](LICENSE). No HomeKanban subscription or account is required. Optional AI providers and web hosts have separate terms and may charge fees. See [third-party notices](THIRD_PARTY_NOTICES.md).
 
-**[Download HomeKanban v0.18.70 for Windows](https://github.com/inspekhome/HomeKanban/releases/download/v0.18.70/HomeKanban-Windows-v0.18.70.zip)** · [Release notes and checksum](https://github.com/inspekhome/HomeKanban/releases/tag/v0.18.70) · [User Guide](docs/USER-GUIDE.md)
+**[Download HomeKanban v0.18.76 for Windows](https://github.com/inspekhome/HomeKanban/releases/download/v0.18.76/HomeKanban-Windows-v0.18.76.zip)** · [Release notes and checksum](https://github.com/inspekhome/HomeKanban/releases/tag/v0.18.76) · [User Guide](docs/USER-GUIDE.md)
 
 Download the Windows ZIP above and extract the entire folder before opening `HomeKanban.exe`. The GitHub **Code > Download ZIP** button downloads source code, not the ready-to-run application.
 
@@ -13,6 +13,16 @@ The download includes **System Template**, based on the creator's Maryland templ
 Recent improvements include status boxes on the right in the editor and all report exports, all-choice exports, section and choice reordering, compact controls, Add note aligned with Limitation, direct save-and-exit, persistent workspace recovery, and one-click AI Revise using editable AI Instructions. AI requires your own configured provider; live-provider acceptance is still pending.
 
 This release retains the four save/recovery fixes introduced in **0.18.42**: typing during a Fast note save stays in the editor, cancelled failed edits do not leak into later saves, retrying report creation does not create duplicates, and saved workspaces up to 100 MiB can be restored from their backups. It also includes Dark Mode, a locally bundled Quill editor with undo/redo, a clickable profile avatar, compact Note editing, and multilingual Voice Input through a separately configured OpenAI API key. Voice Input and AI Revise require internet access and provider fees may apply. Optional Cloudflare publishing and termination are now connected; each inspector configures and manages their own account.
+
+Version **0.18.76** aligns maximize/restore and close icons to the right edge of the left note title column. Photos use two columns with unrestricted rows and no separate photo scrollbar; the narrative and Voice Input follow below the photos.
+
+Version **0.18.75** moves the note writing pane to the top of the right column while retaining the title and Fast notes on the left. Photo previews fill their card width at their natural aspect ratio, without cropping.
+
+Version **0.18.74** places compact maximize/restore and close icons beside the New Note / Edit Note title. Keyboard labels and the existing close confirmation behavior are preserved.
+
+Version **0.18.73** compacts the note photo panel and limits its height as the note window is resized, leaving space to start typing the narrative after adding photos. Additional photos scroll within the photo panel.
+
+Version **0.18.72** removes the component-removal undo banner after a single confirmation and keeps note-editor photos in two columns, including narrow windows. Linked findings and photos remain in Other observations.
 
 Version **0.18.71** introduces the navy business report cover: navy top and bottom rules, a gold accent, clearer address hierarchy, and a structured client/inspector information grid. Existing cover fields, contact visibility settings, report content and saved inspection data are preserved. Preview, PDF and new web exports share the same cover.
 
