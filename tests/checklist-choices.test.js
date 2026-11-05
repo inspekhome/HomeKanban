@@ -4,15 +4,15 @@ const {seed,ratings,categories}=require('../app/seed');
 const {createApp,validateState}=require('../app/server');
 const {reportHTML}=require('../app/report');
 function client(){
- const state=seed(),events=new Map(),nodes=new Map();state.profile.name='Synthetic inspector';
+ const state=seed(),events=new Map(),nodes=new Map(),confirmations=[];let approved=true;state.profile.name='Synthetic inspector';
  const node=key=>{if(!nodes.has(key))nodes.set(key,{content:'test-token',textContent:'',innerHTML:'',style:{},dataset:{},classList:{toggle(){}},addEventListener(){},focus(){},showModal(){},close(){}});return nodes.get(key);};
- const context=vm.createContext({Wording:require('../app/public/wording'),crypto:globalThis.crypto,structuredClone,initialState:state,initialRatings:ratings,initialCategories:categories,setTimeout:()=>1,clearTimeout(){},document:{querySelector:node,getElementById:node,addEventListener:(name,fn)=>events.set(name,fn)},window:{addEventListener(){}},confirmNote:async()=>true});
+ const context=vm.createContext({Wording:require('../app/public/wording'),crypto:globalThis.crypto,structuredClone,initialState:state,initialRatings:ratings,initialCategories:categories,setTimeout:()=>1,clearTimeout(){},document:{querySelector:node,getElementById:node,addEventListener:(name,fn)=>events.set(name,fn)},window:{addEventListener(){}},confirmNote:async(message)=>{confirmations.push(message);return approved;}});
  const source=fs.readFileSync(require.resolve('../app/public/app.js'),'utf8');
  vm.runInContext(source.slice(0,source.lastIndexOf('\nboot().catch'))+`
  state=initialState;ratings=initialRatings;categories=initialCategories;
  const sample=blankReport(state.templates[0],{address:'SYNTHETIC',client:'Test client',scope:'Test only'});state.reports.push(sample);route='editor';currentId=sample.id;render=()=>{};
- globalThis.harness={get r(){return report();},get dirty(){return dirty;},remove:removeReportComponent,undo:restoreReportComponent,html:()=>renderSystemChecks(report()),blank:()=>blankReport(state.templates[0]),templateMode(){route='template-editor';currentId=state.templates[0].id;sectionId=state.templates[0].sections[0].id;},draft(id,choices){choiceDraft={templateId:currentId,sectionId,itemId:id,choices};},saveChoices,kind:choiceKind};`,context);
- return {state,h:context.harness,node,click:dataset=>events.get('click')({target:{closest:()=>({dataset,isConnected:false})}})};
+ globalThis.harness={get r(){return report();},get dirty(){return dirty;},remove:removeReportComponent,html:()=>renderSystemChecks(report()),blank:()=>blankReport(state.templates[0]),templateMode(){route='template-editor';currentId=state.templates[0].id;sectionId=state.templates[0].sections[0].id;},draft(id,choices){choiceDraft={templateId:currentId,sectionId,itemId:id,choices};},saveChoices,kind:choiceKind};`,context);
+ return {state,h:context.harness,node,confirmations,approve:value=>approved=value,click:dataset=>events.get('click')({target:{closest:()=>({dataset,isConnected:false})}})};
 }
 test('template choices and colors are independent report snapshots with blank selections',()=>{
  const c=client(),t=c.state.templates[0],i=t.sections[0].items[0];i.options=['Wood','Operated','Damaged'];i.choiceTypes={Wood:'description',Operated:'normal',Damaged:'concern'};i.selected=['Damaged'];i.rating='D';
@@ -29,16 +29,17 @@ test('editing template choices validates duplicates and saves types without rewr
  const original=structuredClone(item);c.h.draft(item.id,[{text:'Wood',kind:'description'},{text:' Wood ',kind:'concern'}]);c.h.saveChoices();assert.deepEqual(item,original);assert.match(c.node('#choice-error').textContent,/different label/);
  c.h.draft(item.id,[{text:'Wood',kind:'description'},{text:'Operated',kind:'normal'},{text:'Damaged',kind:'concern'}]);c.h.saveChoices();assert.deepEqual(Array.from(item.options),['Wood','Operated','Damaged']);assert.equal(item.choiceTypes.Damaged,'concern');assert.deepEqual(structuredClone(c.state.reports),before);assert.doesNotThrow(()=>validateState(c.state));
 });
-test('report-local removal retains linked text and photos and undo restores original position and links',async()=>{
+test('report-local removal retains linked text and photos without an undo banner',async()=>{
  const c=client(),r=c.h.r,s=r.sections[0],item=s.items[1],templates=structuredClone(c.state.templates);item.selected=['Concrete'];item.note='Keep observation';
  const f={id:'linked-note',sectionId:s.id,itemId:item.id,origin:'checklist',includeInSummary:true,location:'Foundation',category:categories[0],text:'Preserve this finding.',photos:[{src:'data:image/png;base64,dGVzdA==',caption:'Preserve this photo'}]};r.findings.push(f);
  const original=structuredClone(r);await c.click({action:'remove-report-component',sectionId:s.id,itemId:item.id});assert.equal(s.items.length,original.sections[0].items.length-1);assert.equal(f.itemId,undefined);assert.equal(f.sectionId,undefined);assert.equal(f.text,original.findings[0].text);assert.deepEqual(f.photos,original.findings[0].photos);assert.deepEqual(c.state.templates,templates);assert.equal(r.status,'draft');assert.doesNotThrow(()=>validateState(c.state));
+ assert.equal(c.confirmations.length,1);assert.ok(!c.confirmations[0].includes('undo'));
  const html=reportHTML(r);assert.match(html,/<h3>Other observations<\/h3>/);assert.ok(html.includes('id="summary-linked-note"'));assert.ok(html.includes('id="check-finding-linked-note"'));
- await c.click({action:'undo-remove-component'});assert.deepEqual(structuredClone(s.items),original.sections[0].items);assert.deepEqual(structuredClone(r.findings),original.findings);assert.equal(c.h.undo(),false);
+ assert.ok(!c.h.html().includes('Undo removal'));assert.ok(!c.h.html().includes('component-undo'));assert.ok(!s.items.some(i=>i.id===item.id));
 });
-test('undo preserves subsequent note edits and does not overwrite a new component association',()=>{
+test('removed components do not interfere with subsequent note edits or other component associations',()=>{
  const c=client(),r=c.h.r,s=r.sections[0],item=s.items[0],other=s.items[1];r.findings.push({id:'test-note',sectionId:s.id,itemId:item.id,location:'',category:categories[0],text:'Before',photos:[]});c.h.remove(s.id,item.id);
- r.findings[0].text='Edited after removal';r.findings[0].sectionId=s.id;r.findings[0].itemId=other.id;c.h.undo();assert.equal(r.findings[0].text,'Edited after removal');assert.equal(r.findings[0].itemId,other.id);assert.equal(c.h.remove('missing','missing'),false);
+ r.findings[0].text='Edited after removal';r.findings[0].sectionId=s.id;r.findings[0].itemId=other.id;assert.equal(r.findings[0].text,'Edited after removal');assert.equal(r.findings[0].itemId,other.id);assert.equal(c.h.remove('missing','missing'),false);
 });
 test('optional choice colors validate strictly while existing templates without them remain valid',()=>{
  const c=client(),i=c.h.r.sections[0].items[0];assert.doesNotThrow(()=>validateState(c.state));
@@ -57,3 +58,9 @@ test('choice metadata persists through HTTP save, backup, restore and a process 
   await app.close();app=createApp({dataDir,port:0});await app.start();assert.equal(app.read().revision,2);assert.deepEqual(app.read().state.templates[0].sections[0].items[0].choiceTypes,i.choiceTypes);
  }finally{await app.close();}
 });
+
+ test('cancelling component removal leaves the report and evidence unchanged',async()=>{
+ const c=client(),r=c.h.r,s=r.sections[0],before=structuredClone(c.state);c.approve(false);
+ await c.click({action:'remove-report-component',sectionId:s.id,itemId:s.items[0].id});
+ assert.equal(c.confirmations.length,1);assert.deepEqual(structuredClone(c.state),before);
+ });
