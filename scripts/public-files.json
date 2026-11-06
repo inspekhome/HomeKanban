@@ -1,5 +1,5 @@
 {
-  "version": "0.18.76",
+  "version": "0.18.83",
   "files": [
     "tests/system-template-protection.test.js",
     "tests/scope-format.test.js",
@@ -111,7 +111,8 @@
     "app/public/fonts/OFL.txt",
     "app/public/fonts/SOURCE.txt",
     "tests/typography.test.js",
-    "tests/report-library-order.test.js"
+    "tests/report-library-order.test.js",
+    "tests/summary-preview-numbering.test.js"
   ],
   "format": 1
 }
