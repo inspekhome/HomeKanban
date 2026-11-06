@@ -914,3 +914,19 @@ html[data-theme="black-gray"] .library-actions button.payment-status.is-paid{bac
 #note-dialog .note-window-title>div{flex:1;min-width:0}
 #note-dialog .note-title-row{width:100%}
 #note-dialog .note-title-row>.note-window-controls{margin-left:auto}
+
+/* A geometric stop mark avoids font-dependent size and baseline alignment. */
+#note-dialog .note-voice-stop{width:14px;height:14px;flex:0 0 14px;background:currentColor;border-radius:2px;line-height:0;margin:0;padding:0}
+#note-dialog .note-voice-button{align-items:center;justify-content:center}
+
+/* A prominent return action, with chevrons moving gently toward the report list. */
+main.report-editor{--report-navigation-size:16px}
+main.report-editor>.report-back{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:4px 9px;font-size:var(--report-navigation-size);font-weight:400;line-height:1.4;color:#fff;background:var(--accent);border:1px solid var(--accent);border-radius:6px;box-shadow:0 2px 5px #163c5a20}
+main.report-editor>.report-back:hover{filter:brightness(1.1);box-shadow:0 2px 6px #163c5a30}
+main.report-editor>.report-back:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.report-editor .report-jump-links a,.report-editor .report-jump-links>.help{font-size:var(--report-navigation-size)}
+.report-back-chevrons{display:block;width:32px;height:24px;flex:0 0 32px;pointer-events:none;animation:report-back-hint 2.6s ease-in-out infinite}
+@keyframes report-back-hint{0%,65%,100%{transform:translateX(0);opacity:1}35%{transform:translateX(-3px);opacity:.65}}
+@media(prefers-reduced-motion:reduce){.report-back-chevrons{animation:none}}
+
+main.report-editor>.report-back .report-back-chevrons{width:29px;height:22px;flex-basis:29px}
