@@ -1,10 +1,10 @@
 # HomeKanban — Windows home inspection reports
 
-Current published release: **0.18.76**. An English-language, offline-first workspace for a solo home inspector. This is a trial release, not a certified inspection or regulatory-compliance product.
+Current published release: **0.18.83**. An English-language, offline-first workspace for a solo home inspector. This is a trial release, not a certified inspection or regulatory-compliance product.
 
 **Free to use, including for commercial inspections.** HomeKanban's code and documentation are [MIT licensed](LICENSE). No HomeKanban subscription or account is required. Optional AI providers and web hosts have separate terms and may charge fees. See [third-party notices](THIRD_PARTY_NOTICES.md).
 
-**[Download HomeKanban v0.18.76 for Windows](https://github.com/inspekhome/HomeKanban/releases/download/v0.18.76/HomeKanban-Windows-v0.18.76.zip)** · [Release notes and checksum](https://github.com/inspekhome/HomeKanban/releases/tag/v0.18.76) · [User Guide](docs/USER-GUIDE.md)
+**[Download HomeKanban v0.18.83 for Windows](https://github.com/inspekhome/HomeKanban/releases/download/v0.18.83/HomeKanban-Windows-v0.18.83.zip)** · [Release notes and checksum](https://github.com/inspekhome/HomeKanban/releases/tag/v0.18.83) · [User Guide](docs/USER-GUIDE.md)
 
 Download the Windows ZIP above and extract the entire folder before opening `HomeKanban.exe`. The GitHub **Code > Download ZIP** button downloads source code, not the ready-to-run application.
 
@@ -13,6 +13,20 @@ The download includes **System Template**, based on the creator's Maryland templ
 Recent improvements include status boxes on the right in the editor and all report exports, all-choice exports, section and choice reordering, compact controls, Add note aligned with Limitation, direct save-and-exit, persistent workspace recovery, and one-click AI Revise using editable AI Instructions. AI requires your own configured provider; live-provider acceptance is still pending.
 
 This release retains the four save/recovery fixes introduced in **0.18.42**: typing during a Fast note save stays in the editor, cancelled failed edits do not leak into later saves, retrying report creation does not create duplicates, and saved workspaces up to 100 MiB can be restored from their backups. It also includes Dark Mode, a locally bundled Quill editor with undo/redo, a clickable profile avatar, compact Note editing, and multilingual Voice Input through a separately configured OpenAI API key. Voice Input and AI Revise require internet access and provider fees may apply. Optional Cloudflare publishing and termination are now connected; each inspector configures and manages their own account.
+
+Version **0.18.83** restores theme-based colors for Back to reports and reduces its height and spacing by approximately ten percent while retaining regular-weight text.
+
+Version **0.18.82** refines Back to reports with regular-weight text, compact spacing, and a dark forest-green background, retaining its font size and chevron animation.
+
+Version **0.18.81** enlarges the Back to reports button and matches report navigation text at 16 px. Three left chevrons provide a subtle motion cue, respecting reduced-motion preferences.
+
+Version **0.18.80** orders the floating report toolbar as Save, Mark finalized, Summary, Add note.
+
+Version **0.18.79** puts Save at the top and Add note at the bottom of the floating report toolbar, retaining Summary and Mark finalized between them.
+
+Version **0.18.78** enlarges and centers the voice-recording stop square using a geometric mark while retaining the existing red recording-button color.
+
+Version **0.18.77** renders explicit text-summary numbers in Report Preview, PDF and web exports, matching the photo-summary numbering within each category.
 
 Version **0.18.76** aligns maximize/restore and close icons to the right edge of the left note title column. Photos use two columns with unrestricted rows and no separate photo scrollbar; the narrative and Voice Input follow below the photos.
 
