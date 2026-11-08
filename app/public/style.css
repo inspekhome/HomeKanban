@@ -930,3 +930,153 @@ main.report-editor>.report-back:focus-visible{outline:3px solid var(--accent);ou
 @media(prefers-reduced-motion:reduce){.report-back-chevrons{animation:none}}
 
 main.report-editor>.report-back .report-back-chevrons{width:29px;height:22px;flex-basis:29px}
+
+/* Reuse the empty right-hand photo cell for a nearby add action. */
+#note-dialog .note-photo-add-slot{display:flex;align-items:center;justify-content:center;min-width:0}
+
+/* Keep a compact dashed add/drop target beside or below the last photo. */
+#note-dialog .note-photo-section #note-photos{margin-top:0}
+#note-dialog .note-photo-add-slot{align-self:center;padding:4px}
+#note-dialog .note-photo-add-slot>.note-drop-hint{min-height:80px;padding:12px 10px;border-color:var(--muted);color:var(--muted);line-height:1.5}
+#note-dialog .note-photo-add-slot>.note-drop-hint:hover{border-color:var(--accent)}
+
+/* Keep the photo limit on its own centered line; shorten only new-row targets. */
+#note-dialog .note-drop-hint>span{display:block;text-align:center}
+#note-dialog .note-drop-hint>.note-photo-limit{white-space:nowrap}
+#note-dialog .note-photo-add-slot>.note-drop-hint{display:flex;flex-direction:column;align-items:center;justify-content:center}
+#note-dialog .note-photo-add-compact>.note-drop-hint{min-height:70px;padding-top:10.5px;padding-bottom:10.5px}
+
+#note-dialog .note-drop-hint>span:first-child{white-space:normal;font-size:inherit}
+
+/* Smaller workspace headings; retain report and template-editor headings. */
+main>.page-head.workspace-heading h1{font-size:27px}
+@media(max-width:1050px){main>.page-head.workspace-heading h1{font-size:23px}}
+/* The exit action stays visibly dark red in full and collapsed sidebars. */
+html:root .sidebar-bottom button[data-action="quit"]{background:#802f3b;border-color:#a54b57;color:#fff}
+html:root .sidebar-bottom button[data-action="quit"]:hover{background:#963d49;border-color:#b45b66}
+html:root[data-theme="black-gray"] .sidebar-bottom button[data-action="quit"]{background:#4d2730;border-color:#84424c;color:#f3d9dd}
+html:root[data-theme="black-gray"] .sidebar-bottom button[data-action="quit"]:hover{background:#69303a;border-color:#a65763}
+
+/* Compact workspace navigation and page spacing without tightening note libraries. */
+body:not(:has(main.report-editor)):not(:has(main .template-layout)) .topbar{height:60px}
+main:has(>.reports-overview),main:has(>.workspace-heading){padding-top:20px;padding-bottom:40px}
+main>.page-head.workspace-heading{margin-bottom:16px;gap:14px}
+main>.page-head.workspace-heading .eyebrow{margin-bottom:4px}
+main>.page-head.workspace-heading h1{font-size:25px;font-weight:400;margin-bottom:4px}
+@media(max-width:1050px){main>.page-head.workspace-heading h1{font-size:21px}}
+main:has(>.reports-overview)>.reports-overview{margin-bottom:12px;gap:16px}
+main:has(>.reports-overview)>.card{padding:18px;margin-bottom:12px}
+main:has(>.reports-overview)>.card>.card-title{margin-bottom:12px}
+main:has(>.workspace-heading)>.grid{row-gap:12px}
+/* User info and AI settings use tighter forms; retain the existing type sizes. */
+main:has(>.page-head:is([data-view="profile"],[data-view="settings"]))>.card{padding:16px;margin-bottom:12px}
+main:has(>.page-head:is([data-view="profile"],[data-view="settings"])) .card-title{margin-bottom:12px}
+main:has(>.page-head:is([data-view="profile"],[data-view="settings"])) .grid{gap:10px 14px}
+main:has(>.page-head:is([data-view="profile"],[data-view="settings"])) .field>span{margin-bottom:4px}
+main:has(>.page-head:is([data-view="profile"],[data-view="settings"])) :is(input:not([type="checkbox"]),select){padding:6px 10px}
+main:has(>.page-head[data-view="settings"])>.callout{padding:10px 14px;margin-bottom:12px}
+main:has(>.page-head[data-view="settings"]) .api-key-status{padding:8px 12px}
+
+/* Report home keeps three compact filters above the working library. */
+.sidebar-bottom{display:flex;flex-direction:column;align-items:stretch;gap:12px}
+.sidebar-bottom button[data-action="quit"]{align-self:flex-start;margin-top:0}
+.workspace-storage{min-width:0;font-size:12px;line-height:1.45}
+.workspace-storage #workspace-path{display:block;overflow-wrap:anywhere;font-size:10px;letter-spacing:0;margin-top:4px}
+.workspace-storage .workspace-version{font-size:10px;margin-top:2px}
+body:has(main.report-editor) .workspace-storage{display:none}
+body:has(main.report-editor) .sidebar-bottom{align-items:center}
+.topbar-right>#workspace-backup[hidden]{display:none}
+main.reports-page{max-width:1900px;padding:12px 20px 16px;display:flex;flex-direction:column;gap:12px}
+main.reports-page>.report-dashboard{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;flex:none;margin:0;align-items:stretch}
+.report-filter-card{display:flex;align-items:center;gap:10px;min-width:0;min-height:60px;padding:10px 14px;text-align:left;color:var(--ink);background:var(--theme-surface);border:1px solid var(--line);border-top:2px solid var(--theme-pop);border-radius:8px;box-shadow:0 2px 8px #0e22390c}
+.report-filter-card>svg{height:22px;width:22px;flex:none;color:var(--accent)}
+.report-filter-card>span:not(.filter-card-arrow){flex:1;font-size:14px;line-height:1.3}
+.report-filter-card strong{font-size:24px;font-weight:500;line-height:1.2}
+.report-filter-card .filter-card-arrow{font-size:20px;color:var(--muted)}
+.report-filter-card:hover,.report-filter-card.is-active{background:var(--theme-selected);border-color:var(--theme-pop)}
+.report-filter-card.is-active{box-shadow:inset 3px 0 var(--accent)}
+html:root[data-theme="black-gray"] .report-filter-card{background:var(--theme-surface);border-color:var(--line);border-top-color:var(--theme-pop)}
+html:root[data-theme="black-gray"] .report-filter-card:hover,html:root[data-theme="black-gray"] .report-filter-card.is-active{background:var(--theme-selected);border-color:var(--theme-pop)}
+.library-filter-state{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.active-filter-label{font-size:11px;color:var(--muted)}
+.report-library{display:flex;flex-direction:column;min-height:240px;margin:0!important;padding:12px!important;min-width:0;flex:1}
+.report-library .library-heading{gap:10px;margin-bottom:10px!important;flex-wrap:wrap}
+.library-title{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.library-title h2{font-size:19px;font-weight:500}.library-title h2>span{font-size:14px;font-weight:400;color:var(--muted)}
+.library-header-actions{display:flex;align-items:center;gap:8px;margin-left:auto}
+.library-header-actions .search{width:clamp(170px,20vw,310px);padding:6px 10px;font-size:12px}
+.library-header-actions>.primary{padding:6px 12px;white-space:nowrap;font-size:12px}
+.dashboard-filter{font-size:11px;padding:3px 9px;border-color:var(--theme-pop);background:var(--theme-selected);color:var(--ink);border-radius:16px}
+.report-library .library-table-wrap{flex:1;min-height:0;overflow:auto}
+.report-library .library-table{table-layout:fixed;min-width:760px}
+.report-library .property-col{width:29%}.report-library .client-col{width:12%}.report-library .date-col{width:10%}.report-library .status-col{width:8%}.report-library .actions-col{width:41%}
+.report-library .library-table th{padding:7px 6px;position:sticky;top:0;z-index:1;background:var(--theme-surface);white-space:nowrap;letter-spacing:.5px}
+.report-library .library-table th svg{height:15px;width:15px;margin-right:5px;vertical-align:-3px}
+.report-library .library-table td{padding:8px 6px;vertical-align:middle;overflow-wrap:anywhere}
+.report-library .library-table td .address{font-size:14px;font-weight:400;line-height:1.45;white-space:normal;overflow:visible;text-overflow:clip}
+.report-library .library-table td[data-label="Status"] .badge{padding:2px 3px;white-space:nowrap;font-size:11px}
+.report-library .library-table td[data-label="Status"] .progress{width:52px;min-width:0;max-width:100%;margin:3px 0;height:4px}
+.report-library .library-table td[data-label="Status"]>.tiny{font-size:10px}
+.report-library .library-actions-cell{width:auto}
+.report-library .library-actions{min-width:0;gap:4px;align-items:stretch}
+.report-library .library-actions-row{gap:5px;width:100%;flex-wrap:wrap}
+.report-library .library-actions-row>.small{flex:1;min-height:26px;padding:3px 7px;font-size:11px}
+.report-library .library-actions-row>.web-hosting-control{flex:2.1;min-width:180px}
+.report-library .hosting-report-info{max-width:none;gap:3px 6px;margin-top:5px;line-height:1.4;font-size:10px;overflow-wrap:anywhere}
+.report-library .hosting-report-info button{padding:3px 5px;font-size:10px;min-height:24px;background:var(--theme-soft);border-color:var(--line)}
+.report-library .hosting-report-info>a{font-size:10px;color:var(--ink);padding:3px 5px;border:1px solid var(--line);border-radius:5px;background:var(--theme-soft);text-decoration:none}
+.hosting-published:before{content:'';display:inline-block;background:#3ea970;width:7px;height:7px;border-radius:50%;margin-right:4px}
+.library-pagination{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:9px;border-top:1px solid var(--line);font-size:11px;color:var(--muted)}
+.library-pagination>div{display:flex;align-items:center;gap:10px}.library-pagination button{padding:1px 9px;font-size:18px;line-height:1.3}
+main.reports-page>.library-footer-note{font-size:10px;margin:0;line-height:1.4}
+
+html:root .sidebar .sidebar-bottom .workspace-exit{background:#802f3b;border:1px solid #a54b57;color:#fff}
+html:root[data-theme="black-gray"] .sidebar .sidebar-bottom .workspace-exit{background:#4d2730;border-color:#84424c;color:#f3d9dd}
+@media(min-width:751px) and (min-height:480px){main.reports-page{height:calc(100dvh - 60px);max-height:calc(100dvh - 60px)}main.reports-page>.library-footer-note{display:none}}
+@media(max-width:1000px){.report-filter-card{padding:8px 10px;gap:7px}.report-filter-card>span:not(.filter-card-arrow){font-size:12px}.report-filter-card strong{font-size:22px}.report-filter-card>svg{height:19px;width:19px}.report-library .library-table-wrap{max-height:75vh}}
+@media(max-width:750px){main.reports-page{padding:12px}main.reports-page>.report-dashboard{gap:6px}.report-filter-card{padding:7px 5px;gap:4px;min-height:62px;flex-wrap:wrap}.report-filter-card>svg,.report-filter-card .filter-card-arrow{display:none}.report-filter-card>span:not(.filter-card-arrow){font-size:11px;flex-basis:100%}.report-filter-card strong{font-size:20px}.library-header-actions{width:100%;margin-left:0}.library-header-actions .search{flex:1;min-width:0;width:auto}.report-library .library-table{display:block;min-width:0;table-layout:auto}.report-library colgroup{display:none}.report-library .library-table td{padding:5px 0}.report-library .library-table td[data-label="Status"]{display:flex;gap:8px;align-items:center}.report-library .library-actions-row{flex-wrap:wrap}.report-library .library-actions-row>.web-hosting-control{min-width:170px}.sidebar-bottom .workspace-storage{display:block;font-size:11px}.sidebar-bottom .workspace-storage small{display:block}.sidebar-bottom .workspace-storage .workspace-version{display:none}.sidebar-bottom{align-items:flex-end}.library-pagination{flex-wrap:wrap}}
+
+/* Reserve the Reports viewport for five readable report rows on desktop. */
+html body:has(main.reports-page) .shell>.topbar{height:38px;min-height:38px;padding-top:0;padding-bottom:0}
+main.reports-page{padding-top:5px;padding-bottom:5px;gap:5px}
+main.reports-page>.report-dashboard{gap:8px}
+.reports-page .report-filter-card{min-height:40px;padding:5px 10px;gap:8px}
+.reports-page .report-filter-card strong{font-size:22px}
+.reports-page .report-filter-card>svg{height:19px;width:19px}
+.reports-page>.report-library{padding:6px 8px!important;min-height:0}
+.reports-page .report-library .library-heading{margin-bottom:4px!important;gap:5px}
+.reports-page .library-title{gap:7px}
+.reports-page .library-title h2{font-size:17px;line-height:1.3}
+.reports-page .library-header-actions .search{padding-top:3px;padding-bottom:3px}
+.reports-page .library-header-actions>.primary{padding-top:3px;padding-bottom:3px}
+.reports-page .library-filter-state{gap:5px}
+.reports-page .dashboard-filter{padding-top:1px;padding-bottom:1px}
+.reports-page .report-library .library-table th{padding-top:3px;padding-bottom:3px}
+.reports-page .report-library .library-table td{padding-top:4px;padding-bottom:4px}
+.reports-page .report-library .library-actions{gap:3px}
+.reports-page .report-library .library-actions-row{gap:4px}
+.reports-page .report-library .library-actions-row>.small{min-height:22px;padding-top:1px;padding-bottom:1px;line-height:1.4}
+.reports-page .report-library .web-hosting-slider{--hosting-thumb-size:16px;height:24px;min-height:24px}
+.reports-page .report-library .hosting-report-info{margin-top:3px;gap:2px 5px;line-height:1.3}
+.reports-page .report-library .hosting-report-info button{min-height:20px;padding-top:1px;padding-bottom:1px}
+.reports-page .report-library .hosting-report-info>a{padding-top:1px;padding-bottom:1px}
+.reports-page .report-library .library-pagination{padding-top:4px;gap:5px;line-height:1.3}
+.reports-page .library-pagination button{padding-top:0;padding-bottom:0;font-size:16px}
+@media(min-width:751px) and (min-height:480px){main.reports-page{height:calc(100dvh - 38px);max-height:calc(100dvh - 38px)}.reports-page .report-library .library-table-wrap{max-height:none}}
+@media(max-width:750px){main.reports-page{padding:6px 10px}.reports-page .report-filter-card{min-height:48px}.reports-page>.report-library{min-height:240px}.reports-page .library-header-actions{gap:5px}}
+
+/* Match the shared top banner and keep report controls at their natural widths. */
+html body:has(main.reports-page) .shell>.topbar{height:60px;min-height:60px;align-items:center}
+@media(min-width:751px) and (min-height:480px){main.reports-page{height:calc(100dvh - 60px);max-height:calc(100dvh - 60px)}}
+main.reports-page>.report-dashboard{width:max-content;max-width:100%;grid-template-columns:repeat(3,minmax(0,1fr));justify-content:start;align-self:flex-start}
+@media(min-width:751px){.reports-page .report-filter-card>span:not(.filter-card-arrow){white-space:nowrap}}
+.reports-page .report-filter-card strong{font-variant-numeric:tabular-nums}
+.reports-page .report-library .library-actions-row{justify-content:flex-start}
+.reports-page .report-library .library-actions-row>.small{flex:0 0 auto;width:auto;min-width:61px}
+.reports-page .report-library .library-actions-row>.web-hosting-control{flex:0 0 148px;width:148px;min-width:148px;max-width:148px}
+.reports-page .report-library .property-col{width:auto}
+.reports-page .report-library .client-col{width:110px}
+.reports-page .report-library .date-col{width:88px}
+.reports-page .report-library .status-col{width:76px}
+.reports-page .report-library .actions-col{width:290px}
+@media(max-width:750px){main.reports-page>.report-dashboard{width:100%;align-self:stretch}}

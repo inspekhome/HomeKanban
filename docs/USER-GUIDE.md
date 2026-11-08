@@ -202,3 +202,11 @@ The report editor uses a compact System Checks directory with room for approxima
 ## 15. Save and recovery fixes in 0.18.42
 
 If you continue typing while a Fast note is being saved, the editor remains open with the newer changes. Click Save again to store those changes. If a save fails, retry or cancel the draft; cancelling does not update the saved Fast note. A failed new-report creation can also be retried without generating duplicate reports.
+
+## Report home filters
+
+Report home has three compact filters above the library: Unfinished reports, Unpaid inspections and Web-hosted reports. Select one to show its reports. Select the same card again, or choose Show all reports beside the library heading, to clear the filter. This also works when no reports match. Search property or client applies within the selected filter; clearing the filter preserves the search text.
+
+Hosting counts use locally recorded publication state. Unverified publications remain included so you can use Check status or terminate them. Hover over the Web-hosted reports card to see whether any need verification. Nothing is automatically published or terminated by selecting a filter.
+
+The library displays ten reports per page. Addresses wrap without truncation. Create report is beside Search; Back up data remains at the top right beside the save status. Exit HomeKanban is above the local workspace path. Each report retains Open, PDF Preview, Export PDF, the slide-to-publish/terminate switch, Paid/Unpaid and Delete. Published rows retain Published, Check status, Copy link and Open web report, together with any recovery actions.

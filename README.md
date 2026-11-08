@@ -1,10 +1,10 @@
 # HomeKanban — Windows home inspection reports
 
-Current published release: **0.18.83**. An English-language, offline-first workspace for a solo home inspector. This is a trial release, not a certified inspection or regulatory-compliance product.
+Current published release: **0.18.93**. An English-language, offline-first workspace for a solo home inspector. This is a trial release, not a certified inspection or regulatory-compliance product.
 
 **Free to use, including for commercial inspections.** HomeKanban's code and documentation are [MIT licensed](LICENSE). No HomeKanban subscription or account is required. Optional AI providers and web hosts have separate terms and may charge fees. See [third-party notices](THIRD_PARTY_NOTICES.md).
 
-**[Download HomeKanban v0.18.83 for Windows](https://github.com/inspekhome/HomeKanban/releases/download/v0.18.83/HomeKanban-Windows-v0.18.83.zip)** · [Release notes and checksum](https://github.com/inspekhome/HomeKanban/releases/tag/v0.18.83) · [User Guide](docs/USER-GUIDE.md)
+**[Download HomeKanban v0.18.93 for Windows](https://github.com/inspekhome/HomeKanban/releases/download/v0.18.93/HomeKanban-Windows-v0.18.93.zip)** · [Release notes and checksum](https://github.com/inspekhome/HomeKanban/releases/tag/v0.18.93) · [User Guide](docs/USER-GUIDE.md)
 
 Download the Windows ZIP above and extract the entire folder before opening `HomeKanban.exe`. The GitHub **Code > Download ZIP** button downloads source code, not the ready-to-run application.
 
@@ -13,6 +13,24 @@ The download includes **System Template**, based on the creator's Maryland templ
 Recent improvements include status boxes on the right in the editor and all report exports, all-choice exports, section and choice reordering, compact controls, Add note aligned with Limitation, direct save-and-exit, persistent workspace recovery, and one-click AI Revise using editable AI Instructions. AI requires your own configured provider; live-provider acceptance is still pending.
 
 This release retains the four save/recovery fixes introduced in **0.18.42**: typing during a Fast note save stays in the editor, cancelled failed edits do not leak into later saves, retrying report creation does not create duplicates, and saved workspaces up to 100 MiB can be restored from their backups. It also includes Dark Mode, a locally bundled Quill editor with undo/redo, a clickable profile avatar, compact Note editing, and multilingual Voice Input through a separately configured OpenAI API key. Voice Input and AI Revise require internet access and provider fees may apply. Optional Cloudflare publishing and termination are now connected; each inspector configures and manages their own account.
+
+Version **0.18.93** restores the standard Reports top-bar height, uses equal compact filter widths aligned left, and sizes report actions to their labels instead of stretching them across the cell. A shorter hosting slider and compact Client, Date and Status columns leave more room for complete property addresses.
+
+Version **0.18.92** compacts vertical spacing on Reports, including its top bar, filters, library heading, table rows, hosting controls and pagination, to leave room for five reports in a desktop window while retaining all actions and full address wrapping.
+
+Version **0.18.91** simplifies report home to three compact clickable filters: Unfinished reports, Unpaid inspections and Web-hosted reports. Select a card again or use Show all reports to clear the filter. The monthly chart, location views, online lookup, map library and local coordinate cache have been removed. The report library retains its full addresses, search, pagination and all existing actions.
+
+Version **0.18.89** compacts workspace headers and page gaps, sets workspace headings in smaller regular-weight type, and tightens User info and AI settings forms. Template cards and Fast notes list content retain their existing spacing.
+
+Version **0.18.88** reduces the large headings on Templates, Fast notes, User info and AI & settings by 4 px. Exit HomeKanban has a dark-red background in both full and collapsed sidebars, with a darker treatment in the black-gray theme.
+
+Version **0.18.87** uses the same readable font size for both photo-add prompt lines, wrapping the instruction naturally in narrow photo cells.
+
+Version **0.18.86** centers the photo limit on its own line, shortens new-row photo targets by one eighth, and highlights the floating Add note action with the same theme-based fill as Save now.
+
+Version **0.18.85** replaces the note photo header with a compact dashed add/drop target after the last photo, including full rows, until the 30-photo limit.
+
+Version **0.18.84** adds an Add photos shortcut in the unused right-hand cell when New Note or Edit Note has an odd number of photos. Empty and full photo rows retain their existing layout.
 
 Version **0.18.83** restores theme-based colors for Back to reports and reduces its height and spacing by approximately ten percent while retaining regular-weight text.
 

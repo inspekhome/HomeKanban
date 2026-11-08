@@ -44,6 +44,8 @@ async function makePDF(r,dir){
 function createApp({dataDir=defaultDataDirectory(),port=Number(process.env.HOMEKANBAN_PORT||process.env.SOLOINSPECT_PORT||38473),sessionToken,hostingFetch}={}){
  const db=new DatabaseSync(databasePath(dataDir));db.exec('PRAGMA busy_timeout=5000; PRAGMA journal_mode=WAL; CREATE TABLE IF NOT EXISTS documents (id INTEGER PRIMARY KEY CHECK(id=1), revision INTEGER NOT NULL, json TEXT NOT NULL); CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY CHECK(id=1), json TEXT NOT NULL);');
  if(!db.prepare('SELECT id FROM documents WHERE id=1').get())db.prepare('INSERT INTO documents VALUES (1,0,?)').run(JSON.stringify(seed()));
+ // Remove only the retired location cache; report documents and hosting records are retained.
+ db.exec('DROP TABLE IF EXISTS map_locations');
  // A controlled update may hand off the existing session to keep open editors usable.
  if(sessionToken!==undefined&&!/^[a-f0-9]{64}$/.test(sessionToken))throw new Error('Invalid session handoff.');
  const token=sessionToken||randomBytes(32).toString('hex');let pdfBusy=false,aiBusy=false,voiceBusy=false,closing=false,closePromise;

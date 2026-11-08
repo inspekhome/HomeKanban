@@ -17,7 +17,7 @@
  function info(reportId){
    const p=publication(reportId);if(!p)return '';
    const report=options?.report?.(reportId),pending=report&&(p.paymentSync==='pending'||p.paymentStatus!==(report.paymentStatus||'unpaid'));
-   return '<div class="hosting-report-info"><span class="'+(p.status==='published'?'':'hosting-warning')+'">'+text(p.status)+'</span> '+action('check','Check status',p.id)+(p.status==='published'&&p.url?action('copy-link','Copy link',p.id)+'<a href="'+escape(p.url)+'" target="_blank" rel="noreferrer noopener">Open web report ↗</a>':'')+(pending?'<span class="hosting-warning">Payment reminder not synced.</span>'+action('retry-payment','Retry payment update',p.id):'')+'</div>';
+   return '<div class="hosting-report-info"><span class="'+(p.status==='published'?'hosting-published':'hosting-warning')+'">'+text(p.status)+'</span> '+action('check','Check status',p.id)+(p.status==='published'&&p.url?action('copy-link','Copy link',p.id)+'<a href="'+escape(p.url)+'" target="_blank" rel="noreferrer noopener">Open web report ↗</a>':'')+(pending?'<span class="hosting-warning">Payment reminder not synced.</span>'+action('retry-payment','Retry payment update',p.id):'')+'</div>';
  }
  function history(){
    const rows=data.publications.filter(p=>p.status!=='unpublished'||p.cleaned===false);
@@ -122,5 +122,5 @@
      finally{if(button.isConnected)button.disabled=false;}
    });
  }
- return Object.freeze({bind,load,button,info,settings,request,syncPayment});
+ return Object.freeze({bind,load,button,info,settings,request,syncPayment,status:reportId=>ready?(publication(reportId)?.status||'unpublished'):null,ready:()=>ready});
 });
