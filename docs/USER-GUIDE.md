@@ -1,6 +1,6 @@
 # HomeKanban User Guide
 
-Version 0.18.70 · Windows x64 · English interface
+Version 0.18.94 · Windows x64 · English interface
 
 HomeKanban is a free, offline-first report-writing workspace for individual home inspectors. One local workspace holds your profile, templates, Fast notes and reports. You do not need a HomeKanban account or subscription. Optional AI and online publishing require your own services and may cost money.
 
@@ -210,3 +210,11 @@ Report home has three compact filters above the library: Unfinished reports, Unp
 Hosting counts use locally recorded publication state. Unverified publications remain included so you can use Check status or terminate them. Hover over the Web-hosted reports card to see whether any need verification. Nothing is automatically published or terminated by selecting a filter.
 
 The library displays ten reports per page. Addresses wrap without truncation. Create report is beside Search; Back up data remains at the top right beside the save status. Exit HomeKanban is above the local workspace path. Each report retains Open, PDF Preview, Export PDF, the slide-to-publish/terminate switch, Paid/Unpaid and Delete. Published rows retain Published, Check status, Copy link and Open web report, together with any recovery actions.
+
+## Recent interface refinements (0.18.94)
+
+Property address, Client name and Client email have copy icons beside their inputs. Click an icon to copy the current field text. If clipboard access is unavailable, a dialog selects the text for Ctrl+C. Empty fields leave the clipboard unchanged. These inputs and Inspection time are narrower; Inspection time has no copy icon.
+
+New Note and Edit Note start with a 120 px narrative area, half the previous minimum height. Longer notes scroll, and the editor remains resizable. The editor's text Summary displays explicit consecutive numbers within each category, recalculated when notes are removed, excluded or moved to another category. Picture summaries and PDF/web export content retain their established numbering.
+
+Report-library web-hosting sliders use a compact width, with labels centered in the area beside the circular thumb. Arrow thumbs remain vertically centered during dragging.

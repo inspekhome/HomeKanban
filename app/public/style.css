@@ -1057,6 +1057,9 @@ main.reports-page>.report-dashboard{gap:8px}
 .reports-page .report-library .library-actions-row{gap:4px}
 .reports-page .report-library .library-actions-row>.small{min-height:22px;padding-top:1px;padding-bottom:1px;line-height:1.4}
 .reports-page .report-library .web-hosting-slider{--hosting-thumb-size:16px;height:24px;min-height:24px}
+.reports-page .report-library .web-hosting-thumb{top:50%;transform:translate(var(--hosting-offset,0px),-50%)}
+.reports-page .report-library .web-hosting-label{position:absolute;inset:0 2px 0 calc(var(--hosting-thumb-size) + 6px);display:flex;align-items:center;justify-content:center}
+.reports-page .report-library .web-hosting-slider.is-published .web-hosting-label{left:2px;right:calc(var(--hosting-thumb-size) + 6px)}
 .reports-page .report-library .hosting-report-info{margin-top:3px;gap:2px 5px;line-height:1.3}
 .reports-page .report-library .hosting-report-info button{min-height:20px;padding-top:1px;padding-bottom:1px}
 .reports-page .report-library .hosting-report-info>a{padding-top:1px;padding-bottom:1px}
@@ -1073,10 +1076,25 @@ main.reports-page>.report-dashboard{width:max-content;max-width:100%;grid-templa
 .reports-page .report-filter-card strong{font-variant-numeric:tabular-nums}
 .reports-page .report-library .library-actions-row{justify-content:flex-start}
 .reports-page .report-library .library-actions-row>.small{flex:0 0 auto;width:auto;min-width:61px}
-.reports-page .report-library .library-actions-row>.web-hosting-control{flex:0 0 148px;width:148px;min-width:148px;max-width:148px}
+.reports-page .report-library .library-actions-row>.web-hosting-control{flex:0 0 111.888px;width:111.888px;min-width:111.888px;max-width:111.888px}
 .reports-page .report-library .property-col{width:auto}
 .reports-page .report-library .client-col{width:110px}
 .reports-page .report-library .date-col{width:88px}
 .reports-page .report-library .status-col{width:76px}
 .reports-page .report-library .actions-col{width:290px}
 @media(max-width:750px){main.reports-page>.report-dashboard{width:100%;align-self:stretch}}
+
+/* Compact report contact fields and one-click plain-text copying. */
+#property-details .report-contact-field>label{display:block;margin-bottom:6px}
+.report-contact-controls{display:flex;align-items:stretch;gap:8px;min-width:0}
+.report-contact-controls>input{flex:0 0 80%;width:80%;min-width:0}
+.report-contact-controls>.report-field-copy{display:grid;place-items:center;align-self:stretch;flex:0 1 34px;width:34px;min-width:24px;padding:0;border-radius:6px;background:var(--light);color:var(--accent);border-color:var(--line)}
+.report-field-copy svg{display:block;pointer-events:none}
+.report-contact-controls>.report-field-copy:hover{background:var(--bg);border-color:var(--accent)}
+#note-dialog #note-text{min-height:120px;height:120px;max-height:440px;overflow:auto}
+
+/* Render explicit editor-summary numbers, independent of native list markers. */
+#text-summary .summary-list{list-style:none;padding-left:0}
+#text-summary .summary-narrative{display:flex;align-items:baseline}
+#text-summary .summary-note-number{flex:0 0 auto;min-width:1.7em;padding-right:.3em;font-size:13px;font-weight:400;line-height:1.65}
+#text-summary .summary-narrative .narrative{flex:1;min-width:0}

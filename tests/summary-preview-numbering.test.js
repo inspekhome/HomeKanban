@@ -20,3 +20,18 @@ test('preview and web text summaries carry visible numbers matching photo summar
  }
  assert.deepEqual(r,before);
 });
+
+test('editor text summaries explicitly number each category and renumber after edits',()=>{
+ const fs=require('node:fs'),vm=require('node:vm'),Wording=require('../app/public/wording');
+ const node=()=>({content:'test',style:{},addEventListener(){}});
+ const ctx=vm.createContext({Wording,document:{querySelector:node,addEventListener(){}},window:{addEventListener(){}},structuredClone});
+ const source=fs.readFileSync(require.resolve('../app/public/app.js'),'utf8').replace(/boot\(\)\.catch\(err=>[\s\S]*$/,'');
+ vm.runInContext(source+`;categories=['Defect/Action Needed','Marginal/Deferred Maintenance','Recommendation','Notes'];globalThis.renderSummary=renderTextSummary;`,ctx);
+ const r={findings:[{id:'a',category:'Defect/Action Needed',text:'First.\nSecond paragraph.'},{id:'excluded',category:'Defect/Action Needed',text:'Hidden',includeInSummary:false},{id:'b',category:'Defect/Action Needed',text:'Second.'},{id:'m',category:'Marginal/Deferred Maintenance',text:'Maintenance.'},{id:'r',category:'Recommendation',text:'Recommendation.'},{id:'n',category:'Notes',text:'Note.'}]};
+ const numbers=html=>[...html.matchAll(/href="#finding-([^"]+)"><span class="summary-note-number">(\d+)\.<\/span>/g)].map(m=>[m[1],Number(m[2])]);
+ const before=JSON.stringify(r),html=ctx.renderSummary(r);
+ assert.deepEqual(numbers(html),[['a',1],['b',2],['m',1],['r',1],['n',1]]);
+ assert.ok(!html.includes('Hidden'));assert.ok(html.includes('Second paragraph.'));assert.equal(JSON.stringify(r),before);
+ r.findings=r.findings.filter(f=>f.id!=='a');assert.deepEqual(numbers(ctx.renderSummary(r)),[['b',1],['m',1],['r',1],['n',1]]);
+ r.findings.find(f=>f.id==='b').category='Notes';assert.deepEqual(numbers(ctx.renderSummary(r)),[['m',1],['r',1],['b',1],['n',2]]);
+});

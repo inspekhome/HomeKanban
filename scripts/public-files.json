@@ -1,5 +1,5 @@
 {
-  "version": "0.18.93",
+  "version": "0.18.94",
   "files": [
     "tests/system-template-protection.test.js",
     "tests/scope-format.test.js",
@@ -115,7 +115,8 @@
     "tests/summary-preview-numbering.test.js",
     "app/public/report-dashboard.js",
     "tests/report-dashboard.test.js",
-    "tests/report-home-cleanup.test.js"
+    "tests/report-home-cleanup.test.js",
+    "tests/report-contact-copy.test.js"
   ],
   "format": 1
 }
