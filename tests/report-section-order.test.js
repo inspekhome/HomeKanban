@@ -43,7 +43,11 @@ test('cancelled drags, outside drops, route changes and invalid positions cannot
 });
 test('report navigation has square colored drag handles without section numbers or count columns',()=>{
  const c=client(),r=c.h.r;r.sections[0].items.forEach(i=>i.rating='I');const html=c.h.html();assert.ok(!html.includes('class="system-number"'));assert.ok(!html.includes('class="count"'));assert.ok(!html.includes('class="section-progress'));
- assert.equal((html.match(/class="square-grip-icon"/g)||[]).length,r.sections.length);assert.equal((html.match(/<rect /g)||[]).length,r.sections.length*6);assert.match(html,/report-section-handle is-complete/);assert.match(html,/report-section-handle is-incomplete/);assert.ok(html.includes('Reorder Structure'));assert.ok(html.includes('Summaries'));assert.ok(html.includes('Other observations'));
+ // Count rectangles within each drag handle, excluding unrelated icons such as photo edit.
+ const grips=html.match(/<svg class="square-grip-icon"[^>]*>[\s\S]*?<\/svg>/g)||[];
+ assert.equal(grips.length,r.sections.length);
+ for(const grip of grips)assert.equal((grip.match(/<rect\b/g)||[]).length,6);
+ assert.match(html,/report-section-handle is-complete/);assert.match(html,/report-section-handle is-incomplete/);assert.ok(html.includes('Reorder Structure'));assert.ok(html.includes('Summaries'));assert.ok(html.includes('Other observations'));
 });
 test('report section order survives save, backup, restore and restart and controls web export order',async()=>{
  const c=client(),id=c.h.r.sections[0].id;c.h.move(id,3);const base=path.resolve('work/tests');fs.mkdirSync(base,{recursive:true});const dir=fs.mkdtempSync(path.join(base,'report-section-order-'));let app=createApp({dataDir:dir,port:0});
