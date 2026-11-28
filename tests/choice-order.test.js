@@ -19,8 +19,8 @@ function client(){
 }
 test('choice arrows move edited wording and purpose together in a cancelable draft only',async()=>{
  const c=client(),before=structuredClone(c.state);
- c.emit('input',{target:{dataset:{choiceLabel:'0'},value:'Edited Alpha'}});c.emit('change',{target:{dataset:{choiceKind:'0'},value:'concern'}});
- await c.click({action:'move-choice',index:'0',delta:'1'});same(structuredClone(c.h.draft.choices[1]),{text:'Edited Alpha',kind:'concern'});same(c.state,before);assert.equal(c.h.dirty,0);
+ c.emit('input',{target:{dataset:{choiceLabel:'0'},value:'Edited Alpha'}});c.emit('change',{target:{dataset:{choiceKind:'0'},value:'note'}});
+ await c.click({action:'move-choice',index:'0',delta:'1'});same(structuredClone(c.h.draft.choices[1]),{text:'Edited Alpha',kind:'note'});same(c.state,before);assert.equal(c.h.dirty,0);
  for(const args of [[-1,1],[0,-1],[3,4],[0,0],[NaN,1]])assert.equal(c.h.move(...args),false);
  c.h.cancel();assert.equal(c.h.draft,null);c.h.reopen();same(c.h.draft.choices.map(v=>v.text),['Alpha','Bravo','Charlie','Delta']);
 });
@@ -38,7 +38,7 @@ test('outside drops, pointer cancellation and stale choice dialogs cannot reorde
  c.h.changeRoute();assert.equal(c.h.move(0,2),false);c.h.save();assert.equal(JSON.stringify(c.state),state);
 });
 test('saved choice order persists after restart and is inherited by new reports without changing existing reports',async()=>{
- const c=client(),old=structuredClone(c.state.reports[0]);c.h.move(2,0);c.h.save();same(c.h.item.options,['Charlie','Alpha','Bravo','Delta']);assert.equal(c.h.item.choiceTypes.Charlie,'concern');same(c.state.reports[0],old);
+ const c=client(),old=structuredClone(c.state.reports[0]);c.emit('change',{target:{dataset:{choiceKind:'2'},value:'note'}});c.h.move(2,0);c.h.save();same(c.h.item.options,['Charlie','Alpha','Bravo','Delta']);assert.equal(c.h.item.choiceTypes.Charlie,'note');same(c.state.reports[0],old);
  const next=c.h.newReport();next.id='new-report';c.state.reports.push(next);const item=next.sections[0].items[0];same(item.options,c.h.item.options);assert.equal(item.selected.length,0);
  const html=reportHTML(next);assert.ok(html.indexOf('aria-label="Charlie: not selected"')<html.indexOf('aria-label="Alpha: not selected"'));
  const dir=fs.mkdtempSync(path.resolve('work/tests/choice-order-'));let app=createApp({dataDir:dir,port:0});

@@ -14,6 +14,7 @@ function setup({delay=false}={}){
  vm.runInContext(source,context);const api=vm.runInContext('ReportPhotos',context);
  return {api,a,b,linked,photos,finding,r,state,mounted,get saves(){return saves;},get changes(){return changes;},set failSave(value){failSave=value;}};
 }
+
 test('multiple photos stay independent, share linked previews, and saving one leaves the other open',async()=>{
  const t=setup();await t.api.open(t.a.c);await t.api.open(t.b.c);
  t.mounted[0].options.onChange({src:'arrow'});t.mounted[1].options.onChange({src:'circle'});

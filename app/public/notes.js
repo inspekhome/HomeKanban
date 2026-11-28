@@ -110,6 +110,7 @@ function layoutNoteWindow(){
  if(maximize){maximize.innerHTML=noteWindowIcon(p.maximized);maximize.setAttribute('aria-pressed',String(p.maximized));maximize.setAttribute('aria-label',p.maximized?'Restore note window':'Maximize note window');maximize.setAttribute('title',p.maximized?'Restore note window':'Maximize note window');}
  const grip=dialog.querySelector('[data-note-resize]');if(grip)grip.setAttribute('aria-label',`Resize note window, ${size.width} by ${size.height} pixels. Drag or use arrow keys.`);
  const move=dialog.querySelector('[data-note-move]');if(move)move.disabled=p.maximized;
+ noteEditor?.positionAIButton?.();
  return size;
 }
 function resizeNoteWindow(size,remember=true){
@@ -168,6 +169,30 @@ function confirmNote(message,label='Discard changes'){
 }
 function noteChanged(){return !!noteEditor&&(!!noteEditor.photoDrafts?.size||!!noteEditor.inlinePhoto?.controller?.dirty||JSON.stringify(noteEditor.draft)!==noteEditor.original);}
 function noteHint(message){$('#note-message').textContent=message;}
+function positionNoteAIButton(){
+ const session=noteEditor,dialog=$('#note-dialog');
+ if(typeof ResizeObserver==='undefined')return;
+ const button=dialog.querySelector('[data-note-action="ai"]'),undo=dialog.querySelector('[data-note-action="undo-ai"]');
+ const category=dialog.querySelector('.note-categories input[value="Recommendation"]').closest('label');
+ const help=dialog.querySelector('.note-ai-control .help');
+ const save=dialog.querySelector('[data-note-action="save"]');
+ const align=()=>{
+  if(noteEditor!==session||!dialog.open)return;
+  // Translate only this button, preserving the toolbar, help text and their layout space.
+  button.style.translate='none';
+  const action=save.getBoundingClientRect();
+  button.style.width=`${action.width}px`;
+  const target=category.getBoundingClientRect(),rect=button.getBoundingClientRect();
+  const lowerEdge=Math.min(help.getBoundingClientRect().top,undo.hidden?Infinity:undo.getBoundingClientRect().top);
+  // Keep the upward shift modest when the tools wrap onto separate rows.
+  const top=Math.max(target.bottom+2,rect.top-(undo.hidden?16:rect.height+4),(target.bottom+lowerEdge-rect.height)/2);
+  button.style.translate=`${action.right-rect.right}px ${Math.min(0,top-rect.top)}px`;
+ };
+ session.positionAIButton=align;
+ session.aiPositionObserver=new ResizeObserver(align);
+ for(const element of [dialog.querySelector('.note-writing'),category,button,help,save])session.aiPositionObserver.observe(element);
+ align();
+}
 function noteDestination(r,draft){const ref=findingComponent(r,draft);return draft.origin==='summary'?'':ref?`${ref.section.name} / ${ref.item.name}`:'System Checks / Other observations';}
 function setNoteSummary(included){
  if(!noteEditor)return;
@@ -180,6 +205,7 @@ function setNoteSummary(included){
 function openNote(findingId=null,sectionId=null,itemId=null,origin=null,source='checklist'){
  disposeWording('note-text');
  noteEditor?.voice?.dispose();
+ noteEditor?.aiPositionObserver?.disconnect();
  if($('#voice-confirm')?.open)$('#voice-confirm').close('cancel');
  if(typeof ReportPhotos!=='undefined')ReportPhotos.closeFinding(findingId);
  const r=report(),existing=r.findings.find(f=>f.id===findingId),section=r.sections.find(s=>s.id===sectionId),item=section?.items.find(i=>i.id===itemId);
@@ -195,7 +221,7 @@ function openNote(findingId=null,sectionId=null,itemId=null,origin=null,source='
  <fieldset class="note-categories"><legend class="visually-hidden">Category</legend>${categories.map(c=>`<label><input type="radio" name="note-category" data-note-field="category" value="${e(c)}" ${c===draft.category?'checked':''}><span>${e(c)}</span></label>`).join('')}</fieldset>
  <div class="note-tools"><div class="note-secondary-tools">${wordingToolbar('note-text','Note / report narrative',true)}${noteEditor.summaryOnly?'':`<div class="note-summary-control"><label class="note-summary-toggle"><input type="checkbox" role="switch" class="note-summary-switch" data-note-field="includeInSummary" ${draft.includeInSummary!==false?'checked':''}> Add to summary</label></div>`}</div><div class="note-ai-control">${noteAction('ai','✧ AI Revise','title="Polish all text in this note"','small')}${noteAction('undo-ai','Undo AI revision','hidden','small')}<p class="help">Uses your saved AI instructions. Requires Internet; API fees apply.</p></div></div></div>
  <footer class="note-footer"><div id="note-message" class="help" role="status"></div><div class="actions">${noteAction('cancel','Cancel')}${noteAction('save',existing?'Update note':'Add note','','primary')}</div></footer></div><button type="button" class="note-window-grip" data-note-resize title="Drag to resize. Arrow keys also adjust the size."><span aria-hidden="true">◢</span></button>`;
- mountWording('note-text');renderNotePhotos();$('#note-dialog').classList.remove('note-bank-open');layoutNoteWindow();$('#note-dialog').showModal();$('#note-text').focus({preventScroll:true});$('#note-dialog').scrollTop=0;initNoteVoice(noteEditor);
+ mountWording('note-text');renderNotePhotos();$('#note-dialog').classList.remove('note-bank-open');layoutNoteWindow();$('#note-dialog').showModal();positionNoteAIButton();$('#note-text').focus({preventScroll:true});$('#note-dialog').scrollTop=0;initNoteVoice(noteEditor);
 }
 function initNoteVoice(session){
  if(typeof NoteVoice==='undefined')return;
@@ -305,7 +331,7 @@ async function closeNote(force=false){
  if($('#voice-confirm')?.open)$('#voice-confirm').close('cancel');
  if(!force&&(noteChanged()||noteEditor?.voice?.active)&&!await confirmNote('Discard the unsaved changes and any pending voice recording in this note?'))return;
  noteEditor?.voice?.abort('Voice input stopped.');
- noteEditor?.voice?.dispose();endInlinePhoto(noteEditor,true);$('#note-dialog').close();noteEditor=null;
+ noteEditor?.voice?.dispose();noteEditor?.aiPositionObserver?.disconnect();endInlinePhoto(noteEditor,true);$('#note-dialog').close();noteEditor=null;
 }
 async function saveNote(){
  const session=noteEditor;if(!session||session.busy)return;
@@ -323,6 +349,7 @@ function updateNoteAIControls(){
  const button=$('#note-dialog [data-note-action="ai"]'),undo=$('#note-dialog [data-note-action="undo-ai"]');
  button.disabled=!!noteEditor?.aiBusy;button.textContent=noteEditor?.aiBusy?'Revising…':'✧ AI Revise';button.setAttribute('aria-busy',String(!!noteEditor?.aiBusy));
  undo.hidden=!noteEditor?.aiUndo;undo.disabled=!!noteEditor?.aiBusy;
+ noteEditor?.positionAIButton?.();
 }
 async function reviseNote(){
  const session=noteEditor;if(!session||session.aiBusy)return;

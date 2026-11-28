@@ -1,6 +1,6 @@
 # HomeKanban User Guide
 
-Version 0.18.94 · Windows x64 · English interface
+Version 0.18.98 · Windows x64 · English interface
 
 HomeKanban is a free, offline-first report-writing workspace for individual home inspectors. One local workspace holds your profile, templates, Fast notes and reports. You do not need a HomeKanban account or subscription. Optional AI and online publishing require your own services and may cost money.
 
@@ -34,7 +34,7 @@ Open **Templates**. New workspaces include **System Template**, based on the cre
 - Edit the template name, **Standard of Practice, Scope & limitations** and report notice. Select scope text to apply **Bold**, *Italic*, Underline, or a font size of **10 pt**, **12 pt**, or **14 pt**. **Default** keeps the normal size for the editor or exported report. This field has no text-color controls. **Clear formatting** removes formatting from the selected text.
 - Use **Add Section** to add a system. Rename sections and edit their notices.
 - Drag the six-square handles beside section rows, or use their up/down arrows, to change inspection order. Templates keep their section numbers.
-- Add or remove components. Select **Edit choices & colors** to add choices, change their wording, or remove them. Each choice has a purpose: **Material / description** (green), **Issue / concern** (amber), or **Others** (gray), in that menu order. Others replaces the former Normal condition label; existing choices retain their category assignments and use the updated colors.
+- Add or remove components. Select **Edit choices & colors** to add choices, change their wording, or remove them. Each choice has a purpose: **Material / description** (green), **Issue / concern** (amber), **Others** (gray), or **Note** (red), in that menu order. Note is a visual category for information you want to record; it does not require text or trigger reminders. Others replaces the former Normal condition label; existing choices retain their category assignments and use the updated colors.
 - In **Edit choices & colors**, drag a choice's square-dot handle or use its up/down arrows to change the order. **Alt+Up** and **Alt+Down** also work on a focused handle. The wording and purpose color move together. Choose **Save choices** to apply the order; **Cancel** discards changes in this dialog. New reports inherit the saved choice order; existing reports keep their snapshot.
 - Select **Save template**.
 
@@ -78,6 +78,8 @@ A blank status means no status was recorded. Unchecked choices are displayed for
 ## 6. Write New Notes and Edit Notes
 
 The text editor is bundled with HomeKanban and works offline. Select wording to apply bold, italic, underline or a text color; with no selection, the chosen style applies to your next words. Clear formatting removes styling from the selection, or resets the typing style at the cursor. Use **Ctrl+Z** to undo and **Ctrl+Y** or **Ctrl+Shift+Z** to redo. Pasted wording stays plain text; image pastes continue to add note photos. Existing formatted notes remain readable without a database conversion.
+
+New Note and Edit Note remember the text color and bold choices you make, including **Ctrl+B**. Your next typed words and subsequent notes use those choices across reports and after reopening HomeKanban in the same browser on this computer. Choose a different color, toggle **Bold**, or use **Clear formatting** to change the remembered preference. Opening an existing note keeps its saved wording and formatting. These preferences do not change Fast notes or template scope formatting.
 
 In the relevant checklist component, choose the **Add note** icon at the far right, after the **D** status box. Enter the observation, location and category, and add a recommended action where appropriate.
 

@@ -1,6 +1,45 @@
 'use strict';
 const wordingSelections=new WeakMap();
 const wordingEditors=new WeakMap();
+const NOTE_TYPING_KEY='soloinspect-note-typing-v1';
+let noteTypingPreference;
+function noteTypingSettings(){
+ if(noteTypingPreference===undefined){
+  noteTypingPreference={};
+  try{
+   const saved=JSON.parse(localStorage.getItem(NOTE_TYPING_KEY));
+   if(saved&&typeof saved==='object'&&!Array.isArray(saved)){
+    if(Object.hasOwn(Wording.editorColors,saved.color))noteTypingPreference.color=saved.color;
+    if(typeof saved.bold==='boolean')noteTypingPreference.bold=saved.bold;
+   }
+  }catch{ /* Editing still works when browser storage is unavailable. */ }
+ }
+ return noteTypingPreference;
+}
+function rememberNoteTyping(editor,command,value){
+ if(editor.id!=='note-text')return;
+ const patch=command==='removeFormat'?{color:'#000000',bold:false}:command==='bold'?{bold:value===true}:command==='color'&&Object.hasOwn(Wording.editorColors,value)?{color:value}:null;
+ if(!patch)return;
+ Object.assign(noteTypingSettings(),patch);
+ try{localStorage.setItem(NOTE_TYPING_KEY,JSON.stringify(noteTypingPreference));}catch{ /* Keep this session's choice even without storage. */ }
+}
+function applyNoteTyping(editor,range){
+ const controller=wordingEditors.get(editor);
+ if(editor.id!=='note-text'||!controller||!range||range.length||controller.applyingTyping)return;
+ // Only the insertion caret gets the preference. Existing text, selected
+ // ranges, and the report draft retain their saved formatting.
+ controller.applyingTyping=true;
+ try{
+  const current=controller.quill.getFormat(range);
+  for(const [name,value] of Object.entries(noteTypingSettings())){
+   const active=name==='bold'?current.bold===true:wordingColor(current.color)||'#000000';
+   // Rewriting an already matching cursor can trigger another native
+   // selection event. Leave it alone once the typing style is correct.
+   if(active!==value)controller.quill.format(name,name==='color'&&value==='#000000'?false:value,'silent');
+  }
+ }
+ finally{controller.applyingTyping=false;}
+}
 function wordingToolbar(id,label,compact=false,scopeFormatting=false){
  const extra=scopeFormatting?`<label>Font size<select data-wording-size aria-label="Scope font size"><option value="">Default</option>${Wording.scopeSizes.map(size=>`<option value="${size}">${size.replace('pt',' pt')}</option>`).join('')}<option value="mixed" hidden disabled>Mixed</option></select></label>`:`<div class="wording-color-swatches" role="group" aria-label="Text color">${compact?'':'<span>Text color</span>'}${Object.entries(Wording.editorColors).map(([value,name])=>`<button type="button" data-wording-color="${value}" class="color-swatch" style="--swatch:${value}" aria-label="${name} text color" title="${name}" aria-pressed="${value==='#000000'}"></button>`).join('')}</div>`;
  return `<div class="wording-toolbar${compact?' note-format-toolbar':''}${scopeFormatting?' scope-format-toolbar':''}" role="group" aria-label="${Wording.escape(label)} formatting" data-wording-toolbar="${id}">${[['bold','B','Bold'],['italic','I','Italic'],['underline','U','Underline']].map(([cmd,icon,name])=>`<button type="button" data-wording-command="${cmd}" aria-label="${name}" aria-pressed="false" title="${name}"><${cmd==='bold'?'b':cmd==='italic'?'i':'u'}>${icon}</${cmd==='bold'?'b':cmd==='italic'?'i':'u'}></button>`).join('')}${extra}<button type="button" data-wording-command="removeFormat" title="Clear selected text formatting">Clear formatting</button></div>`;
@@ -53,11 +92,12 @@ function mountWording(id,onChange=null){
  const attrs=['role','aria-multiline','aria-labelledby','aria-describedby','spellcheck','data-wording-kind'].map(name=>[name,old.getAttribute(name)]);
  old.removeAttribute('id');old.removeAttribute('contenteditable');for(const [name] of attrs)old.removeAttribute(name);
  old.className='wording-host';old.innerHTML='';
- const quill=new Quill(old,{formats:['bold','italic','underline',scopeFormatting?'size':'color'],modules:{toolbar:false,history:{delay:700,maxStack:100,userOnly:false},uploader:{handler:()=>{}}},theme:null});
+ const keyboard=id==='note-text'?{keyboard:{bindings:{bold:{key:'b',shortKey:true,handler(){formatWording(editor,'bold');}}}}}:{};
+ const quill=new Quill(old,{formats:['bold','italic','underline',scopeFormatting?'size':'color'],modules:{toolbar:false,history:{delay:700,maxStack:100,userOnly:false},uploader:{handler:()=>{}},...keyboard},theme:null});
  const editor=quill.root;editor.id=id;editor.classList.add('wording-editor');if(scopeFormatting)editor.classList.add('scope-editor');for(const [name,value] of attrs)if(value!==null)editor.setAttribute(name,value);
  quill.setContents(wordingDelta(note,Delta),'silent');quill.history.clear();
  const onText=()=>{syncWordingEditor(editor);updateWordingToolbar(editor);};
- const onSelection=range=>{if(range)wordingSelections.set(editor,{index:range.index,length:range.length});updateWordingToolbar(editor);};
+ const onSelection=range=>{if(range)wordingSelections.set(editor,{index:range.index,length:range.length});applyNoteTyping(editor,range);updateWordingToolbar(editor);};
  wordingEditors.set(editor,{quill,Delta,onText,onSelection,onChange,loadedDelta:JSON.stringify(quill.getContents().ops),loadedNote:note});
  quill.on('text-change',onText);quill.on('selection-change',onSelection);
  wordingSelections.set(editor,{index:0,length:0});updateWordingToolbar(editor);return quill;
@@ -89,12 +129,22 @@ function restoreWordingSelection(editor){
 }
 function formatWording(editor,command,value){
  const q=restoreWordingSelection(editor),range=q.getSelection();if(!range)return;
- q.history.cutoff();
- if(command==='removeFormat'){
-  if(range.length)q.removeFormat(range.index,range.length,'user');
-  else for(const name of q.options.formats)q.format(name,false,'user');
- }else q.format(command,value===undefined?q.getFormat(range)[command]!==true:value,'user');
- q.history.cutoff();rememberWordingSelection();updateWordingToolbar(editor);
+ const controller=wordingEditors.get(editor),applyingTyping=controller.applyingTyping;
+ // An explicit command wins over the previous preference, including any
+ // selection events Quill emits while it changes the cursor's format.
+ controller.applyingTyping=true;
+ try{
+  q.history.cutoff();
+  if(command==='removeFormat'){
+   if(range.length)q.removeFormat(range.index,range.length,'user');
+   else for(const name of q.options.formats)q.format(name,false,'user');
+  }else{
+   value=value===undefined?q.getFormat(range)[command]!==true:value;
+   q.format(command,value,'user');
+  }
+  rememberNoteTyping(editor,command,value);
+  q.history.cutoff();rememberWordingSelection();updateWordingToolbar(editor);
+ }finally{controller.applyingTyping=applyingTyping;}
 }
 function insertWordingVoiceText(editor,text){
  const q=restoreWordingSelection(editor),range=q.getSelection(),index=range.index+range.length,{Delta}=wordingEditors.get(editor);

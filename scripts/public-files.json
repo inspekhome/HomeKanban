@@ -1,6 +1,7 @@
 {
-  "version": "0.18.95",
+  "version": "0.18.98",
   "files": [
+    "tests/note-typing-preferences.test.js",
     "tests/system-template-protection.test.js",
     "tests/scope-format.test.js",
     "app/public/workspace-limits.js",

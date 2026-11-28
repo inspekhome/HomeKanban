@@ -1,10 +1,10 @@
 # HomeKanban — Windows home inspection reports
 
-Current published release: **0.18.95**. An English-language, offline-first workspace for a solo home inspector. This is a trial release, not a certified inspection or regulatory-compliance product.
+Current published release: **0.18.98**. An English-language, offline-first workspace for a solo home inspector. This is a trial release, not a certified inspection or regulatory-compliance product.
 
 **Free to use, including for commercial inspections.** HomeKanban's code and documentation are [MIT licensed](LICENSE). No HomeKanban subscription or account is required. Optional AI providers and web hosts have separate terms and may charge fees. See [third-party notices](THIRD_PARTY_NOTICES.md).
 
-**[Download HomeKanban v0.18.95 for Windows](https://github.com/inspekhome/HomeKanban/releases/download/v0.18.95/HomeKanban-Windows-v0.18.95.zip)** · [Release notes and checksum](https://github.com/inspekhome/HomeKanban/releases/tag/v0.18.95) · [User Guide](docs/USER-GUIDE.md)
+**[Download HomeKanban v0.18.98 for Windows](https://github.com/inspekhome/HomeKanban/releases/download/v0.18.98/HomeKanban-Windows-v0.18.98.zip)** · [Release notes and checksum](https://github.com/inspekhome/HomeKanban/releases/tag/v0.18.98) · [User Guide](docs/USER-GUIDE.md)
 
 Download the Windows ZIP above and extract the entire folder before opening `HomeKanban.exe`. The GitHub **Code > Download ZIP** button downloads source code, not the ready-to-run application.
 
@@ -14,7 +14,7 @@ Recent improvements include status boxes on the right in the editor and all repo
 
 This release retains the four save/recovery fixes introduced in **0.18.42**: typing during a Fast note save stays in the editor, cancelled failed edits do not leak into later saves, retrying report creation does not create duplicates, and saved workspaces up to 100 MiB can be restored from their backups. It also includes Dark Mode, a locally bundled Quill editor with undo/redo, a clickable profile avatar, compact Note editing, and multilingual Voice Input through a separately configured OpenAI API key. Voice Input and AI Revise require internet access and provider fees may apply. Optional Cloudflare publishing and termination are now connected; each inspector configures and manages their own account.
 
-Version **0.18.95** changes only the photo-edit button icon to a framed landscape, slightly smaller than the unchanged Edit Note pencil. Photo editing behavior and existing reports remain unchanged.
+Version **0.18.98** aligns the AI Revise button with the right edge and width of Add note / Update note in New Note and Edit Note. Its existing vertical placement, rounded glass styling, helper text and neighboring tools are retained.
 
 Version **0.18.94** adds copy icons beside the property address, client name and client email, with a manual-copy fallback if clipboard access is blocked. These fields and Inspection time use 80% of their previous input width. New Note and Edit Note start with a narrative field half as tall, retaining scrolling and manual resizing. The editor's text Summary now explicitly numbers entries within each category, matching its existing picture and PDF summaries. Web-hosting sliders are narrower, with centered labels and vertically centered arrow thumbs. Existing reports, personal Fast notes and export content are preserved.
 
